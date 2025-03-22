@@ -75,7 +75,7 @@ int Server::acceptClient(struct sockaddr_in &clientAddr, socklen_t &clientLen)
     int clientSocket = accept(_serverSocket, (struct sockaddr *)&clientAddr, &clientLen);
     
     if (clientSocket < 0) {
-        perror("accept 실패");
+        error("accept 실패");
         return -1;
     }
     
@@ -134,7 +134,7 @@ void Server::handleClientMessage(int clientSocket)
             std::cout << "클라이언트 연결 종료" << std::endl;
         }
         else {
-            perror("recv 실패");
+            error("recv 실패");
         }
         
         // 클라이언트 제거
