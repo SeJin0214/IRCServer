@@ -1,24 +1,32 @@
-SRCS = main.cpp Server.cpp
 
-CFLAGS = -Wall -Wextra -Werror -std=c++98
-CC = c++
-OBJS = $(SRCS:.cpp=.o)
 NAME = ircserv
+C++ = c++
+FLAGS= -Wall -Wextra -Werror -std=c++98
+
+RM = rm
+RM_FLAGS = -rf
+
+SRCS_DIR = .
+
+SRCS = $(SRCS_DIR)/main.cpp \
+	   $(SRCS_DIR)/Server.cpp \
+
+OBJS = ${SRCS:.cpp=.o}
+
+$(NAME): $(OBJS)
+		   $(C++) $(FLAGS) $^ -o $@
+
+%.o: %.cpp
+	$(C++) $(FLAGS) -c $< -o $@ 
 
 all: $(NAME)
 
-%.o: %.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(NAME): $(OBJS)
-	$(CC) $(OBJS) -o $(NAME)
-
 clean:
-	rm -f $(OBJS)
+	$(RM) $(RM_FLAGS) $(OBJS)
 
 fclean: clean
-	rm -f $(NAME)
+	$(RM) $(RM_FLAGS) $(NAME)
 
 re: fclean all
-
-.PHONY: all clean fclean re
+	
+.PHONY: all re clean fclean 

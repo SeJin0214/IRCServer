@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstdio>
 #include <cstring>
 #include <unistd.h>
 #include <sys/socket.h>
@@ -32,6 +33,8 @@ class Server
         void removeClient(int clientSocket); //클라이언트 종료
         void handleClientMessage(int clientSocket); //받은메세지 처리
         void handleServerInput(); // 서버에서 입력된 메세지 처리
+        void sendToClient(int clientSocket, const std::string &message);
+        void broadcastMessage(const std::string &message, int excludeSocket = -1);
         
     public:
         Server(int port);
@@ -39,6 +42,4 @@ class Server
         
         void run(); // 메인 루프 실행
         void stop(); // 서버 중지
-        void sendToClient(int clientSocket, const std::string &message);
-        void broadcastMessage(const std::string &message, int excludeSocket = -1);
 };
