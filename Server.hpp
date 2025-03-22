@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <cstring>
 #include <unistd.h>
+#include <functional>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/select.h>
@@ -12,18 +13,21 @@
 #include <fcntl.h>
 #include <vector>
 #include <algorithm>
+#include "Util.hpp"
 
 class Server
 {
     private:
-        int _serverSocket;
-        int _port;
-        struct sockaddr_in _serverAddr;
-        std::vector<int> _clientSockets;
-        fd_set _master;
-        int _fdmax;
+        int mServerSocket;
+        int mPort;
+        struct sockaddr_in mServerAddr;
+        std::vector<int> mclientSockets;
+        fd_set mMaster;
+        int mFdmax;
+        unsigned int mPassword;
         
         // 내부 유틸리티 함수들
+        bool isPasswordInvalid(std::string password);
         void error(const std::string &msg);
         void initializeSocket(); //소켓생성
         void setupAddress();  //주소설정
@@ -37,7 +41,7 @@ class Server
         void broadcastMessage(const std::string &message, int excludeSocket = -1);
         
     public:
-        Server(int port);
+        Server(const char *port, const char *password);
         ~Server();
         
         void run(); // 메인 루프 실행

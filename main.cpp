@@ -1,13 +1,13 @@
 #include "Server.hpp"
 
 int main(int argc, char **argv) {
-    if (argc < 2) {
-        std::cerr << "사용법: " << argv[0] << " <포트>\n";
+    if (argc != 3) {
+        std::cerr << "사용법: " << argv[0] << " <port> <password>\n";
         return EXIT_FAILURE;
     }
     
-    int port = std::atoi(argv[1]);
-    Server server(port);
+    // int port = std::atoi(argv[1]);
+    Server server(argv[1], argv[2]);
     
     try {
         server.run();
