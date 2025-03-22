@@ -10,6 +10,7 @@ SRCS_DIR = .
 
 SRCS = $(SRCS_DIR)/main.cpp \
 	   $(SRCS_DIR)/Server.cpp \
+	   $(SRCS_DIR)/Util.cpp \
 
 OBJS = ${SRCS:.cpp=.o}
 
