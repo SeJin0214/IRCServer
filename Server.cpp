@@ -22,6 +22,8 @@ Server::Server(const char *port, const char *password) : mPort(std::atoi(port))
     std::string pw = password;
     if (isPasswordInvalid(pw))
         mPassword = Util::generateHash65599(pw);
+    else
+        error("비밀번호는 8~16자리, 대소문자, 숫자로만 이루어져야합니다.");
     // 소켓 초기화 및 설정
     initializeSocket();
     setupAddress();
@@ -54,7 +56,7 @@ Server::~Server()
 
 void Server::error(const std::string& msg)
 {
-    perror(msg.c_str());
+    std::cerr << msg << std::endl;
     exit(EXIT_FAILURE);
 }
 
@@ -107,18 +109,46 @@ int Server::acceptClient(struct sockaddr_in &clientAddr, socklen_t &clientLen)
         mFdmax = clientSocket;
     }
     
-    // 클라이언트 정보 출력
-    char clientIP[INET_ADDRSTRLEN];
-    inet_ntop(AF_INET, &(clientAddr.sin_addr), clientIP, INET_ADDRSTRLEN);
-    std::cout << "클라이언트 연결: " << clientIP << ":" << ntohs(clientAddr.sin_port) << std::endl;
-    
     // 클라이언트 소켓 목록에 추가
     mclientSockets.push_back(clientSocket);
     
-    // 환영 메시지 전송
-    std::string welcomeMsg = "IRC 서버에 오신 것을 환영합니다!\r\n";
-    sendToClient(clientSocket, welcomeMsg);
+    // 로그인 성공 여부
+    std::string passwordMsg = "password 를 입력해주세요.\r\n";
+    sendToClient(clientSocket, passwordMsg);
+
+    char buffer[1024] = {0};
     
+    // 클라이언트로부터 데이터 수신
+    int bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
+    buffer[static_cast<std::string>(buffer).length() - 1] = 0;
+    if (bytesRead <= 0) {
+        // 연결 종료 또는 오류
+        if (bytesRead == 0) {
+            std::cout << "클라이언트 연결 종료" << std::endl;
+        }
+        else {
+            error("recv 실패");
+        }
+        // 클라이언트 제거
+        removeClient(clientSocket);
+    } 
+    else {
+        if (isPasswordInvalid(buffer) && mPassword == Util::generateHash65599(buffer)) {
+            // 클라이언트 정보 출력
+            char clientIP[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, &(clientAddr.sin_addr), clientIP, INET_ADDRSTRLEN);
+            std::cout << "클라이언트 연결: " << clientIP << ":" << ntohs(clientAddr.sin_port) << std::endl;
+            
+            // 환영 메시지 전송
+            std::string welcomeMsg = "IRC 서버에 오신 것을 환영합니다!\r\n";
+            sendToClient(clientSocket, welcomeMsg);
+        }
+        else {
+            passwordMsg = "password가 맞지 않습니다.\r\n";
+            sendToClient(clientSocket, passwordMsg);
+            removeClient(clientSocket);
+        }
+    }
     return clientSocket;
 }
 
@@ -137,7 +167,6 @@ void Server::removeClient(int clientSocket)
         mclientSockets.erase(it);
     }
     
-    std::cout << "클라이언트 연결 종료 (소켓 " << clientSocket << ")" << std::endl;
 }
 
 // 클라이언트 메시지 처리
@@ -158,6 +187,7 @@ void Server::handleClientMessage(int clientSocket)
         }
         
         // 클라이언트 제거
+        std::cout << "클라이언트 연결 종료 (소켓 " << clientSocket << ")" << std::endl;
         removeClient(clientSocket);
     } 
     else {
