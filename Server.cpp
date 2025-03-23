@@ -7,7 +7,7 @@ bool Server::isPasswordInvalid(std::string password)
     {
         return false;
     }
-    for (int i = 0; i < password.length(); ++i)
+    for (size_t i = 0; i < password.length(); ++i)
     {
         if (!(std::isalnum(password[i]) || std::isupper(password[i])))
         {
@@ -75,7 +75,7 @@ void Server::setupAddress()
     memset(&mServerAddr, 0, sizeof(mServerAddr));
     mServerAddr.sin_family = AF_INET;
     mServerAddr.sin_addr.s_addr = INADDR_ANY;
-    mServerAddr.sinmPort = htons(mPort);
+    mServerAddr.sin_port = htons(mPort);
 }
 
 void Server::bindSocket()
@@ -110,7 +110,7 @@ int Server::acceptClient(struct sockaddr_in &clientAddr, socklen_t &clientLen)
     // 클라이언트 정보 출력
     char clientIP[INET_ADDRSTRLEN];
     inet_ntop(AF_INET, &(clientAddr.sin_addr), clientIP, INET_ADDRSTRLEN);
-    std::cout << "클라이언트 연결: " << clientIP << ":" << ntohs(clientAddr.sinmPort) << std::endl;
+    std::cout << "클라이언트 연결: " << clientIP << ":" << ntohs(clientAddr.sin_port) << std::endl;
     
     // 클라이언트 소켓 목록에 추가
     mclientSockets.push_back(clientSocket);
