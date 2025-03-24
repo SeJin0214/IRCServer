@@ -131,7 +131,7 @@ int Server::acceptClient(struct sockaddr_in &clientAddr, socklen_t &clientLen)
         }
         // 클라이언트 제거
         removeClient(clientSocket);
-    } 
+    }
     else {
         if (isPasswordInvalid(buffer) && mPassword == Util::generateHash65599(buffer)) {
             // 클라이언트 정보 출력
