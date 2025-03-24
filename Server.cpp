@@ -82,7 +82,7 @@ void Server::setupAddress()
 
 void Server::bindSocket()
 {
-    if (bind(mServerSocket, (struct sockaddr*)&mServerAddr, sizeof(mServerAddr)) < 0)
+    if (bind(mServerSocket, (struct sockaddr *)&mServerAddr, sizeof(mServerAddr)) < 0)
         error("바인딩 실패");
 }
 
@@ -173,10 +173,10 @@ void Server::removeClient(int clientSocket)
 void Server::handleClientMessage(int clientSocket)
 {
     char buffer[1024] = {0};
-    
+
     // 클라이언트로부터 데이터 수신
     int bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
-    
+
     if (bytesRead <= 0) {
         // 연결 종료 또는 오류
         if (bytesRead == 0) {
@@ -185,7 +185,7 @@ void Server::handleClientMessage(int clientSocket)
         else {
             error("recv 실패");
         }
-        
+
         // 클라이언트 제거
         std::cout << "클라이언트 연결 종료 (소켓 " << clientSocket << ")" << std::endl;
         removeClient(clientSocket);
@@ -193,11 +193,11 @@ void Server::handleClientMessage(int clientSocket)
     else {
         // 받은 데이터 처리
         std::cout << "수신 (소켓 " << clientSocket << "): " << buffer;
-        
+
         // 다른 모든 클라이언트에게 메시지 전달
         std::string forwardMsg = "클라이언트 " + std::string(buffer);
         broadcastMessage(forwardMsg, clientSocket);  // 발신자 제외하고 브로드캐스트
-        
+
         // 메시지에 대한 응답
         std::string response = "메시지가 다른 클라이언트에게 전달되었습니다.\r\n";
         sendToClient(clientSocket, response);
@@ -223,7 +223,7 @@ void Server::handleServerInput()
 void Server::run()
 {
     fd_set read_fds;  // select()에서 사용할 임시 파일 디스크립터 세트
-    
+
     // 메인 루프
     while(true) {
         read_fds = mMaster; // 마스터 세트 복사
