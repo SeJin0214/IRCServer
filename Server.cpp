@@ -1,13 +1,14 @@
 #include "Server.hpp"
 
-bool Server::isPasswordInvalid(std::string password)
+bool Server::isPasswordInvalid(const char* password)
 {
     // 8자리 16자리 대문자, 소문자, 숫자
-    if (password.length() < 8  || password.length() > 16)
+    const int length = std::strlen(password);
+    if (length < 8  || length > 16)
     {
         return false;
     }
-    for (size_t i = 0; i < password.length(); ++i)
+    for (size_t i = 0; i < length; ++i)
     {
         if (!(std::isalnum(password[i]) || std::isupper(password[i])))
         {
@@ -20,11 +21,10 @@ bool Server::isPasswordInvalid(std::string password)
 /// @brief TODO: sejjeong이 파싱 호출부 변경할 것
 /// @param port 
 /// @param password 
-Server::Server(const char *port, const char *password) : mPort(std::atoi(port))
+Server::Server(const char* port, const char* password) : mPort(std::atoi(port))
 {
-    std::string pw = password;
-    if (isPasswordInvalid(pw))
-        mPassword = Util::generateHash65599(pw);
+    if (isPasswordInvalid(password))
+        mPassword = Util::generateHash65599(password);
     else
         error("비밀번호는 8~16자리, 대소문자, 숫자로만 이루어져야합니다.");
 
@@ -98,7 +98,7 @@ void Server::startListening()
         error("listen 실패");
 }
 
-int Server::acceptClient(struct sockaddr_in &clientAddr, socklen_t &clientLen)
+int Server::acceptClient(struct sockaddr_in& clientAddr, socklen_t& clientLen)
 {
     int clientSocket = accept(mServerSocket, (struct sockaddr *)&clientAddr, &clientLen);
     
@@ -312,7 +312,7 @@ void Server::sendToClient(int clientSocket, const std::string &message)
 }
 
 // 모든 클라이언트에게 메시지 브로드캐스트
-void Server::broadcastMessage(const std::string &message, int excludeSocket)
+void Server::broadcastMessage(const std::string& message, int excludeSocket)
 {
     for (std::vector<int>::const_iterator it = mclientSockets.begin(); it != mclientSockets.end(); ++it)
     {
