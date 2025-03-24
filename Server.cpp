@@ -17,6 +17,9 @@ bool Server::isPasswordInvalid(std::string password)
     return true;
 }
 
+/// @brief TODO: sejjeong이 파싱 호출부 변경할 것
+/// @param port 
+/// @param password 
 Server::Server(const char *port, const char *password) : mPort(std::atoi(port))
 {
     std::string pw = password;
@@ -24,6 +27,8 @@ Server::Server(const char *port, const char *password) : mPort(std::atoi(port))
         mPassword = Util::generateHash65599(pw);
     else
         error("비밀번호는 8~16자리, 대소문자, 숫자로만 이루어져야합니다.");
+
+
     // 소켓 초기화 및 설정
     initializeSocket();
     setupAddress();
@@ -67,7 +72,8 @@ void Server::initializeSocket()
         error("소켓 생성 실패");
 
     int opt = 1;
-    if (setsockopt(mServerSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+    if (setsockopt(mServerSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
+    {
         error("setsocket 실패");
     }
 }
@@ -82,7 +88,7 @@ void Server::setupAddress()
 
 void Server::bindSocket()
 {
-    if (bind(mServerSocket, (struct sockaddr *)&mServerAddr, sizeof(mServerAddr)) < 0)
+    if (bind(mServerSocket, (struct sockaddr*)&mServerAddr, sizeof(mServerAddr)) < 0)
         error("바인딩 실패");
 }
 
@@ -105,7 +111,8 @@ int Server::acceptClient(struct sockaddr_in &clientAddr, socklen_t &clientLen)
     FD_SET(clientSocket, &mMaster);
     
     // 최대 파일 디스크립터 갱신
-    if (clientSocket > mFdmax) {
+    if (clientSocket > mFdmax)
+    {
         mFdmax = clientSocket;
     }
     
@@ -116,24 +123,30 @@ int Server::acceptClient(struct sockaddr_in &clientAddr, socklen_t &clientLen)
     std::string passwordMsg = "password 를 입력해주세요.\r\n";
     sendToClient(clientSocket, passwordMsg);
 
-    char buffer[1024] = {0};
+    char buffer[512] = {0};
     
     // 클라이언트로부터 데이터 수신
     int bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
-    buffer[static_cast<std::string>(buffer).length() - 1] = 0;
-    if (bytesRead <= 0) {
+    std::string str(buffer);
+    buffer[(str).length() - 1] = 0;
+    if (bytesRead <= 0)
+    {
         // 연결 종료 또는 오류
-        if (bytesRead == 0) {
+        if (bytesRead == 0)
+        {
             std::cout << "클라이언트 연결 종료" << std::endl;
         }
-        else {
+        else
+        {
             error("recv 실패");
         }
         // 클라이언트 제거
         removeClient(clientSocket);
-    }
-    else {
-        if (isPasswordInvalid(buffer) && mPassword == Util::generateHash65599(buffer)) {
+    } 
+    else
+    {
+        if (isPasswordInvalid(buffer) && mPassword == Util::generateHash65599(buffer))
+        {
             // 클라이언트 정보 출력
             char clientIP[INET_ADDRSTRLEN];
             inet_ntop(AF_INET, &(clientAddr.sin_addr), clientIP, INET_ADDRSTRLEN);
@@ -143,7 +156,8 @@ int Server::acceptClient(struct sockaddr_in &clientAddr, socklen_t &clientLen)
             std::string welcomeMsg = "IRC 서버에 오신 것을 환영합니다!\r\n";
             sendToClient(clientSocket, welcomeMsg);
         }
-        else {
+        else
+        {
             passwordMsg = "password가 맞지 않습니다.\r\n";
             sendToClient(clientSocket, passwordMsg);
             removeClient(clientSocket);
@@ -163,7 +177,8 @@ void Server::removeClient(int clientSocket)
     
     // 클라이언트 목록에서 제거
     std::vector<int>::iterator it = std::find(mclientSockets.begin(), mclientSockets.end(), clientSocket);
-    if (it != mclientSockets.end()) {
+    if (it != mclientSockets.end())
+    {
         mclientSockets.erase(it);
     }
     
@@ -173,31 +188,34 @@ void Server::removeClient(int clientSocket)
 void Server::handleClientMessage(int clientSocket)
 {
     char buffer[1024] = {0};
-
+    
     // 클라이언트로부터 데이터 수신
     int bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
-
-    if (bytesRead <= 0) {
+    
+    if (bytesRead <= 0)
+    {
         // 연결 종료 또는 오류
         if (bytesRead == 0) {
             std::cout << "클라이언트 연결 종료" << std::endl;
         }
-        else {
+        else
+        {
             error("recv 실패");
         }
-
+        
         // 클라이언트 제거
         std::cout << "클라이언트 연결 종료 (소켓 " << clientSocket << ")" << std::endl;
         removeClient(clientSocket);
     } 
-    else {
+    else
+    {
         // 받은 데이터 처리
         std::cout << "수신 (소켓 " << clientSocket << "): " << buffer;
-
+        
         // 다른 모든 클라이언트에게 메시지 전달
         std::string forwardMsg = "클라이언트 " + std::string(buffer);
         broadcastMessage(forwardMsg, clientSocket);  // 발신자 제외하고 브로드캐스트
-
+        
         // 메시지에 대한 응답
         std::string response = "메시지가 다른 클라이언트에게 전달되었습니다.\r\n";
         sendToClient(clientSocket, response);
@@ -210,7 +228,8 @@ void Server::handleServerInput()
     std::string input;
     std::getline(std::cin, input);
     
-    if (!input.empty()) {
+    if (!input.empty())
+    {
         // 모든 클라이언트에게 메시지 전송
         std::string serverMsg = "서버: " + input + "\n";
         broadcastMessage(serverMsg);  // 모든 클라이언트에게 브로드캐스트
@@ -223,32 +242,48 @@ void Server::handleServerInput()
 void Server::run()
 {
     fd_set read_fds;  // select()에서 사용할 임시 파일 디스크립터 세트
-
+    
     // 메인 루프
-    while(true) {
+    while(true)
+    {
         read_fds = mMaster; // 마스터 세트 복사
         
         // select() 호출로 이벤트 대기
-        if (select(mFdmax + 1, &read_fds, NULL, NULL, NULL) == -1) {
+        if (select(mFdmax + 1, &read_fds, NULL, NULL, NULL) == -1)
+        {
             error("select 실패");
         }
         
         // 모든 파일 디스크립터 확인
-        for(int i = 0; i <= mFdmax; i++) {
-            if (FD_ISSET(i, &read_fds)) { // i에 이벤트 발생
-                if (i == mServerSocket) {
+        for(int i = 0; i <= mFdmax; i++)
+        {
+            if (FD_ISSET(i, &read_fds))
+            { // i에 이벤트 발생
+                if (i == mServerSocket)
+                {
                     // 새 연결 요청 처리
                     struct sockaddr_in clientAddr;
                     socklen_t clientLen = sizeof(clientAddr);
                     acceptClient(clientAddr, clientLen);
                 } 
-                else if (i == STDIN_FILENO) {
+                else if (i == STDIN_FILENO)
+                {
                     // 서버 콘솔에서 입력 처리
                     handleServerInput();
                 } 
-                else {
+                else
+                {
                     // 클라이언트로부터 데이터 수신
                     handleClientMessage(i);
+                    // i int vector users [i] 
+                    // users 1024
+                    // 0 1024
+                    // 0(n) 
+
+                    // map
+                    // O(1)
+                    // O(log n)
+                    // 
                 }
             }
         }
@@ -259,7 +294,8 @@ void Server::run()
 void Server::stop()
 {
     // 모든 클라이언트 소켓 닫기
-    for (std::vector<int>::const_iterator it = mclientSockets.begin(); it != mclientSockets.end(); ++it) {
+    for (std::vector<int>::const_iterator it = mclientSockets.begin(); it != mclientSockets.end(); ++it)
+    {
         close(*it);
     }
     
@@ -278,8 +314,10 @@ void Server::sendToClient(int clientSocket, const std::string &message)
 // 모든 클라이언트에게 메시지 브로드캐스트
 void Server::broadcastMessage(const std::string &message, int excludeSocket)
 {
-    for (std::vector<int>::const_iterator it = mclientSockets.begin(); it != mclientSockets.end(); ++it) {
-        if (*it != excludeSocket) {  // 제외할 소켓 확인
+    for (std::vector<int>::const_iterator it = mclientSockets.begin(); it != mclientSockets.end(); ++it)
+    {
+        if (*it != excludeSocket)
+        {  // 제외할 소켓 확인
             sendToClient(*it, message);
         }
     }
