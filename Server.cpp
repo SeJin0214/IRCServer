@@ -1,5 +1,23 @@
 #include "Server.hpp"
 
+bool Server::isNameInvalid(const char* name)
+{
+    // 2~10자리, 영문, 숫자
+    const int length = std::strlen(name);
+    if (length < 2  || length > 10)
+    {
+        return false;
+    }
+    for (int i = 0; i < length; ++i)
+    {
+        if (!(std::isalnum(name[i]) || name[i] == '_') || std::isupper(name[i]))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 bool Server::isPasswordInvalid(const char* password)
 {
     // 8자리 16자리 대문자, 소문자, 숫자
@@ -8,7 +26,7 @@ bool Server::isPasswordInvalid(const char* password)
     {
         return false;
     }
-    for (size_t i = 0; i < length; ++i)
+    for (int i = 0; i < length; ++i)
     {
         if (!(std::isalnum(password[i]) || std::isupper(password[i])))
         {
@@ -40,6 +58,8 @@ Server::Server(const char* port, const char* password) : mPort(std::atoi(port))
     
     // 서버 소켓을 마스터 세트에 추가
     FD_SET(mServerSocket, &mMaster);
+    User server("server", "admin");
+    mUsers[mServerSocket] = server;
     
     // 표준 입력을 마스터 세트에 추가
     FD_SET(STDIN_FILENO, &mMaster);
@@ -155,6 +175,7 @@ int Server::acceptClient(struct sockaddr_in& clientAddr, socklen_t& clientLen)
             // 환영 메시지 전송
             std::string welcomeMsg = "IRC 서버에 오신 것을 환영합니다!\r\n";
             sendToClient(clientSocket, welcomeMsg);
+            setUser(clientSocket);
         }
         else
         {
@@ -210,7 +231,13 @@ void Server::handleClientMessage(int clientSocket)
     else
     {
         // 받은 데이터 처리
-        std::cout << "수신 (소켓 " << clientSocket << "): " << buffer;
+        std::map<int, User>::iterator it = mUsers.find(clientSocket);
+        if (it != mUsers.end())
+        {
+            User& user = it->second;
+            std::string name = user.getName();
+            std::cout << "수신 " << name << " : " << buffer;
+        }
         
         // 다른 모든 클라이언트에게 메시지 전달
         std::string forwardMsg = "클라이언트 " + std::string(buffer);
@@ -321,4 +348,83 @@ void Server::broadcastMessage(const std::string& message, int excludeSocket)
             sendToClient(*it, message);
         }
     }
+}
+
+void Server::setUser(int clientSocket)
+{
+    std::string nameMsg = "name 을 입력해주세요.\n";
+    sendToClient(clientSocket, nameMsg);
+
+    char nameBuffer[512] = {0};
+    
+    // 클라이언트로부터 데이터 수신
+    int bytesRead = recv(clientSocket, nameBuffer, sizeof(nameBuffer), 0);
+    std::string name(nameBuffer);
+    nameBuffer[(name).length() - 1] = 0;
+    if (bytesRead <= 0)
+    {
+        // 연결 종료 또는 오류
+        if (bytesRead == 0)
+        {
+            std::cout << "클라이언트 연결 종료" << std::endl;
+        }
+        else
+        {
+            error("recv 실패");
+        }
+        // 클라이언트 제거
+        removeClient(clientSocket);
+    }
+    else
+    {
+        while (true)
+        {
+            if (!isNameInvalid(nameBuffer))
+            {
+                nameMsg = "2~10자리, 영문, 숫자만 가능합니다.\n";
+                sendToClient(clientSocket, nameMsg);
+            }
+            // else if () 중복방지
+            else
+                break;
+        }
+    }
+    nameMsg = "nickname 을 입력해주세요.\n";
+    sendToClient(clientSocket, nameMsg);
+
+    char nickBuffer[512] = {0};
+    
+    // 클라이언트로부터 데이터 수신
+    bytesRead = recv(clientSocket, nickBuffer, sizeof(nickBuffer), 0);
+    std::string nick(nickBuffer);
+    nickBuffer[(nick).length() - 1] = 0;
+    if (bytesRead <= 0)
+    {
+        // 연결 종료 또는 오류
+        if (bytesRead == 0)
+        {
+            std::cout << "클라이언트 연결 종료" << std::endl;
+        }
+        else
+        {
+            error("recv 실패");
+        }
+        // 클라이언트 제거
+        removeClient(clientSocket);
+    }
+    else
+    {
+        while (true)
+        {
+            if (!isNameInvalid(nickBuffer))
+            {
+                nameMsg = "2~10자리, 영문, 숫자만 가능합니다.\n";
+                sendToClient(clientSocket, nameMsg);
+            }
+            // else if () 중복방지
+            else
+                break;
+        }
+    }
+    mUsers[clientSocket] = User(nameBuffer, nickBuffer);
 }

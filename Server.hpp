@@ -13,7 +13,9 @@
 #include <fcntl.h>
 #include <vector>
 #include <algorithm>
+#include <map>
 #include "Util.hpp"
+#include "User.hpp"
 
 class Server
 {    
@@ -32,6 +34,7 @@ private:
     fd_set mMaster;
     int mFdmax;
     unsigned int mPassword;
+    std::map<int, User> mUsers; // 유저 목록
         
     // 내부 유틸리티 함수들
     bool isPasswordInvalid(const char* password);
@@ -46,5 +49,7 @@ private:
     void handleServerInput(); // 서버에서 입력된 메세지 처리
     void sendToClient(int clientSocket, const std::string& message);
     void broadcastMessage(const std::string& message, int excludeSocket = -1);
+    bool isNameInvalid(const char* name);
+    void setUser(int clientSocket);
     
 };
