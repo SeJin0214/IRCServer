@@ -1,24 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Util.cpp                                           :+:      :+:    :+:   */
+/*   Space.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/24 13:54:10 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/26 15:23:35 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/03/25 16:50:56 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/03/26 15:23:08 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Util.hpp"
+#pragma once
+#include <string>
+#include <map>
+#include <vector>
+#include "User.hpp"
 
-unsigned int Util::generateHash65599(const char* str)
+class Space
 {
-	unsigned int	hash = 0;
-
-	for (size_t i = 0; str[i] != '\0'; ++i)
-	{
-		hash = 65599 * hash + str[i];
-	}
-	return (hash ^ (hash >> 16));
-}
+public:
+	virtual ~Space();
+	virtual std::string getCommandList() const = 0;
+	std::string getHelpMessage() const;
+	std::string getCommonCommandList() const;
+	bool enterUser(int clientSocket, User& user);
+	std::vector<int> getFdSet() const;
+	
+protected:
+	std::map<int, User> mUsers;
+};

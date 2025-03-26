@@ -1,25 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/19 16:35:34 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/03/26 15:46:43 by sejjeong         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include <iostream>
 #include "Server.hpp"
 
-int main(int argc, char **argv)
+// IPv4, TCP 
+int main(int argc, char** argv)
 {
-    if (argc != 3) 
-    {
-        std::cerr << "사용법: " << argv[0] << " <port> <password>\n";
-        return EXIT_FAILURE;
-    }
-    
-    // int port = std::atoi(argv[1]);
-    Server server(argv[1], argv[2]);
-    
-    try 
-    {
-        server.run();
-    }
-    catch (const std::exception& e) 
-    {
-        std::cerr << "서버 실행 중 오류 발생: " << e.what() << std::endl;
-        return EXIT_FAILURE;
-    }
-    
-    return 0;
+	if (argc != 3)
+	{
+		std::cerr << "사용법 : " << argv[0] << " <port number> <password>" << std::endl;
+		return 0;
+	}
+
+	std::cout << "연결 대기중... " << std::endl;
+	Server server(argv[1], argv[2]);
+	server.run();
+	
+	return 0;
 }

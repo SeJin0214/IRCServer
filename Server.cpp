@@ -1,430 +1,340 @@
-#include "Server.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/03/26 15:54:01 by sejjeong         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-bool Server::isNameInvalid(const char* name)
+#include <arpa/inet.h>
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <iostream>
+#include <unistd.h>
+#include <netinet/in.h>
+#include <fcntl.h>
+#include "Server.hpp"
+#include "Space.hpp"
+#include "Util.hpp"
+#define SYSCALL_FAIL (-1)
+
+Server::Server(const char* port, const char* password)
+: mbRunning(false)
+, mPort(std::atoi(port))
+, mPassword(Util::generateHash65599(password))
 {
-    // 2~10자리, 영문, 숫자
-    const int length = std::strlen(name);
-    if (length < 2  || length > 10)
-    {
-        return false;
-    }
-    for (int i = 0; i < length; ++i)
-    {
-        if (!(std::isalnum(name[i]) || name[i] == '_') || std::isupper(name[i]))
-        {
-            return false;
-        }
-    }
-    return true;
+	if (isInvalidPortNumber(port))
+	{
+		std::cerr << "옳지 않은 port 번호, 6660~6670 사이로 넣어야 합니다." << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	else if (isInvalidPassword(password))
+	{
+		std::cerr << "비밀번호는 8~16자리, 대소문자, 숫자로만 이루어져야합니다." << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	mServerSocket = socket(AF_INET, SOCK_STREAM, 0);
+	if (mServerSocket == SYSCALL_FAIL)
+	{
+		std::cerr << "fail socket" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	
+	int on = 1;
+	if (setsockopt(mServerSocket, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(int)) == -1)
+	{
+		std::cerr << "fail setsocketopt" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	sockaddr_in serverAddr;
+	memset(&serverAddr, 0, sizeof(sockaddr_in));
+	serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = INADDR_ANY;
+    serverAddr.sin_port = htons(mPort);
+	if (bind(mServerSocket, (const sockaddr *)&serverAddr, sizeof(sockaddr_in)) == SYSCALL_FAIL)
+	{
+		std::cerr << "fail bind" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	const size_t MAX_PENDING_CONNECTIONS = 100;
+	if (listen(mServerSocket, MAX_PENDING_CONNECTIONS) == SYSCALL_FAIL)
+	{
+		std::cerr << "fail listen" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	
+	std::cout << "서버가 " << mPort << " 포트에서 실행 중입니다..." << std::endl;
 }
 
-bool Server::isPasswordInvalid(const char* password)
+Server::~Server()
 {
-    // 8자리 16자리 대문자, 소문자, 숫자
+	close(mServerSocket);
+	mbRunning = false;
+}
+
+/* getter */
+fd_set Server::getFdSet() const
+{
+	fd_set master;
+	
+	FD_ZERO(&master);
+	
+	FD_SET(mServerSocket, &master);
+	FD_SET(STDIN_FILENO, &master);
+	std::map<std::string, Channel>::const_iterator it = mChannels.begin();
+	while (it != mChannels.end())
+	{
+		std::vector<int> fdSet = it->second.getFdSet();
+		for (size_t i = 0; i < fdSet.size(); ++i)
+		{
+			FD_SET(fdSet[i], &master);
+		}
+		++it;
+	}
+	std::vector<int> fdSet = lobby.getFdSet();
+	for (size_t i = 0; i < fdSet.size(); ++i)
+	{
+		FD_SET(fdSet[i], &master);
+	}
+	++it;
+	return master;
+}
+
+int Server::getMaxFd() const
+{
+	int maxFd = 0;
+
+	std::map<std::string, Channel>::const_iterator it = mChannels.begin();
+	while (it != mChannels.end())
+	{
+		std::vector<int> fdSet = it->second.getFdSet();
+		for (size_t i = 0; i < fdSet.size(); ++i)
+		{
+			if (fdSet[i] > maxFd)
+			{
+				maxFd = fdSet[i];
+			}
+		}
+		++it;
+	}
+	std::vector<int> fdSet = lobby.getFdSet();
+	for (size_t i = 0; i < fdSet.size(); ++i)
+	{
+		if (fdSet[i] > maxFd)
+		{
+			maxFd = fdSet[i];
+		}
+	}
+	return maxFd;
+}
+
+bool Server::run()
+{
+	mbRunning = true;
+	
+	while (mbRunning)
+	{
+		fd_set temp_fds = getFdSet();
+		int maxFd = getMaxFd();
+		if (select(maxFd + 1, &temp_fds, NULL, NULL, NULL) == SYSCALL_FAIL)
+		{
+			assert(false);
+		}
+		
+		for (int i = 0; i < maxFd; ++i)
+		{
+			if (FD_ISSET(i, &temp_fds) == false)
+			{
+				continue;
+			}
+			else if (i == mServerSocket)
+			{
+				acceptClient();
+			}
+			else if (i == STDIN_FILENO)
+			{
+				// 서버 콘솔에서 입력 처리
+				// 서버 운영자 명령어
+			}
+			else
+			{
+				// 클라 메시지
+				// 채널에게만 메시지를 보내기
+				
+				// dm 보내는 거 
+				// /r 보통 이런 문자열로 함 
+				// 운영자일 경우 뭐어쩌구저쩌구
+				// 
+			}
+		}
+	}
+	return (true);
+}
+
+void Server::acceptClient()
+{
+	struct sockaddr_in clientAddr;
+    socklen_t clientLen = sizeof(clientAddr);
+	const int clientSocket = accept(mServerSocket, (struct sockaddr *)&clientAddr, &clientLen);
+	if (clientSocket < 0)
+	{
+		std::cerr << "클라이언트 연결 실패" << std::endl;
+		assert(false);
+		return;
+	}
+
+	const char* message = "password 를 입력해주세요.\r\n";
+	sendToClient(clientSocket, message);
+
+	char buffer[MAX_BUFFER] = { 0, };
+
+	if (attemptReceiveValidData(clientSocket, buffer, &Server::isInvalidPassword) 
+	&& mPassword == Util::generateHash65599(buffer))
+    {
+		char clientIP[INET_ADDRSTRLEN];
+		inet_ntop(AF_INET, &clientAddr.sin_addr, clientIP, INET_ADDRSTRLEN);
+		std::cout << "클라이언트 연결: " << clientIP << ":" << ntohs(clientAddr.sin_port) << std::endl;
+
+		const char* welcomMessage = "IRC 서버에 오신 것을 환영합니다!\r\n";
+		sendToClient(clientSocket, welcomMessage);
+		if (acceptUser(clientSocket) == false)
+		{
+			close(clientSocket);
+			return;
+		}
+	}
+	else
+	{
+		const char* refusalMessage = "password가 일치 하지 않습니다. 다시 시도해 주세요.\r\n";
+		sendToClient(clientSocket, refusalMessage);
+		close(clientSocket);
+	}
+}
+
+
+
+bool Server::acceptUser(const int clientSocket)
+{
+	const char* welcomMessage = "Username을 입력해주세요.\r\n";
+	sendToClient(clientSocket, welcomMessage);
+	char buffer[MAX_BUFFER] = {	0, };
+	
+	if (attemptReceiveValidData(clientSocket, buffer, &Server::isDuplicatedUsername) == false)
+	{
+		return false;
+	}
+
+	std::string username = buffer;
+
+	if (attemptReceiveValidData(clientSocket, buffer, &Server::isDuplicatedNickname) == false)
+	{
+		return false;
+	}
+
+	std::string nickname = buffer;
+
+	User user(username, nickname);
+	lobby.enterUser(clientSocket, user);
+	
+	sendToClient(clientSocket, lobby.getHelpMessage().c_str());
+	return true;
+}
+
+/**
+ *  recv max 512 byte
+*/
+bool Server::attemptReceiveValidData(int clientSocket, char *buffer, bool (Server::*isInvalid)(const char *) const)
+{
+	const size_t MAX_COUNT = 3;
+	size_t i = 0;
+	for (i = 0; i < MAX_COUNT; ++i)
+	{
+		const int readLength = recv(clientSocket, buffer, MAX_BUFFER, 0);
+		buffer[MAX_BUFFER - 1] = '\0';
+
+		clearStream(clientSocket);
+
+		if (readLength < 0)
+		{
+			std::cerr << "데이터 수신 실패" << std::endl;
+			close(clientSocket);
+			assert(false);
+			return false;
+		}
+		if ((this->*isInvalid)(buffer))
+		{
+			continue;
+		}
+	}
+	if (i == MAX_COUNT)
+	{
+		return false;
+	}
+	return true;
+}
+
+void Server::clearStream(int socket)
+{
+	char buffer[MAX_BUFFER] = { 0, };
+	while (recv(socket, buffer, sizeof(buffer), 0) > 0)
+	{
+		continue;
+	}
+}
+
+void Server::stop()
+{
+	mbRunning = false;
+}
+
+bool Server::isDuplicatedUsername(const char* buffer) const
+{
+	(void) buffer;
+	return (false);
+}
+
+bool Server::isDuplicatedNickname(const char* buffer) const
+{
+	(void) buffer;
+	return (false);
+}
+
+bool Server::sendToClient(int clientSocket, const char* message)
+{
+    send(clientSocket, message, std::strlen(message), 0);
+	// 에러 처리
+	return (true);
+}
+
+bool Server::isInvalidPortNumber(const char* port) const
+{
+	(void) port;
+	return (false);
+}
+
+// 8 ~ 16  min Uppercase, lowercase, digit
+bool Server::isInvalidPassword(const char* password) const
+{
     const int length = std::strlen(password);
     if (length < 8  || length > 16)
     {
-        return false;
+        return true;
     }
     for (int i = 0; i < length; ++i)
     {
         if (!(std::isalnum(password[i]) || std::isupper(password[i])))
         {
-            return false;
+            return true;
         }
     }
-    return true;
-}
-
-/// @brief TODO: sejjeong이 파싱 호출부 변경할 것
-/// @param port 
-/// @param password 
-Server::Server(const char* port, const char* password) : mPort(std::atoi(port))
-{
-    if (isPasswordInvalid(password))
-        mPassword = Util::generateHash65599(password);
-    else
-        error("비밀번호는 8~16자리, 대소문자, 숫자로만 이루어져야합니다.");
-
-
-    // 소켓 초기화 및 설정
-    initializeSocket();
-    setupAddress();
-    bindSocket();
-    startListening();
-    
-    // 파일 디스크립터 세트 초기화
-    FD_ZERO(&mMaster);
-    
-    // 서버 소켓을 마스터 세트에 추가
-    FD_SET(mServerSocket, &mMaster);
-    User server("server", "admin");
-    mUsers[mServerSocket] = server;
-    
-    // 표준 입력을 마스터 세트에 추가
-    FD_SET(STDIN_FILENO, &mMaster);
-    
-    // 현재 최대 fd 설정
-    mFdmax = mServerSocket;
-    
-    // 표준 입력을 논블로킹 모드로 설정
-    int flags = fcntl(STDIN_FILENO, F_GETFL, 0);
-    fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
-    
-    std::cout << "서버가 " << mPort << " 포트에서 실행 중입니다..." << std::endl;
-}
-
-Server::~Server()
-{
-    stop();
-}
-
-void Server::error(const std::string& msg)
-{
-    std::cerr << msg << std::endl;
-    exit(EXIT_FAILURE);
-}
-
-void Server::initializeSocket()
-{
-    mServerSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (mServerSocket < 0)
-        error("소켓 생성 실패");
-
-    int opt = 1;
-    if (setsockopt(mServerSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0)
-    {
-        error("setsocket 실패");
-    }
-}
-
-void Server::setupAddress()
-{
-    memset(&mServerAddr, 0, sizeof(mServerAddr));
-    mServerAddr.sin_family = AF_INET;
-    mServerAddr.sin_addr.s_addr = INADDR_ANY;
-    mServerAddr.sin_port = htons(mPort);
-}
-
-void Server::bindSocket()
-{
-    if (bind(mServerSocket, (struct sockaddr*)&mServerAddr, sizeof(mServerAddr)) < 0)
-        error("바인딩 실패");
-}
-
-void Server::startListening()
-{
-    if (listen(mServerSocket, 5) < 0)
-        error("listen 실패");
-}
-
-int Server::acceptClient(struct sockaddr_in& clientAddr, socklen_t& clientLen)
-{
-    int clientSocket = accept(mServerSocket, (struct sockaddr *)&clientAddr, &clientLen);
-    
-    if (clientSocket < 0) {
-        error("accept 실패");
-        return -1;
-    }
-    
-    // 마스터 세트에 새 연결 추가
-    FD_SET(clientSocket, &mMaster);
-    
-    // 최대 파일 디스크립터 갱신
-    if (clientSocket > mFdmax)
-    {
-        mFdmax = clientSocket;
-    }
-    
-    // 클라이언트 소켓 목록에 추가
-    mclientSockets.push_back(clientSocket);
-    
-    // 로그인 성공 여부
-    std::string passwordMsg = "password 를 입력해주세요.\r\n";
-    sendToClient(clientSocket, passwordMsg);
-
-    char buffer[512] = {0};
-    
-    // 클라이언트로부터 데이터 수신
-    int bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
-    std::string str(buffer);
-    buffer[(str).length() - 1] = 0;
-    if (bytesRead <= 0)
-    {
-        // 연결 종료 또는 오류
-        if (bytesRead == 0)
-        {
-            std::cout << "클라이언트 연결 종료" << std::endl;
-        }
-        else
-        {
-            error("recv 실패");
-        }
-        // 클라이언트 제거
-        removeClient(clientSocket);
-    } 
-    else
-    {
-        if (isPasswordInvalid(buffer) && mPassword == Util::generateHash65599(buffer))
-        {
-            // 클라이언트 정보 출력
-            char clientIP[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET, &(clientAddr.sin_addr), clientIP, INET_ADDRSTRLEN);
-            std::cout << "클라이언트 연결: " << clientIP << ":" << ntohs(clientAddr.sin_port) << std::endl;
-            
-            // 환영 메시지 전송
-            std::string welcomeMsg = "IRC 서버에 오신 것을 환영합니다!\r\n";
-            sendToClient(clientSocket, welcomeMsg);
-            setUser(clientSocket);
-        }
-        else
-        {
-            passwordMsg = "password가 맞지 않습니다.\r\n";
-            sendToClient(clientSocket, passwordMsg);
-            removeClient(clientSocket);
-        }
-    }
-    return clientSocket;
-}
-
-// 클라이언트 제거
-void Server::removeClient(int clientSocket)
-{
-    // 소켓 닫기
-    close(clientSocket);
-    
-    // 마스터 세트에서 제거
-    FD_CLR(clientSocket, &mMaster);
-    
-    // 클라이언트 목록에서 제거
-    std::vector<int>::iterator it = std::find(mclientSockets.begin(), mclientSockets.end(), clientSocket);
-    if (it != mclientSockets.end())
-    {
-        mclientSockets.erase(it);
-    }
-    
-}
-
-// 클라이언트 메시지 처리
-void Server::handleClientMessage(int clientSocket)
-{
-    char buffer[1024] = {0};
-    
-    // 클라이언트로부터 데이터 수신
-    int bytesRead = recv(clientSocket, buffer, sizeof(buffer), 0);
-    
-    if (bytesRead <= 0)
-    {
-        // 연결 종료 또는 오류
-        if (bytesRead == 0) {
-            std::cout << "클라이언트 연결 종료" << std::endl;
-        }
-        else
-        {
-            error("recv 실패");
-        }
-        
-        // 클라이언트 제거
-        std::cout << "클라이언트 연결 종료 (소켓 " << clientSocket << ")" << std::endl;
-        removeClient(clientSocket);
-    } 
-    else
-    {
-        // 받은 데이터 처리
-        std::map<int, User>::iterator it = mUsers.find(clientSocket);
-        if (it != mUsers.end())
-        {
-            User& user = it->second;
-            std::string name = user.getName();
-            std::cout << "수신 " << name << " : " << buffer;
-        }
-        
-        // 다른 모든 클라이언트에게 메시지 전달
-        std::string forwardMsg = "클라이언트 " + std::string(buffer);
-        broadcastMessage(forwardMsg, clientSocket);  // 발신자 제외하고 브로드캐스트
-        
-        // 메시지에 대한 응답
-        std::string response = "메시지가 다른 클라이언트에게 전달되었습니다.\r\n";
-        sendToClient(clientSocket, response);
-    }
-}
-
-// 서버 입력 처리
-void Server::handleServerInput()
-{
-    std::string input;
-    std::getline(std::cin, input);
-    
-    if (!input.empty())
-    {
-        // 모든 클라이언트에게 메시지 전송
-        std::string serverMsg = "서버: " + input + "\n";
-        broadcastMessage(serverMsg);  // 모든 클라이언트에게 브로드캐스트
-        
-        std::cout << "메시지 전송됨: " << serverMsg;
-    }
-}
-
-// 서버 실행
-void Server::run()
-{
-    fd_set read_fds;  // select()에서 사용할 임시 파일 디스크립터 세트
-    
-    // 메인 루프
-    while(true)
-    {
-        read_fds = mMaster; // 마스터 세트 복사
-        
-        // select() 호출로 이벤트 대기
-        if (select(mFdmax + 1, &read_fds, NULL, NULL, NULL) == -1)
-        {
-            error("select 실패");
-        }
-        
-        // 모든 파일 디스크립터 확인
-        for(int i = 0; i <= mFdmax; i++)
-        {
-            if (FD_ISSET(i, &read_fds))
-            { // i에 이벤트 발생
-                if (i == mServerSocket)
-                {
-                    // 새 연결 요청 처리
-                    struct sockaddr_in clientAddr;
-                    socklen_t clientLen = sizeof(clientAddr);
-                    acceptClient(clientAddr, clientLen);
-                } 
-                else if (i == STDIN_FILENO)
-                {
-                    // 서버 콘솔에서 입력 처리
-                    handleServerInput();
-                } 
-                else
-                {
-                    // 클라이언트로부터 데이터 수신
-                    handleClientMessage(i);
-                    // i int vector users [i] 
-                    // users 1024
-                    // 0 1024
-                    // 0(n) 
-
-                    // map
-                    // O(1)
-                    // O(log n)
-                    // 
-                }
-            }
-        }
-    }
-}
-
-// 서버 중지
-void Server::stop()
-{
-    // 모든 클라이언트 소켓 닫기
-    for (std::vector<int>::const_iterator it = mclientSockets.begin(); it != mclientSockets.end(); ++it)
-    {
-        close(*it);
-    }
-    
-    // 서버 소켓 닫기
-    close(mServerSocket);
-    
-    mclientSockets.clear();
-}
-
-// 클라이언트에게 메시지 전송
-void Server::sendToClient(int clientSocket, const std::string &message)
-{
-    send(clientSocket, message.c_str(), message.length(), 0);
-}
-
-// 모든 클라이언트에게 메시지 브로드캐스트
-void Server::broadcastMessage(const std::string& message, int excludeSocket)
-{
-    for (std::vector<int>::const_iterator it = mclientSockets.begin(); it != mclientSockets.end(); ++it)
-    {
-        if (*it != excludeSocket)
-        {  // 제외할 소켓 확인
-            sendToClient(*it, message);
-        }
-    }
-}
-
-void Server::setUser(int clientSocket)
-{
-    std::string nameMsg = "name 을 입력해주세요.\n";
-    sendToClient(clientSocket, nameMsg);
-
-    char nameBuffer[512] = {0};
-    
-    // 클라이언트로부터 데이터 수신
-    int bytesRead = recv(clientSocket, nameBuffer, sizeof(nameBuffer), 0);
-    std::string name(nameBuffer);
-    nameBuffer[(name).length() - 1] = 0;
-    if (bytesRead <= 0)
-    {
-        // 연결 종료 또는 오류
-        if (bytesRead == 0)
-        {
-            std::cout << "클라이언트 연결 종료" << std::endl;
-        }
-        else
-        {
-            error("recv 실패");
-        }
-        // 클라이언트 제거
-        removeClient(clientSocket);
-    }
-    else
-    {
-        while (true)
-        {
-            if (!isNameInvalid(nameBuffer))
-            {
-                nameMsg = "2~10자리, 영문, 숫자만 가능합니다.\n";
-                sendToClient(clientSocket, nameMsg);
-            }
-            // else if () 중복방지
-            else
-                break;
-        }
-    }
-    nameMsg = "nickname 을 입력해주세요.\n";
-    sendToClient(clientSocket, nameMsg);
-
-    char nickBuffer[512] = {0};
-    
-    // 클라이언트로부터 데이터 수신
-    bytesRead = recv(clientSocket, nickBuffer, sizeof(nickBuffer), 0);
-    std::string nick(nickBuffer);
-    nickBuffer[(nick).length() - 1] = 0;
-    if (bytesRead <= 0)
-    {
-        // 연결 종료 또는 오류
-        if (bytesRead == 0)
-        {
-            std::cout << "클라이언트 연결 종료" << std::endl;
-        }
-        else
-        {
-            error("recv 실패");
-        }
-        // 클라이언트 제거
-        removeClient(clientSocket);
-    }
-    else
-    {
-        while (true)
-        {
-            if (!isNameInvalid(nickBuffer))
-            {
-                nameMsg = "2~10자리, 영문, 숫자만 가능합니다.\n";
-                sendToClient(clientSocket, nameMsg);
-            }
-            // else if () 중복방지
-            else
-                break;
-        }
-    }
-    mUsers[clientSocket] = User(nameBuffer, nickBuffer);
+    return false;
 }
