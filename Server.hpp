@@ -24,7 +24,7 @@ public:
 	Server(const char* port, const char* password);
 	~Server();
 	bool run();
-	std::map<std::string, Channel *> getChannels() const;
+	const std::map<std::string, Channel *>& getChannels() const;
 private:
 	enum { MAX_BUFFER = 512 };
 	Lobby mLobby;
@@ -50,6 +50,6 @@ private:
 	bool isInvalidPassword(const char* password) const;
 	bool attemptReceiveValidData(const int clientSocket, char *buffer, \
 		bool (Server::*isInvalid)(const char *) const, const char *message, const int maxCount);
-
+	bool	isPortInvalid (const char* port);
 
 };

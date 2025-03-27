@@ -32,6 +32,8 @@ public:
 	Result<User> findUser(const int clientSocket) const;
 	bool toggleMode(User& user, const eMode mode);
 	// 유저의 이름을 바꾸는 setter
+
+	
 	
 private:
 	std::vector<std::string> mOperators;

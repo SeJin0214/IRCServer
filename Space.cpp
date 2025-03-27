@@ -56,3 +56,8 @@ void Space::exitUser(int clientSocket)
 	mUsers.erase(clientSocket);
 	//  user 반환하기? pair로 반환하기?
 }
+
+const std::map<int, User>& Space::getUser() const
+{
+	return mUsers;
+}

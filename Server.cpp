@@ -138,7 +138,7 @@ int Server::getMaxFd() const
 	return maxFd;
 }
 
-std::map<std::string, Channel *> Server::getChannels() const
+const std::map<std::string, Channel *>& Server::getChannels() const
 {
 	return mChannels;
 }
@@ -356,13 +356,43 @@ void Server::stop()
 
 bool Server::isDuplicatedUsername(const char* buffer) const
 {
-	(void) buffer;
-	return (false);
+	std::map<std::string, Channel *> :: const_iterator begin = getChannels().begin();
+	for (; begin != getChannels().end(); begin++)
+	{
+		std::map<int, User> Users = (begin->second)->getUser();
+		for (std::map<int, User>::iterator it = Users.begin(); it != Users.end(); it++)
+		{
+			if ((it->second).getUsername() == buffer)
+				return true;
+		}
+	}
+	std::map<int, User>::const_iterator it = mLobby.getUser().begin();
+	for (; it != mLobby.getUser().end(); it++)
+	{
+		if ((it->second).getUsername() == buffer)
+			return true;
+	}
+	return false;
 }
 
 bool Server::isDuplicatedNickname(const char* buffer) const
 {
-	(void) buffer;
+	std::map<std::string, Channel *> :: const_iterator begin = getChannels().begin();
+	for (; begin != getChannels().end(); begin++)
+	{
+		std::map<int, User> Users = (begin->second)->getUser();
+		for (std::map<int, User>::iterator it = Users.begin(); it != Users.end(); it++)
+		{
+			if ((it->second).getNickname() == buffer)
+				return true;
+		}
+	}
+	std::map<int, User>::const_iterator it = mLobby.getUser().begin();
+	for (; it != mLobby.getUser().end(); it++)
+	{
+		if ((it->second).getNickname() == buffer)
+			return true;
+	}
 	return (false);
 }
 
@@ -409,4 +439,15 @@ bool Server::isInvalidPasswordFormatted(const char* password) const
         }
     }
     return false;
+}
+
+bool Server::isPortInvalid (const char* port)
+{
+    size_t length = std::strlen(port);
+    if (!(length == 4 || length == 5))
+        return (false);
+    int value = atoi (port);
+    if (!(value >= 1024 && value <= 65535))
+        return (false);
+    return (true);
 }
