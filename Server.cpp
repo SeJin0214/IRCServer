@@ -158,7 +158,6 @@ Channel* Server::findChannel(const int clientSocket)
 	return NULL;
 }
 
-
 // TODO: i == STDIN_FILENO 일 때, 서버 콘솔에서 입력 처리, 서버 운영자 명령어 처리
 bool Server::run()
 {
@@ -177,12 +176,10 @@ bool Server::run()
 		{
 			if (FD_ISSET(i, &temp_fds) == false)
 			{
-				std::cout << i << std::endl;
 				continue;
 			}
 			else if (i == mServerSocket)
 			{
-				
 				acceptClient();
 			}
 			else if (i == STDIN_FILENO)
@@ -270,13 +267,12 @@ bool Server::acceptUser(const int clientSocket)
 	return true;
 }
 
-
-
 // TODO: clearStream 리팩토링 필요
 /**
  *  recv max 512 byte
 */
-bool Server::attemptReceiveValidData(const int clientSocket, char *buffer, bool (Server::*isInvalid)(const char *) const, const char *message, const int maxCount)
+bool Server::attemptReceiveValidData(const int clientSocket, char *buffer, bool (Server::*isInvalid)(const char *) \
+const, const char *message, const int maxCount)
 {
 	int i = 0;
 	for (i = 0; i < maxCount; ++i)
@@ -284,7 +280,10 @@ bool Server::attemptReceiveValidData(const int clientSocket, char *buffer, bool 
 		const int readLength = recv(clientSocket, buffer, MAX_BUFFER, 0);
 		buffer[readLength - 1] = '\0';
 
-		//clearStream(clientSocket);
+		if (readLength == MAX_BUFFER)
+		{
+			clearStream(clientSocket);
+		}
 
 		if (readLength < 0)
 		{
@@ -392,7 +391,6 @@ bool Server::isInvalidPassword(const char* password) const
 	}
 
 	isSucceed = mPassword != Util::generateHash65599(password);
-	std::cout << std::boolalpha << isSucceed << std::endl;
 	return isSucceed;
 }
 
