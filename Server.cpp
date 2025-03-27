@@ -138,11 +138,6 @@ int Server::getMaxFd() const
 	return maxFd;
 }
 
-const std::map<std::string, Channel *>& Server::getChannels() const
-{
-	return mChannels;
-}
-
 Channel* Server::findChannel(const int clientSocket)
 {
 	std::map<std::string, Channel *>::iterator it = mChannels.begin();
@@ -356,8 +351,8 @@ void Server::stop()
 
 bool Server::isDuplicatedUsername(const char* buffer) const
 {
-	std::map<std::string, Channel *> :: const_iterator begin = getChannels().begin();
-	for (; begin != getChannels().end(); begin++)
+	std::map<std::string, Channel *> :: const_iterator begin = mChannels.begin();
+	for (; begin != mChannels.end(); begin++)
 	{
 		std::map<int, User> Users = (begin->second)->getUser();
 		for (std::map<int, User>::iterator it = Users.begin(); it != Users.end(); it++)
@@ -377,8 +372,8 @@ bool Server::isDuplicatedUsername(const char* buffer) const
 
 bool Server::isDuplicatedNickname(const char* buffer) const
 {
-	std::map<std::string, Channel *> :: const_iterator begin = getChannels().begin();
-	for (; begin != getChannels().end(); begin++)
+	std::map<std::string, Channel *> :: const_iterator begin = mChannels.begin();
+	for (; begin != mChannels.end(); begin++)
 	{
 		std::map<int, User> Users = (begin->second)->getUser();
 		for (std::map<int, User>::iterator it = Users.begin(); it != Users.end(); it++)
@@ -407,8 +402,13 @@ bool Server::sendToClient(const int clientSocket, const char* message)
 
 bool Server::isInvalidPortNumber(const char* port) const
 {
-	(void) port;
-	return (false);
+    size_t length = std::strlen(port);
+    if (!(length == 4 || length == 5))
+        return true;
+    int value = atoi (port);
+    if (!(value >= 1024 && value <= 65535))
+        return true;
+    return false;
 }
 
 bool Server::isInvalidPassword(const char* password) const
@@ -439,15 +439,4 @@ bool Server::isInvalidPasswordFormatted(const char* password) const
         }
     }
     return false;
-}
-
-bool Server::isPortInvalid (const char* port)
-{
-    size_t length = std::strlen(port);
-    if (!(length == 4 || length == 5))
-        return (false);
-    int value = atoi (port);
-    if (!(value >= 1024 && value <= 65535))
-        return (false);
-    return (true);
 }

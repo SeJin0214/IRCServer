@@ -24,7 +24,6 @@ public:
 	Server(const char* port, const char* password);
 	~Server();
 	bool run();
-	const std::map<std::string, Channel *>& getChannels() const;
 private:
 	enum { MAX_BUFFER = 512 };
 	Lobby mLobby;
