@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:52:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/26 15:23:19 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/03/27 16:07:03 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ bool Space::enterUser(int clientSocket, User& user)
 
 std::string Space::getHelpMessage() const
 {
-	std::string message = "COMMAND 라고 입력하여 명령어를 확인하세요!";
+	std::string message = "COMMAND 라고 입력하여 명령어를 확인하세요!\r\n";
 	
 	return message;
 }
@@ -49,4 +49,10 @@ std::string Space::getCommonCommandList() const
 	// 유저 목록 확인
 	// 전체 유저, 채널 유저
 	return "";
+}
+
+void Space::exitUser(int clientSocket)
+{
+	mUsers.erase(clientSocket);
+	//  user 반환하기? pair로 반환하기?
 }
