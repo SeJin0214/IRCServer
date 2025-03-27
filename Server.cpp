@@ -267,7 +267,6 @@ bool Server::acceptUser(const int clientSocket)
 	return true;
 }
 
-// TODO: clearStream 리팩토링 필요
 /**
  *  recv max 512 byte
 */
