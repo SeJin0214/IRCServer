@@ -354,18 +354,22 @@ bool Server::isDuplicatedUsername(const char* buffer) const
 	std::map<std::string, Channel *> :: const_iterator begin = mChannels.begin();
 	for (; begin != mChannels.end(); begin++)
 	{
-		std::map<int, User> Users = (begin->second)->getUser();
-		for (std::map<int, User>::iterator it = Users.begin(); it != Users.end(); it++)
+		std::vector<std::string> usernames = (begin->second)->getUsernames();
+		for (size_t i = 0; i < usernames.size(); i++)
 		{
-			if ((it->second).getUsername() == buffer)
+			if (usernames[i] == buffer)
+			{
 				return true;
+			}
 		}
 	}
-	std::map<int, User>::const_iterator it = mLobby.getUser().begin();
-	for (; it != mLobby.getUser().end(); it++)
+	std::vector<std::string> usernames = mLobby.getUsernames();
+	for (size_t i = 0; i < usernames.size(); i++)
 	{
-		if ((it->second).getUsername() == buffer)
+		if (usernames[i] == buffer)
+		{
 			return true;
+		}
 	}
 	return false;
 }
@@ -375,20 +379,24 @@ bool Server::isDuplicatedNickname(const char* buffer) const
 	std::map<std::string, Channel *> :: const_iterator begin = mChannels.begin();
 	for (; begin != mChannels.end(); begin++)
 	{
-		std::map<int, User> Users = (begin->second)->getUser();
-		for (std::map<int, User>::iterator it = Users.begin(); it != Users.end(); it++)
+		std::vector<std::string> nicknames = (begin->second)->getNicknames();
+		for (size_t i = 0; i < nicknames.size(); i++)
 		{
-			if ((it->second).getNickname() == buffer)
+			if (nicknames[i] == buffer)
+			{
 				return true;
+			}
 		}
 	}
-	std::map<int, User>::const_iterator it = mLobby.getUser().begin();
-	for (; it != mLobby.getUser().end(); it++)
+	std::vector<std::string> nicknames = mLobby.getNicknames();
+	for (size_t i = 0; i < nicknames.size(); i++)
 	{
-		if ((it->second).getNickname() == buffer)
+		if (nicknames[i] == buffer)
+		{
 			return true;
+		}
 	}
-	return (false);
+	return false;
 }
 
 // TODO: 에러처리 구현
@@ -425,6 +433,24 @@ bool Server::isInvalidPassword(const char* password) const
 
 // 8 ~ 16  min Uppercase, lowercase, digit
 bool Server::isInvalidPasswordFormatted(const char* password) const
+{
+
+    const int length = std::strlen(password);
+    if (length < 8  || length > 16)
+    {
+        return true;
+    }
+    for (int i = 0; i < length; ++i)
+    {
+        if (!(std::isalnum(password[i]) || std::isupper(password[i])))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Server::isInvalidNameFormatted(const char* password) const
 {
     const int length = std::strlen(password);
     if (length < 8  || length > 16)

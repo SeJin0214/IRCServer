@@ -43,30 +43,6 @@ unsigned int Channel::getPassword() const
 	return mPassword;
 }
 
-std::vector<std::string> Channel::getNicknames() const
-{
-	std::vector<std::string> result;
-	std::map<int, User>::const_iterator it = mUsers.begin();
-	while (it != mUsers.end())
-	{
-		result.push_back(it->second.getNickname());
-		++it;
-	}
-	return result;
-}
-	
-std::vector<std::string> Channel::getUsernames() const
-{
-	std::vector<std::string> result;
-	std::map<int, User>::const_iterator it = mUsers.begin();
-	while (it != mUsers.end())
-	{
-		result.push_back(it->second.getUsername());
-		++it;
-	}
-	return result;
-}
-
 std::vector<int> Channel::getClientSockets() const
 {
 	std::vector<int> result;

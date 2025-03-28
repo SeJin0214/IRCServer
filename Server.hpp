@@ -47,6 +47,7 @@ private:
 	bool isInvalidPortNumber(const char* port) const;
 	bool isInvalidPasswordFormatted(const char* password) const;
 	bool isInvalidPassword(const char* password) const;
+	bool isInvalidNameFormatted(const char* password) const;
 	bool attemptReceiveValidData(const int clientSocket, char *buffer, \
 		bool (Server::*isInvalid)(const char *) const, const char *message, const int maxCount);
 	bool	isPortInvalid (const char* port);

@@ -57,7 +57,26 @@ void Space::exitUser(int clientSocket)
 	//  user 반환하기? pair로 반환하기?
 }
 
-const std::map<int, User>& Space::getUser() const
+std::vector<std::string> Space::getNicknames() const
 {
-	return mUsers;
+	std::vector<std::string> result;
+	std::map<int, User>::const_iterator it = mUsers.begin();
+	while (it != mUsers.end())
+	{
+		result.push_back(it->second.getNickname());
+		++it;
+	}
+	return result;
+}
+	
+std::vector<std::string> Space::getUsernames() const
+{
+	std::vector<std::string> result;
+	std::map<int, User>::const_iterator it = mUsers.begin();
+	while (it != mUsers.end())
+	{
+		result.push_back(it->second.getUsername());
+		++it;
+	}
+	return result;
 }
