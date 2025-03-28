@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/27 16:12:01 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/03/28 12:30:59 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ Channel* Server::findChannel(const int clientSocket)
 	while (it != mChannels.end())
 	{
 		Result<User> result = it->second->findUser(clientSocket);
-		if (result.isSucceed())
+		if (result.hasSucceeded())
 		{
 			return it->second;
 		}
@@ -323,9 +323,10 @@ void Server::handleClientMessage(const int clientSocket)
 	}
 
 	Channel* channel = findChannel(clientSocket);
+	ACommand* command = channel->getCommand(buffer);
+	// IExecutable 
 	if (channel == NULL)
 	{
-		// 로비 명령어 실행
 		const char* test = "test~~~~~~~~~~~~~~~~~~~~~\r\n";
 		sendToClient(clientSocket, test);
 		return;
@@ -407,7 +408,6 @@ bool Server::sendToClient(const int clientSocket, const char* message)
 	return (true);
 }
 
-
 bool Server::isInvalidPortNumber(const char* port) const
 {
     size_t length = std::strlen(port);
@@ -421,14 +421,14 @@ bool Server::isInvalidPortNumber(const char* port) const
 
 bool Server::isInvalidPassword(const char* password) const
 {
-	bool isSucceed;
+	bool bSucceeded;
 	if (isInvalidPasswordFormatted(password))
 	{
 		return true;
 	}
 
-	isSucceed = mPassword != Util::generateHash65599(password);
-	return isSucceed;
+	bSucceeded = mPassword != Util::generateHash65599(password);
+	return bSucceeded;
 }
 
 // 8 ~ 16  min Uppercase, lowercase, digit

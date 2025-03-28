@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:50:56 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/27 15:07:15 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/03/28 12:25:55 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,14 @@
 #include <map>
 #include <vector>
 #include "User.hpp"
+#include "ACommand.hpp"
 
 class Space
 {
 public:
 	virtual ~Space();
-	virtual std::string getCommandList() const = 0;
+	virtual ACommand* getCommand(const char* buffer) = 0;
+	virtual std::string getCommandList() const = 0; // 지울 수도
 	std::string getHelpMessage() const;
 	std::string getCommonCommandList() const;
 	std::vector<int> getFdSet() const;

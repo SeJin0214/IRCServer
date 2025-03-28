@@ -1,48 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Result.hpp                                         :+:      :+:    :+:   */
+/*   ACommand.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/26 23:42:19 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/28 11:21:55 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/03/28 11:19:06 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/03/28 12:26:07 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+#include <string>
+#include <vector>
 
-template <typename T>
-class Result
+class ACommand
 {
 
 public:
-	Result(T value, bool bSucceed);
-	T getValue();
-	bool hasSucceeded();
-
+	ACommand(const std::string messageToSend, const std::vector<int>& clientSockets);
+	virtual std::string getMessageToSend() = 0;
+	std::vector<int> getClientSockets();
 private:
-	T mValue;
-	bool mbSucceed;
-
+	std::string mMessageToSend;
+	std::vector<int> mClientSockets;
 };
-
-template <typename T>
-Result<T>::Result(T value, bool bSucceed)
-: mValue(value)
-, mbSucceed(bSucceed)
-{
-	
-}
-
-template <typename T>
-T Result<T>::getValue()
-{
-	return mValue;
-}
-
-template <typename T>
-bool Result<T>::hasSucceeded()
-{
-	return mbSucceed;
-}

@@ -1,48 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Result.hpp                                         :+:      :+:    :+:   */
+/*   IExcutable.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/26 23:42:19 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/28 11:21:55 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/03/28 11:38:54 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/03/28 11:41:52 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+#include "Server.hpp"
 
-template <typename T>
-class Result
+class IExcutable
 {
 
 public:
-	Result(T value, bool bSucceed);
-	T getValue();
-	bool hasSucceeded();
-
-private:
-	T mValue;
-	bool mbSucceed;
+	virtual void execute(Server& server) = 0;
 
 };
-
-template <typename T>
-Result<T>::Result(T value, bool bSucceed)
-: mValue(value)
-, mbSucceed(bSucceed)
-{
-	
-}
-
-template <typename T>
-T Result<T>::getValue()
-{
-	return mValue;
-}
-
-template <typename T>
-bool Result<T>::hasSucceeded()
-{
-	return mbSucceed;
-}
