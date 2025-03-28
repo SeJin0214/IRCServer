@@ -26,7 +26,9 @@ public:
 	std::vector<int> getFdSet() const;
 	bool enterUser(int clientSocket, User& user);
 	void exitUser(int clientSocket);
-	const std::map<int, User>& getUser() const;
+	std::vector<std::string> getNicknames() const;
+	std::vector<std::string> getUsernames() const;
+
 protected:
 	std::map<int, User> mUsers; // <int, User *>
 	// test 

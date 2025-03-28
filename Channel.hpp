@@ -26,8 +26,6 @@ public:
 	std::string getTitle() const;
 	bool setTitle(int clientSocket, std::string& title);
 	unsigned int getPassword() const;
-	std::vector<std::string> getNicknames() const;
-	std::vector<std::string> getUsernames() const;
 	std::vector<int> getClientSockets() const;
 	Result<User> findUser(const int clientSocket) const;
 	bool toggleMode(User& user, const eMode mode);
