@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Invitor.hpp                                        :+:      :+:    :+:   */
+/*   InviteCommand.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/31 18:45:30 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/31 18:45:30 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/01 18:31:36 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/01 18:31:36 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "IMessageCommunicator.hpp"
 #include "IExecutable.hpp"
 
-class Invitor : public IMessageCommunicator, public IExecutable
+class InviteCommand : public IMessageCommunicator, public IExecutable
 {
 
 public:

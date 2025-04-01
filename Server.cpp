@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/01 14:46:41 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/01 18:36:23 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,6 +190,7 @@ bool Server::run()
 	return (true);
 }
 
+// TODO: User의 패킷을 받는 방식 변경, 모두 영어로 변경할 것
 void Server::acceptClient()
 {
 	struct sockaddr_in clientAddr;
@@ -310,6 +311,7 @@ void Server::clearStream(const int socket)
 // TODO: 명령어 실행 구현
 void Server::handleClientMessage(const int clientSocket)
 {
+	// 안녕
 	char buffer[MAX_BUFFER] = { 0, };
 	
 	const int readLength = recv(clientSocket, buffer, MAX_BUFFER, 0);
@@ -324,14 +326,15 @@ void Server::handleClientMessage(const int clientSocket)
 	buffer[readLength - 1] = '\0';
 
 	Space* space = findSpace(clientSocket);
+	
 	IMessageCommunicator* communicator = space->getMessageCommunicator(buffer);
-	std::vector<int> sockets = communicator->getTargetSockets(*this, clientSocket);
-	std::string messageToSend = communicator->getMessageToSend(*this, clientSocket);
+	std::vector<int> sockets = communicator->getTargetSockets(*this, clientSocket, buffer);
+	std::string messageToSend = communicator->getMessageToSend(*this, clientSocket, buffer);
 	for (size_t i = 0; i < sockets.size(); ++i)
 	{
 		sendToClient(sockets[i], messageToSend.c_str());
 	}
-	std::string messageToRecive = communicator->getMessageToRecive();
+	std::string messageToRecive = communicator->getMessageToRecive(*this, clientSocket, buffer);
 	if (messageToRecive != "")
 	{
 		sendToClient(clientSocket, messageToRecive.c_str());
@@ -340,7 +343,7 @@ void Server::handleClientMessage(const int clientSocket)
 	IExecutable* executor = space->getExecutor(buffer);
 	if (executor != NULL)
 	{
-		executor.execute(*this, clientSocket);
+		executor->execute(*this, clientSocket, buffer);
 	}
 
 	delete executor;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:19:57 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/31 19:31:26 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/01 18:27:53 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ class Channel : public Space
 
 public:
 	virtual ~Channel();
-	IMessageCommunicators* getMessageCommunicator(const char* buffer);
+	IMessageCommunicator* getMessageCommunicator(const char* buffer);
 	IExecutable* getExecutor(const char* buffer);
 	std::string getCommandList() const;
 	Channel(const std::string& title, const char* password);

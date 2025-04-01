@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:36:09 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/27 15:45:14 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/01 18:43:04 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ private:
 	fd_set getFdSet() const;
 	int getMaxFd() const;
 	void stop();
-	Channel* findChannel(const int clientSocket);
+	Space* findSpace(const int clientSocket);
 	void acceptClient();
 	void clearStream(const int socket);
 	bool sendToClient(const int clientSocket, const char* message);
@@ -50,6 +50,5 @@ private:
 	bool isInvalidNameFormatted(const char* password) const;
 	bool attemptReceiveValidData(const int clientSocket, char *buffer, \
 		bool (Server::*isInvalid)(const char *) const, const char *message, const int maxCount);
-	bool	isPortInvalid (const char* port);
 
 };

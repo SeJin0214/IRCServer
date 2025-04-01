@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:20:19 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/31 19:36:48 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/01 18:45:18 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <algorithm>
 #include <cassert>
+#include <cstring>
+#include "BroadcastCommand.hpp"
 #include "Channel.hpp"
 #include "Util.hpp"
 #include "Result.hpp"
@@ -60,19 +62,26 @@ bool Channel::setTitle(const int clientSocket, std::string& title)
 	return true;
 }
 
-IMessageCommunicators* Channel::getMessageCommunicator(const char* buffer)
+IMessageCommunicator* Channel::getMessageCommunicator(const char* buffer)
 {
 	// Error 커맨드도 넣어줘야 하나..
 	assert(buffer != NULL);
+	
 	if (std::strncmp(buffer, "/", 1) != 0)
 	{
-		
+		return new BroadcastCommand();
 	}
+
+	// CommandShower   
+	// ExitCommand
+	// 구현만 
+	return NULL;
 }
 
 IExecutable* Channel::getExecutor(const char* buffer)
 {
-	
+	(void)buffer;
+	return NULL;
 }
 
 bool Channel::toggleMode(User& user, const eMode mode)

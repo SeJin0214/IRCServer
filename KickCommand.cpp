@@ -10,24 +10,35 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Kick.hpp"
+#include "KickCommand.hpp"
 
-std::string Kick::getMessageToSend(const Server& server, const int clientSocket, const char* buffer)
+std::string KickCommand::getMessageToSend(const Server& server, const int clientSocket, const char* buffer)
 {
-    
+	(void) server;
+	(void) clientSocket;
+	(void) buffer;
+	return "";
 }
 
-std::string Kick::getMessageToRecive(const Server& server, const int clientSocket, const char* buffer)
+std::string KickCommand::getMessageToRecive(const Server& server, const int clientSocket, const char* buffer)
 {
-
+	(void) server;
+	(void) clientSocket;
+	(void) buffer;
+	return "";
 }
 
-std::vector<int> Kick::getTargetSockets(const Server& server, const int clientSocket, const char* buffer)
+std::vector<int> KickCommand::getTargetSockets(const Server& server, const int clientSocket, const char* buffer)
 {
-
+	(void) server;
+	(void) clientSocket;
+	(void) buffer;
+	return std::vector<int>();
 }
 
-void Kick::execute(Server& server, const int clientSocket, const char* buffer)
+void KickCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
-
+	(void) server;
+	(void) clientSocket;
+	(void) buffer;
 }

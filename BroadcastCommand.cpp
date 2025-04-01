@@ -1,18 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CommandShower.cpp                                  :+:      :+:    :+:   */
+/*   BroadcastCommand.cpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/31 17:10:47 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/31 17:10:47 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/01 18:30:42 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/01 18:30:42 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "CommandShower.hpp"
+#include "BroadcastCommand.hpp"
 
-std::string CommandShower::getMessageToSend(const Server& server, const int clientSocket, const char* buffer)
+std::string BroadcastCommand::getMessageToSend(const Server& server, const int clientSocket, const char* buffer)
+{
+	(void) server;
+	(void) clientSocket;
+	std::string result(buffer);
+	return result;
+}
+
+std::string BroadcastCommand::getMessageToRecive(const Server& server, const int clientSocket, const char* buffer)
 {
 	(void) server;
 	(void) clientSocket;
@@ -20,19 +28,10 @@ std::string CommandShower::getMessageToSend(const Server& server, const int clie
 	return "";
 }
 
-std::string CommandShower::getMessageToRecive(const Server& server, const int clientSocket, const char* buffer)
-{
-	(void) server;
-	(void) clientSocket;
-	(void) buffer;
-	return "";
-}
-
-std::vector<int> CommandShower::getTargetSockets(const Server& server, const int clientSocket, const char* buffer)
+std::vector<int> BroadcastCommand::getTargetSockets(const Server& server, const int clientSocket, const char* buffer)
 {
 	(void) server;
 	(void) clientSocket;
 	(void) buffer;
 	return std::vector<int>();
 }
-    

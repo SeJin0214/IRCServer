@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Space.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:52:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/31 19:43:29 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/01 17:53:01 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

@@ -14,7 +14,7 @@
 #include "IMessageCommunicator.hpp"
 #include "IExecutable.hpp"
 
-class Kick : public IMessageCommunicator, public IExecutable
+class KickCommand : public IMessageCommunicator, public IExecutable
 {
 public:
     std::string getMessageToSend(const Server& server, const int clientSocket, const char* buffer);

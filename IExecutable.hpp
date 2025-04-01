@@ -1,22 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IExcutable.hpp                                     :+:      :+:    :+:   */
+/*   IExecutable.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 11:38:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/31 18:46:58 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/01 18:44:39 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#include "Server.hpp"
 
-class IExcutable
+class Server;
+
+class IExecutable
 {
 
 public:
+	virtual ~IExecutable() {};
 	virtual void execute(Server& server,  const int clientSocket, const char* buffer) = 0;
 
 };

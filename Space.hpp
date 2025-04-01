@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Space.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:50:56 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/31 17:05:10 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/01 18:32:14 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class Space
 public:
 	virtual ~Space();
 	/* getter */
-	virtual IMessageCommunicators* getMessageCommunicator(const char* buffer) = 0;
+	virtual IMessageCommunicator* getMessageCommunicator(const char* buffer) = 0;
 	virtual IExecutable* getExecutor(const char* buffer) = 0;
 	std::string getHelpMessage() const;
 	std::string getCommonCommandList() const;
@@ -39,5 +39,4 @@ public:
 
 protected:
 	std::map<int, User> mUsers; // <int, User *>
-	// test 
 };
