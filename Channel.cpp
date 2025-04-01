@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:20:19 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/27 15:21:34 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/03/31 19:36:48 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <algorithm>
+#include <cassert>
 #include "Channel.hpp"
 #include "Util.hpp"
 #include "Result.hpp"
@@ -43,18 +44,6 @@ unsigned int Channel::getPassword() const
 	return mPassword;
 }
 
-std::vector<int> Channel::getClientSockets() const
-{
-	std::vector<int> result;
-	std::map<int, User>::const_iterator it = mUsers.begin();
-	while (it != mUsers.end())
-	{
-		result.push_back(it->first);
-		++it;
-	}
-	return result;
-}
-
 std::string Channel::getCommandList() const
 {
 	return "";
@@ -69,6 +58,21 @@ bool Channel::setTitle(const int clientSocket, std::string& title)
 	}
 	mTitle = title;
 	return true;
+}
+
+IMessageCommunicators* Channel::getMessageCommunicator(const char* buffer)
+{
+	// Error 커맨드도 넣어줘야 하나..
+	assert(buffer != NULL);
+	if (std::strncmp(buffer, "/", 1) != 0)
+	{
+		
+	}
+}
+
+IExecutable* Channel::getExecutor(const char* buffer)
+{
+	
 }
 
 bool Channel::toggleMode(User& user, const eMode mode)
@@ -104,19 +108,4 @@ bool Channel::isOperator(const int userSocket) const
 		}
 	}
 	return false;
-}
-
-Result<User> Channel::findUser(const int clientSocket) const
-{
-	std::map<int, User>::const_iterator it = mUsers.find(clientSocket);
-	if (it != mUsers.end())
-	{
-		Result<User> result(it->second, true);
-		return result;
-	}
-	else
-	{
-		Result<User> result(it->second, false);
-		return result;	
-	}
 }

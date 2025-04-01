@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Space.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:52:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/27 16:07:03 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/03/31 19:43:29 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,60 @@ Space::~Space()
 
 }
 
+/* getter */
 std::vector<int> Space::getFdSet() const
+{
+	std::vector<int> result;
+	std::map<int, User>::const_iterator it = mUsers.begin();
+	while (it != mUsers.end())
+	{
+		result.push_back(it->first);
+		++it;
+	}
+	return result;
+}
+
+std::string Space::getHelpMessage() const
+{
+	std::string message = "'/' 문자로 시작되는 모든 메시지가 명령어로 해석됩니다. /command를 입력하여 명령어를 확인하세요!\n다시 확인하고 싶으시다면 /help 를 입력하세요.\r\n";
+	
+	return message;
+}
+
+std::string Space::getCommonCommandList() const
+{
+	// 공통 : 
+	// 귓속말을 하고 싶다면 무슨 입력을 하세요. 
+	// 유저 목록 확인
+	// 전체 유저, 채널 유저
+	return "";
+}
+
+std::vector<std::string> Space::getNicknames() const
+{
+	std::vector<std::string> result;
+	std::map<int, User>::const_iterator it = mUsers.begin();
+	while (it != mUsers.end())
+	{
+		result.push_back(it->second.getNickname());
+		++it;
+	}
+	return result;
+}
+
+std::vector<std::string> Space::getUsernames() const
+{
+	std::vector<std::string> result;
+	std::map<int, User>::const_iterator it = mUsers.begin();
+	while (it != mUsers.end())
+	{
+		result.push_back(it->second.getUsername());
+		++it;
+	}
+	return result;
+}
+
+std::vector<int> Space::getClientSockets() const
 {
 	std::vector<int> result;
 	std::map<int, User>::const_iterator it = mUsers.begin();
@@ -35,48 +88,23 @@ bool Space::enterUser(int clientSocket, User& user)
 	return true;
 }
 
-std::string Space::getHelpMessage() const
-{
-	std::string message = "COMMAND 라고 입력하여 명령어를 확인하세요!\r\n";
-	
-	return message;
-}
-
-std::string Space::getCommonCommandList() const
-{
-	// 공통 : 
-	// 귓속말을 하고 싶다면 무슨 입력을 하세요. 
-	// 유저 목록 확인
-	// 전체 유저, 채널 유저
-	return "";
-}
-
 void Space::exitUser(int clientSocket)
 {
 	mUsers.erase(clientSocket);
 	//  user 반환하기? pair로 반환하기?
 }
 
-std::vector<std::string> Space::getNicknames() const
+Result<User> Space::findUser(const int clientSocket) const
 {
-	std::vector<std::string> result;
-	std::map<int, User>::const_iterator it = mUsers.begin();
-	while (it != mUsers.end())
+	std::map<int, User>::const_iterator it = mUsers.find(clientSocket);
+	if (it != mUsers.end())
 	{
-		result.push_back(it->second.getNickname());
-		++it;
+		Result<User> result(it->second, true);
+		return result;
 	}
-	return result;
-}
-	
-std::vector<std::string> Space::getUsernames() const
-{
-	std::vector<std::string> result;
-	std::map<int, User>::const_iterator it = mUsers.begin();
-	while (it != mUsers.end())
+	else
 	{
-		result.push_back(it->second.getUsername());
-		++it;
+		Result<User> result(it->second, false);
+		return result;	
 	}
-	return result;
 }

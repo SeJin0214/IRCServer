@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+         #
+#    By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/19 16:33:48 by sejjeong          #+#    #+#              #
-#    Updated: 2025/03/26 15:47:25 by sejjeong         ###   ########.fr        #
+#    Updated: 2025/03/31 17:12:45 by sejjeong         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,6 +25,9 @@ SRCS = $(SRCS_DIR)/main.cpp \
 		$(SRCS_DIR)/Channel.cpp \
 		$(SRCS_DIR)/User.cpp \
 		$(SRCS_DIR)/Lobby.cpp \
+		$(SRCS_DIR)/Broadcast.cpp \
+		$(SRCS_DIR)/CommandShower.cpp \
+		$(SRCS_DIR)/Kick.cpp \
 		$(SRCS_DIR)/Util.cpp
 
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/28 12:30:59 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/01 14:46:41 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ int Server::getMaxFd() const
 	return maxFd;
 }
 
-Channel* Server::findChannel(const int clientSocket)
+Space* Server::findSpace(const int clientSocket)
 {
 	std::map<std::string, Channel *>::iterator it = mChannels.begin();
 	while (it != mChannels.end())
@@ -150,7 +150,7 @@ Channel* Server::findChannel(const int clientSocket)
 		}
 		++it;
 	}
-	return NULL;
+	return &mLobby;
 }
 
 // TODO: i == STDIN_FILENO 일 때, 서버 콘솔에서 입력 처리, 서버 운영자 명령어 처리
@@ -313,7 +313,6 @@ void Server::handleClientMessage(const int clientSocket)
 	char buffer[MAX_BUFFER] = { 0, };
 	
 	const int readLength = recv(clientSocket, buffer, MAX_BUFFER, 0);
-	buffer[readLength - 1] = '\0';
 	clearStream(clientSocket);
 	if (readLength > 500)
 	{
@@ -321,28 +320,31 @@ void Server::handleClientMessage(const int clientSocket)
 		sendToClient(clientSocket, over);
 		return;
 	}
+	// 만약 ctrl + d가 들어왔다면 다른 예외 처리
+	buffer[readLength - 1] = '\0';
 
-	Channel* channel = findChannel(clientSocket);
-	ACommand* command = channel->getCommand(buffer);
-	// IExecutable 
-	if (channel == NULL)
-	{
-		const char* test = "test~~~~~~~~~~~~~~~~~~~~~\r\n";
-		sendToClient(clientSocket, test);
-		return;
-	}
-	
-	Result<User> result = channel->findUser(clientSocket);
-	std::vector<int> sockets = channel->getClientSockets();
+	Space* space = findSpace(clientSocket);
+	IMessageCommunicator* communicator = space->getMessageCommunicator(buffer);
+	std::vector<int> sockets = communicator->getTargetSockets(*this, clientSocket);
+	std::string messageToSend = communicator->getMessageToSend(*this, clientSocket);
 	for (size_t i = 0; i < sockets.size(); ++i)
 	{
-		if (static_cast<int>(sockets[i]) == clientSocket)
-		{
-			continue;
-		}
-		std::string message = result.getValue().getNickname() + " : " + buffer;
-		sendToClient(sockets[i], message.c_str());
+		sendToClient(sockets[i], messageToSend.c_str());
 	}
+	std::string messageToRecive = communicator->getMessageToRecive();
+	if (messageToRecive != "")
+	{
+		sendToClient(clientSocket, messageToRecive.c_str());
+	}
+
+	IExecutable* executor = space->getExecutor(buffer);
+	if (executor != NULL)
+	{
+		executor.execute(*this, clientSocket);
+	}
+
+	delete executor;
+	delete communicator;
 }
 
 void Server::stop()
