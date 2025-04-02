@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:52:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 12:03:58 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 12:59:45 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,6 @@ std::vector<int> Space::getFdSet() const
 		++it;
 	}
 	return result;
-}
-
-std::string Space::getHelpMessage() const
-{
-	std::string message = "'/' 문자로 시작되는 모든 메시지가 명령어로 해석됩니다. /command를 입력하여 명령어를 확인하세요!\n다시 확인하고 싶으시다면 /help 를 입력하세요.\r\n";
-	
-	return message;
 }
 
 std::vector<std::string> Space::getNicknames() const

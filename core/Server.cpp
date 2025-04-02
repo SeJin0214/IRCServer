@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 12:27:05 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 13:01:37 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,7 +261,8 @@ bool Server::acceptUser(const int clientSocket)
 	User user(username, nickname);
 	mLobby.enterUser(clientSocket, user);
 	
-	sendToClient(clientSocket, mLobby.getHelpMessage().c_str());
+	const char* welcomeMessage = "Welcome to our channel!\r\n";
+	sendToClient(clientSocket, welcomeMessage);
 	return true;
 }
 

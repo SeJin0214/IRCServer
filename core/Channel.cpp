@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:20:19 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 12:55:58 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 13:11:22 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "BroadcastCommand.hpp"
 #include "ChannelListCommand.hpp"
 #include "DirectMessageCommand.hpp"
-#include "DirectMessageCommand.hpp"
+#include "HelpCommand.hpp"
 #include "Channel.hpp"
 #include "Util.hpp"
 #include "Result.hpp"
@@ -79,17 +79,12 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	std::stringstream ss(buffer);
 	std::string command;
 	std::getline(ss, command, ' ');
-	for (size_t i = 0; i < command.size(); ++i)
+	command = Util::getLowercaseString(command);
+	if (std::strncmp("/msg", command.c_str(), command.size()) == 0)
 	{
-		if (std::isupper(command[i]))
-		{
-			command[i] -= 32;
-		}
+		return new DirectMessageCommand();
 	}
-	if (std::strncmp("/help", command.c_str(), command.size()) == 0)
-	{
-		
-	}
+
 	return NULL;
 }
 
@@ -97,6 +92,18 @@ IIncomingMessageProvider* Channel::getIncomingMessageProvider(const char* buffer
 {
 	assert(buffer != NULL);
 	
+	std::stringstream ss(buffer);
+	std::string command;
+	std::getline(ss, command, ' ');
+	command = Util::getLowercaseString(command);
+	if (std::strncmp("/help", command.c_str(), command.size()) == 0)
+	{
+		return new HelpCommand();
+	}
+	else if (std::strncmp("/msg", command.c_str(), command.size()) == 0)
+	{
+		return new DirectMessageCommand();
+	}
 	return NULL;
 }
 

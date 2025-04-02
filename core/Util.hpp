@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 13:53:59 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/26 15:23:49 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 13:03:11 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,5 +18,6 @@ class Util
 
 public:
 	static unsigned int generateHash65599(const char* str);
+	static std::string getLowercaseString(const std::string& str);
 
 };
