@@ -6,14 +6,19 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:20:19 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 11:29:14 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 12:55:58 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <algorithm>
 #include <cassert>
 #include <cstring>
+#include <iostream>
+#include <sstream>
 #include "BroadcastCommand.hpp"
+#include "ChannelListCommand.hpp"
+#include "DirectMessageCommand.hpp"
+#include "DirectMessageCommand.hpp"
 #include "Channel.hpp"
 #include "Util.hpp"
 #include "Result.hpp"
@@ -65,10 +70,25 @@ bool Channel::setTopic(const int clientSocket, std::string& title)
 IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer)
 {
 	assert(buffer != NULL);
-	
+
 	if (std::strncmp(buffer, "/", 1) != 0)
 	{
 		return new BroadcastCommand();
+	}
+
+	std::stringstream ss(buffer);
+	std::string command;
+	std::getline(ss, command, ' ');
+	for (size_t i = 0; i < command.size(); ++i)
+	{
+		if (std::isupper(command[i]))
+		{
+			command[i] -= 32;
+		}
+	}
+	if (std::strncmp("/help", command.c_str(), command.size()) == 0)
+	{
+		
 	}
 	return NULL;
 }

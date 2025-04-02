@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 11:12:18 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 12:27:05 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -351,8 +351,9 @@ void Server::handleClientMessage(const int clientSocket)
 		executor->execute(*this, clientSocket, buffer);
 	}
 
-	delete executor;
 	delete outgoingMessageProvider;
+	delete incomingMessageProvider;
+	delete executor;
 }
 
 void Server::stop()

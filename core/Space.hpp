@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:50:56 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 11:10:44 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 11:55:49 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ public:
 	virtual IIncomingMessageProvider* getIncomingMessageProvider(const char* buffer) = 0;
 	virtual IExecutable* getExecutor(const char* buffer) = 0;
 	std::string getHelpMessage() const;
-	std::string getCommonCommandList() const;
 	std::vector<int> getFdSet() const;
 	std::vector<int> getClientSockets() const;
 	std::vector<std::string> getNicknames() const;

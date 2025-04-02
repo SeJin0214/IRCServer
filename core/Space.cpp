@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:52:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 11:10:48 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 12:03:58 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,6 @@ std::string Space::getHelpMessage() const
 	std::string message = "'/' 문자로 시작되는 모든 메시지가 명령어로 해석됩니다. /command를 입력하여 명령어를 확인하세요!\n다시 확인하고 싶으시다면 /help 를 입력하세요.\r\n";
 	
 	return message;
-}
-
-std::string Space::getCommonCommandList() const
-{
-	// 공통 : 
-	// 귓속말을 하고 싶다면 무슨 입력을 하세요. 
-	// 유저 목록 확인
-	// 전체 유저, 채널 유저
-	return "";
 }
 
 std::vector<std::string> Space::getNicknames() const
@@ -93,7 +84,6 @@ bool Space::enterUser(int clientSocket, User& user)
 void Space::exitUser(int clientSocket)
 {
 	mUsers.erase(clientSocket);
-	//  user 반환하기? pair로 반환하기?
 }
 
 Result<User> Space::findUser(const int clientSocket) const
