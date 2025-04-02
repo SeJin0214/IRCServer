@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:50:56 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/01 18:32:14 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 10:44:32 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "IMessageCommunicator.hpp"
+#include "IOutgoingMessageProvider.hpp"
+#include "IIncomingMessageProvider.hpp"
 #include "IExecutable.hpp"
 #include "User.hpp"
 #include "Result.hpp"
@@ -24,7 +25,8 @@ class Space
 public:
 	virtual ~Space();
 	/* getter */
-	virtual IMessageCommunicator* getMessageCommunicator(const char* buffer) = 0;
+	virtual IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) = 0;
+	virtual IIncomingMessageProvider* getIncomingMessageProvider(const char* buffer) = 0;
 	virtual IExecutable* getExecutor(const char* buffer) = 0;
 	std::string getHelpMessage() const;
 	std::string getCommonCommandList() const;

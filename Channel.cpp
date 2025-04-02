@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:20:19 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/01 18:45:18 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 10:53:33 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,25 +62,28 @@ bool Channel::setTitle(const int clientSocket, std::string& title)
 	return true;
 }
 
-IMessageCommunicator* Channel::getMessageCommunicator(const char* buffer)
+IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer)
 {
-	// Error 커맨드도 넣어줘야 하나..
 	assert(buffer != NULL);
 	
 	if (std::strncmp(buffer, "/", 1) != 0)
 	{
 		return new BroadcastCommand();
 	}
+	return NULL;
+}
 
-	// CommandShower   
-	// ExitCommand
-	// 구현만 
+IIncomingMessageProvider* Channel::getIncomingMessageProvider(const char* buffer)
+{
+	assert(buffer != NULL);
+	
 	return NULL;
 }
 
 IExecutable* Channel::getExecutor(const char* buffer)
 {
-	(void)buffer;
+	assert(buffer != NULL);
+	
 	return NULL;
 }
 

@@ -10,36 +10,37 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cassert>
 #include "InviteCommand.hpp"
 #include "Server.hpp"
 
-std::string InviteCommand::getMessageToSend(const Server& server, const int clientSocket, const char* buffer)
+std::string InviteCommand::getOutgoingMessage(const Server& server, const int clientSocket, const char* buffer)
 {
+	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
-	(void) buffer;
 	return "";
 }
 
-std::string InviteCommand::getMessageToRecive(const Server& server, const int clientSocket, const char* buffer)
+std::string InviteCommand::getIncomingMessage(const Server& server, const int clientSocket, const char* buffer)
 {
+	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
-	(void) buffer;
 	return "";
 }
 
 std::vector<int> InviteCommand::getTargetSockets(const Server& server, const int clientSocket, const char* buffer)
 {
+	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
-	(void) buffer;
 	return std::vector<int>();
 }
 
 void InviteCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
+	assert(buffer != NULL);
     (void) server;
 	(void) clientSocket;
-	(void) buffer;
 }

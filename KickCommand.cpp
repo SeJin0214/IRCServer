@@ -10,35 +10,36 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cassert>
 #include "KickCommand.hpp"
 
-std::string KickCommand::getMessageToSend(const Server& server, const int clientSocket, const char* buffer)
+std::string KickCommand::getOutgoingMessage(const Server& server, const int clientSocket, const char* buffer)
 {
+	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
-	(void) buffer;
 	return "";
 }
 
-std::string KickCommand::getMessageToRecive(const Server& server, const int clientSocket, const char* buffer)
+std::string KickCommand::getIncomingMessage(const Server& server, const int clientSocket, const char* buffer)
 {
+	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
-	(void) buffer;
 	return "";
 }
 
 std::vector<int> KickCommand::getTargetSockets(const Server& server, const int clientSocket, const char* buffer)
 {
+	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
-	(void) buffer;
 	return std::vector<int>();
 }
 
 void KickCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
+	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
-	(void) buffer;
 }

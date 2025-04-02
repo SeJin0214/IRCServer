@@ -10,11 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
-#include "IMessageCommunicator.hpp"
+#include "IOutgoingMessageProvider.hpp"
 
-class BroadcastCommand : public IMessageCommunicator
+class BroadcastCommand : public IOutgoingMessageProvider
 {
-    std::string getMessageToSend(const Server& server, const int clientSocket, const char* buffer);
-    std::string getMessageToRecive(const Server& server, const int clientSocket, const char* buffer);
+    std::string getOutgoingMessage(const Server& server, const int clientSocket, const char* buffer);
     std::vector<int> getTargetSockets(const Server& server, const int clientSocket, const char* buffer);
 };

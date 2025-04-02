@@ -10,28 +10,22 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cassert>
 #include "BroadcastCommand.hpp"
 
-std::string BroadcastCommand::getMessageToSend(const Server& server, const int clientSocket, const char* buffer)
+std::string BroadcastCommand::getOutgoingMessage(const Server& server, const int clientSocket, const char* buffer)
 {
+	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
 	std::string result(buffer);
 	return result;
 }
 
-std::string BroadcastCommand::getMessageToRecive(const Server& server, const int clientSocket, const char* buffer)
-{
-	(void) server;
-	(void) clientSocket;
-	(void) buffer;
-	return "";
-}
-
 std::vector<int> BroadcastCommand::getTargetSockets(const Server& server, const int clientSocket, const char* buffer)
 {
+	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
-	(void) buffer;
 	return std::vector<int>();
 }

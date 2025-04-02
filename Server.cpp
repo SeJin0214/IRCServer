@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/01 18:36:23 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 10:52:05 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -326,15 +326,18 @@ void Server::handleClientMessage(const int clientSocket)
 	buffer[readLength - 1] = '\0';
 
 	Space* space = findSpace(clientSocket);
-	
-	IMessageCommunicator* communicator = space->getMessageCommunicator(buffer);
-	std::vector<int> sockets = communicator->getTargetSockets(*this, clientSocket, buffer);
-	std::string messageToSend = communicator->getMessageToSend(*this, clientSocket, buffer);
+
+	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
+	std::vector<int> sockets = outgoingMessageProvider->getTargetSockets(*this, clientSocket, buffer);
+	std::string messageToSend = outgoingMessageProvider->getOutgoingMessage(*this, clientSocket, buffer);
 	for (size_t i = 0; i < sockets.size(); ++i)
 	{
 		sendToClient(sockets[i], messageToSend.c_str());
 	}
-	std::string messageToRecive = communicator->getMessageToRecive(*this, clientSocket, buffer);
+
+	
+	IIncomingMessageProvider* incomingMessageProvider = space->getIncomingMessageProvider(buffer);
+	std::string messageToRecive = incomingMessageProvider->getIncomingMessage(*this, clientSocket, buffer);
 	if (messageToRecive != "")
 	{
 		sendToClient(clientSocket, messageToRecive.c_str());
@@ -347,7 +350,7 @@ void Server::handleClientMessage(const int clientSocket)
 	}
 
 	delete executor;
-	delete communicator;
+	delete outgoingMessageProvider;
 }
 
 void Server::stop()
@@ -439,7 +442,6 @@ bool Server::isInvalidPassword(const char* password) const
 // 8 ~ 16  min Uppercase, lowercase, digit
 bool Server::isInvalidPasswordFormatted(const char* password) const
 {
-
     const int length = std::strlen(password);
     if (length < 8  || length > 16)
     {

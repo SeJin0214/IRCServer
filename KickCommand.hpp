@@ -11,14 +11,15 @@
 /* ************************************************************************** */
 
 #pragma once
-#include "IMessageCommunicator.hpp"
+#include "IOutgoingMessageProvider.hpp"
+#include "IIncomingMessageProvider.hpp"
 #include "IExecutable.hpp"
 
-class KickCommand : public IMessageCommunicator, public IExecutable
+class KickCommand : public IOutgoingMessageProvider, public IIncomingMessageProvider, public IExecutable
 {
 public:
-    std::string getMessageToSend(const Server& server, const int clientSocket, const char* buffer);
-    std::string getMessageToRecive(const Server& server, const int clientSocket, const char* buffer);
+    std::string getOutgoingMessage(const Server& server, const int clientSocket, const char* buffer);
+    std::string getIncomingMessage(const Server& server, const int clientSocket, const char* buffer);
     std::vector<int> getTargetSockets(const Server& server, const int clientSocket, const char* buffer);
     void execute(Server& server, const int clientSocket, const char* buffer);
 };

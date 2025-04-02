@@ -10,29 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cassert>
 #include "CommandShower.hpp"
 
-std::string CommandShower::getMessageToSend(const Server& server, const int clientSocket, const char* buffer)
+std::string CommandShower::getIncomingMessage(const Server& server, const int clientSocket, const char* buffer)
 {
+	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
-	(void) buffer;
 	return "";
-}
-
-std::string CommandShower::getMessageToRecive(const Server& server, const int clientSocket, const char* buffer)
-{
-	(void) server;
-	(void) clientSocket;
-	(void) buffer;
-	return "";
-}
-
-std::vector<int> CommandShower::getTargetSockets(const Server& server, const int clientSocket, const char* buffer)
-{
-	(void) server;
-	(void) clientSocket;
-	(void) buffer;
-	return std::vector<int>();
 }
     
