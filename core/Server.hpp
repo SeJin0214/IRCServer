@@ -27,8 +27,8 @@ public:
 private:
 	enum { MAX_BUFFER = 512 };
 	Lobby mLobby;
-	std::map<std::string, Channel *> mChannels;
 	int mServerSocket;
+	std::map<std::string, Channel *> mChannels;
 	bool mbRunning;
 	const int mPort;
 	const unsigned int mPassword;

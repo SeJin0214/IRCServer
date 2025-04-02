@@ -314,7 +314,6 @@ void Server::clearStream(const int socket)
 // TODO: 명령어 실행 구현
 void Server::handleClientMessage(const int clientSocket)
 {
-	// 안녕
 	char buffer[MAX_BUFFER] = { 0, };
 	
 	const int readLength = recv(clientSocket, buffer, MAX_BUFFER, 0);
@@ -338,7 +337,6 @@ void Server::handleClientMessage(const int clientSocket)
 		sendToClient(sockets[i], messageToSend.c_str());
 	}
 
-	
 	IIncomingMessageProvider* incomingMessageProvider = space->getIncomingMessageProvider(buffer);
 	std::string messageToRecive = incomingMessageProvider->getIncomingMessage(*this, clientSocket, buffer);
 	if (messageToRecive != "")

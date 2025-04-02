@@ -71,6 +71,7 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 {
 	assert(buffer != NULL);
 
+	std::cout << "first : " << buffer << std::endl;
 	if (std::strncmp(buffer, "/", 1) != 0)
 	{
 		return new BroadcastCommand();
@@ -80,6 +81,7 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	std::string command;
 	std::getline(ss, command, ' ');
 	command = Util::getLowercaseString(command);
+	std::cout << "second : " << buffer << std::endl;
 	if (std::strncmp("/msg", command.c_str(), command.size()) == 0)
 	{
 		return new DirectMessageCommand();

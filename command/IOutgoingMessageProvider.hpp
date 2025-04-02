@@ -15,7 +15,7 @@
 #include <string>
 #include <vector>
 #include "Server.hpp"
-
+#include <iostream>
 class IOutgoingMessageProvider
 {
 public:
