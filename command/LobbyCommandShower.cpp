@@ -11,9 +11,9 @@
 /* ************************************************************************** */
 
 #include <cassert>
-#include "CommandShower.hpp"
+#include "LobbyCommandShower.hpp"
 
-std::string CommandShower::getIncomingMessage(const Server& server, const int clientSocket, const char* buffer)
+std::string LobbyCommandShower::getIncomingMessage(const Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
 	(void) server;

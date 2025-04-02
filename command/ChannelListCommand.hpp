@@ -1,31 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   ChannelListCommand.hpp                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/19 16:35:34 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 11:47:02 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/02 11:29:46 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/02 11:46:46 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#pragma once
+#include "IIncomingMessageProvider.hpp"
 
-#include <iostream>
-#include "Server.hpp"
-
-// IPv4, TCP 
-int main(int argc, char** argv)
+class ChannelListCommand : public IIncomingMessageProvider
 {
-	if (argc != 3)
-	{
-		std::cerr << "사용법 : " << argv[0] << " <port number> <password>" << std::endl;
-		return 0;
-	}
+public:
+    std::string getIncomingMessage(const Server& server, const int clientSocket, const char* buffer);
 
-	std::cout << "연결 대기중... " << std::endl;
-	Server server(argv[1], argv[2]);
-	server.run();
-	
-	return 0;
-}
+};

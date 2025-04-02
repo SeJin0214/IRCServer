@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 10:52:05 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 11:12:18 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 #include "Space.hpp"
 #include "Util.hpp"
 #include "Result.hpp"
+#include "IOutgoingMessageProvider.hpp"
+#include "IIncomingMessageProvider.hpp"
 #define SYSCALL_FAIL (-1)
 
 Server::Server(const char* port, const char* password)

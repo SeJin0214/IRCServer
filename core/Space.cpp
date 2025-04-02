@@ -6,10 +6,12 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:52:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/01 17:53:01 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 11:10:48 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "IOutgoingMessageProvider.hpp"
+#include "IIncomingMessageProvider.hpp"
 #include "Space.hpp"
 
 Space::~Space()

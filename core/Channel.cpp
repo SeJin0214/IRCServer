@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:20:19 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 10:53:33 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 11:29:14 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include "Result.hpp"
 
 Channel::Channel(const std::string& title, const char* password) 
-: mTitle(title)
+: mTopic(title)
 , mPassword(Util::generateHash65599(password))
 {
 	
@@ -32,13 +32,13 @@ Channel::~Channel()
 
 bool Channel::operator<(const Channel& rhs)
 {
-	return mTitle < rhs.mTitle;
+	return mTopic < rhs.mTopic;
 }
 
 /* getter */
-std::string Channel::getTitle() const
+std::string Channel::getTopic() const
 {
-	return mTitle;
+	return mTopic;
 }
 
 unsigned int Channel::getPassword() const
@@ -52,13 +52,13 @@ std::string Channel::getCommandList() const
 }
 
 /* setter */
-bool Channel::setTitle(const int clientSocket, std::string& title)
+bool Channel::setTopic(const int clientSocket, std::string& title)
 {
 	if (isOperator(clientSocket) == false)
 	{
 		return false;
 	}
-	mTitle = title;
+	mTopic = title;
 	return true;
 }
 

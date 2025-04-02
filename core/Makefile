@@ -6,7 +6,7 @@
 #    By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/19 16:33:48 by sejjeong          #+#    #+#              #
-#    Updated: 2025/04/02 11:45:30 by sejjeong         ###   ########.fr        #
+#    Updated: 2025/04/02 11:38:23 by sejjeong         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,24 +20,20 @@ RM_FLAGS = -rf
 SRCS_DIR = .
 CORE_DIR = $(SRCS_DIR)/core
 COMMAND_DIR = $(SRCS_DIR)/command
-INCLUDE = -I $(SRCS_DIR)/core -I $(SRCS_DIR)/command 
+INCLUDE = -I $(SRCS_DIR)/core -I $(SRCS_DIR)/user -I $(SRCS_DIR)/command 
 
 SRCS = $(SRCS_DIR)/main.cpp \
-		$(CORE_DIR)/Server.cpp \
-		$(CORE_DIR)/Space.cpp \
-		$(CORE_DIR)/Channel.cpp \
-		$(CORE_DIR)/User.cpp \
-		$(CORE_DIR)/Lobby.cpp \
-		$(CORE_DIR)/Util.cpp \
-		$(COMMAND_DIR)/BroadcastCommand.cpp \
-		$(COMMAND_DIR)/ChannelCommandShower.cpp \
-		$(COMMAND_DIR)/ChannelListCommand.cpp \
-		$(COMMAND_DIR)/DirectMessageCommand.cpp \
-		$(COMMAND_DIR)/HelpCommand.cpp \
-		$(COMMAND_DIR)/InviteCommand.cpp \
-		$(COMMAND_DIR)/KickCommand.cpp \
-		$(COMMAND_DIR)/LobbyCommandShower.cpp \
-		$(COMMAND_DIR)/SendChannelMessageCommand.cpp \
+		$(SRCS_DIR)/Server.cpp \
+		$(SRCS_DIR)/Space.cpp \
+		$(SRCS_DIR)/Channel.cpp \
+		$(SRCS_DIR)/User.cpp \
+		$(SRCS_DIR)/Lobby.cpp \
+		$(SRCS_DIR)/BroadcastCommand.cpp \
+		$(SRCS_DIR)/InviteCommand.cpp \
+		$(SRCS_DIR)/LobbyCommandShower.cpp \
+		$(SRCS_DIR)/ChannelCommandShower.cpp \
+		$(SRCS_DIR)/KickCommand.cpp \
+		$(SRCS_DIR)/Util.cpp \
 
 
 OBJS = ${SRCS:.cpp=.o}
@@ -46,7 +42,7 @@ $(NAME): $(OBJS)
 		   $(C++) $(FLAGS) $(INCLUDE) $^ -o $@
 
 %.o: %.cpp
-	$(C++) $(FLAGS) $(INCLUDE) -c $< -o $@ 
+	$(C++) $(FLAGS) -c $< -o $@ 
 
 all: $(NAME)
 

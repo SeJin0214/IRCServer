@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:50:56 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 10:44:32 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 11:10:44 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,12 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "IOutgoingMessageProvider.hpp"
-#include "IIncomingMessageProvider.hpp"
 #include "IExecutable.hpp"
 #include "User.hpp"
 #include "Result.hpp"
+
+class IIncomingMessageProvider;
+class IOutgoingMessageProvider;
 
 class Space
 {

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:19:57 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 10:49:04 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 11:29:15 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ public:
 	std::string getCommandList() const;
 	Channel(const std::string& title, const char* password);
 	bool operator<(const Channel& rhs);
-	std::string getTitle() const;
-	bool setTitle(int clientSocket, std::string& title);
+	std::string getTopic() const;
+	bool setTopic(int clientSocket, std::string& title);
 	unsigned int getPassword() const;
 	bool toggleMode(User& user, const eMode mode);
 	// 유저의 이름을 바꾸는 setter
@@ -35,7 +35,7 @@ public:
 private:
 	std::vector<std::string> mOperators;
 	unsigned char mModeFlag;
-	std::string mTitle;
+	std::string mTopic;
 	unsigned int mPassword;
 	
 	bool isOperator(const User& user) const;

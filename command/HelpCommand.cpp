@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IOutgoingMessageProvider.hpp                       :+:      :+:    :+:   */
+/*   HelpCommand.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/02 10:33:05 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 10:36:23 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/02 11:26:49 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/02 11:27:27 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cassert>
+#include "HelpCommand.hpp"
 
-#pragma once
-#include <string>
-#include <vector>
-
-class Server;
-
-class IOutgoingMessageProvider
+std::string HelpCommand::getIncomingMessage(const Server& server, const int clientSocket, const char* buffer)
 {
-public:
-	virtual ~IOutgoingMessageProvider() {};
-	virtual std::string getOutgoingMessage(const Server& server, const int clientSocket, const char* buffer) = 0;
-	virtual std::vector<int> getTargetSockets(const Server& server, const int clientSocket, const char* buffer) = 0;
-};
+	assert(buffer != NULL);
+	(void) server;
+	(void) clientSocket;
+	return "";
+}

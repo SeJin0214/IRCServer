@@ -1,31 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   ChannelCommandShower.cpp                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/19 16:35:34 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 11:47:02 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/02 11:03:33 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/02 11:06:12 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cassert>
+#include "ChannelCommandShower.hpp"
 
-#include <iostream>
-#include "Server.hpp"
-
-// IPv4, TCP 
-int main(int argc, char** argv)
+std::string ChannelCommandShower::getIncomingMessage(const Server& server, const int clientSocket, const char* buffer)
 {
-	if (argc != 3)
-	{
-		std::cerr << "사용법 : " << argv[0] << " <port number> <password>" << std::endl;
-		return 0;
-	}
-
-	std::cout << "연결 대기중... " << std::endl;
-	Server server(argv[1], argv[2]);
-	server.run();
-	
-	return 0;
+	assert(buffer != NULL);
+	(void) server;
+	(void) clientSocket;
+	return "";
 }

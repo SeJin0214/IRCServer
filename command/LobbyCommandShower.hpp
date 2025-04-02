@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CommandShower.hpp                                  :+:      :+:    :+:   */
+/*   LobbyCommandShower.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -13,8 +13,9 @@
 #pragma once
 #include "IIncomingMessageProvider.hpp"
 
-class CommandShower : public IIncomingMessageProvider
+class LobbyCommandShower : public IIncomingMessageProvider
 {
+    
 public:
     std::string getIncomingMessage(const Server& server, const int clientSocket, const char* buffer);
 
