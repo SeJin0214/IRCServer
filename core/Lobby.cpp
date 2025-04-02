@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 13:02:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 11:05:33 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 13:14:45 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,6 @@
 Lobby::~Lobby()
 {
 	
-}
-
-std::string Lobby::getCommandList() const
-{
-	return "";
 }
 
 IOutgoingMessageProvider* Lobby::getOutgoingMessageProvider(const char* buffer)

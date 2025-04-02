@@ -6,10 +6,11 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:52:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 12:59:45 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 14:47:54 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cassert>
 #include "IOutgoingMessageProvider.hpp"
 #include "IIncomingMessageProvider.hpp"
 #include "Space.hpp"
@@ -20,6 +21,25 @@ Space::~Space()
 }
 
 /* getter */
+
+IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer)
+{
+	assert(buffer != NULL);
+	return NULL;
+}
+
+IIncomingMessageProvider* Space::getIncomingMessageProvider(const char* buffer)
+{
+	assert(buffer != NULL);
+	return NULL;
+}
+
+IExecutable* Space::getExecutor(const char* buffer)
+{
+	assert(buffer != NULL);
+	return NULL;
+}
+
 std::vector<int> Space::getFdSet() const
 {
 	std::vector<int> result;
@@ -92,4 +112,21 @@ Result<User> Space::findUser(const int clientSocket) const
 		Result<User> result(it->second, false);
 		return result;	
 	}
+}
+
+Result<std::pair<int, User> > Space::findUser(std::string nickname) const
+{
+	for (std::map<int, User>::const_iterator it = mUsers.begin(); it != mUsers.end(); ++it)
+	{
+		User user = it->second;
+		if (user.getNickname() == nickname)
+		{
+			std::pair<int, User> socketAndUser(*it);
+			Result<std::pair<int, User> > result(socketAndUser, true);
+			return result;
+		}
+	}
+	std::pair<int, User> socketAndUser(-1, User("", ""));
+	Result<std::pair<int, User> > result(socketAndUser, false);
+	return result;
 }

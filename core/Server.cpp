@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 13:01:37 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 14:46:37 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ int Server::getMaxFd() const
 
 Space* Server::findSpace(const int clientSocket)
 {
-	std::map<std::string, Channel *>::iterator it = mChannels.begin();
+	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
 	while (it != mChannels.end())
 	{
 		Result<User> result = it->second->findUser(clientSocket);
@@ -153,6 +153,44 @@ Space* Server::findSpace(const int clientSocket)
 		++it;
 	}
 	return &mLobby;
+}
+
+// return <socket, User>
+Result<std::pair<int, User> > Server::findUser(std::string nickname)
+{
+	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
+	while (it != mChannels.end())
+	{
+		Result<std::pair<int, User> > result = it->second->findUser(nickname);
+		if (result.hasSucceeded())
+		{
+			return result;
+		}
+		++it;
+	}
+	Result<std::pair<int, User> > result = mLobby.findUser(nickname);
+	if (result.hasSucceeded())
+	{
+		return result;
+	}
+	std::pair<int, User> socketAndUser(-1, User("", ""));
+	Result<std::pair<int, User> > emptyUser(socketAndUser, false);
+	return emptyUser;
+}
+
+Channel* Server::findChannelOrNull(std::string topic)
+{
+	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
+	while (it != mChannels.end())
+	{
+		Channel* channel = it->second;
+		if (channel->getTopic() == topic)
+		{
+			return channel;
+		}
+		++it;
+	}
+	return NULL;
 }
 
 // TODO: i == STDIN_FILENO 일 때, 서버 콘솔에서 입력 처리, 서버 운영자 명령어 처리

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:19:57 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 11:29:15 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 13:15:00 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ public:
 	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer);
 	IIncomingMessageProvider* getIncomingMessageProvider(const char* buffer);
 	IExecutable* getExecutor(const char* buffer);
-	std::string getCommandList() const;
 	Channel(const std::string& title, const char* password);
 	bool operator<(const Channel& rhs);
 	std::string getTopic() const;

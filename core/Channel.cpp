@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:20:19 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 13:11:22 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 14:48:14 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,6 @@ unsigned int Channel::getPassword() const
 	return mPassword;
 }
 
-std::string Channel::getCommandList() const
-{
-	return "";
-}
-
 /* setter */
 bool Channel::setTopic(const int clientSocket, std::string& title)
 {
@@ -82,9 +77,10 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	command = Util::getLowercaseString(command);
 	if (std::strncmp("/msg", command.c_str(), command.size()) == 0)
 	{
+		// 조건문 추가
 		return new DirectMessageCommand();
 	}
-
+	
 	return NULL;
 }
 

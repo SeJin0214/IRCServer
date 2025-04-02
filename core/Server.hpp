@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:36:09 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 10:41:15 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 14:45:58 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <map>
 #include "Channel.hpp"
 #include "Lobby.hpp"
+#include "Result.hpp"
 
 class Server
 {
@@ -37,6 +38,8 @@ private:
 	int getMaxFd() const;
 	void stop();
 	Space* findSpace(const int clientSocket);
+	Result<std::pair<int, User> > findUser(std::string nickname);
+	Channel* findChannelOrNull(std::string topic);
 	void acceptClient();
 	void clearStream(const int socket);
 	bool sendToClient(const int clientSocket, const char* message);
