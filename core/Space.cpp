@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/25 16:52:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 15:55:29 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/03 10:49:56 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,12 @@
 #include <cstring>
 #include "DirectMessageCommand.hpp"
 #include "IOutgoingMessageProvider.hpp"
-#include "IIncomingMessageProvider.hpp"
 #include "Space.hpp"
 #include "Util.hpp"
 
 Space::~Space()
 {
-
+	
 }
 
 /* getter */
@@ -36,19 +35,6 @@ IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer)
 	}
 	return NULL;
 }
-
-IIncomingMessageProvider* Space::getIncomingMessageProvider(const char* buffer)
-{
-	assert(buffer != NULL);
-
-	std::string command = getCommandSection(buffer);
-	if (std::strncmp("/msg", command.c_str(), command.size()) == 0)
-	{
-		return new DirectMessageCommand();
-	}
-	return NULL;
-}
-
 IExecutable* Space::getExecutor(const char* buffer)
 {
 	assert(buffer != NULL);
@@ -155,3 +141,4 @@ Result<std::pair<int, User> > Space::findUser(std::string nickname) const
 	Result<std::pair<int, User> > result(socketAndUser, false);
 	return result;
 }
+

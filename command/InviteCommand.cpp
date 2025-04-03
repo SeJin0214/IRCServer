@@ -14,29 +14,14 @@
 #include "InviteCommand.hpp"
 #include "Server.hpp"
 
-std::string InviteCommand::getOutgoingMessage(const Server& server, const int clientSocket, const char* buffer)
+std::map<int, std::string> InviteCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
-	(void) server;
+    (void) server;
 	(void) clientSocket;
-	return "";
+	return std::map<int, std::string>();
 }
 
-std::string InviteCommand::getIncomingMessage(const Server& server, const int clientSocket, const char* buffer)
-{
-	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return "";
-}
-
-std::vector<int> InviteCommand::getTargetSockets(const Server& server, const int clientSocket, const char* buffer)
-{
-	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return std::vector<int>();
-}
 
 void InviteCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {

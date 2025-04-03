@@ -11,12 +11,12 @@
 /* ************************************************************************** */
 
 #pragma once
-#include "IIncomingMessageProvider.hpp"
+#include "IOutgoingMessageProvider.hpp"
 
-class HelpCommand : public IIncomingMessageProvider
+class HelpCommand : public IOutgoingMessageProvider
 {
     
 public:
-    std::string getIncomingMessage(const Server& server, const int clientSocket, const char* buffer);
+    std::map<int, std::string> getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer);
 
 };

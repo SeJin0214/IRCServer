@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 17:07:10 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/03 10:50:03 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/03 10:50:04 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@
 #include "Util.hpp"
 #include "Result.hpp"
 #include "IOutgoingMessageProvider.hpp"
-#include "IIncomingMessageProvider.hpp"
 #define SYSCALL_FAIL (-1)
 
 Server::Server(const char* port, const char* password)
@@ -372,18 +371,11 @@ void Server::handleClientMessage(const int clientSocket)
 	// 당하는 사람과 
 	// 주변 사람으로 구분하기
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
-	std::vector<int> sockets = outgoingMessageProvider->getTargetSockets(*this, clientSocket, buffer);
-	std::string messageToSend = outgoingMessageProvider->getOutgoingMessage(*this, clientSocket, buffer);
-	for (size_t i = 0; i < sockets.size(); ++i)
+	
+	std::map<int, std::string> socketAndMessages = outgoingMessageProvider->getSocketAndMessages(*this, clientSocket, buffer);
+	for (std::map<int, std::string>::const_iterator it = socketAndMessages.begin(); it != socketAndMessages.end(); ++it)
 	{
-		sendToClient(sockets[i], messageToSend.c_str());
-	}
-
-	IIncomingMessageProvider* incomingMessageProvider = space->getIncomingMessageProvider(buffer);
-	std::string messageToRecive = incomingMessageProvider->getIncomingMessage(*this, clientSocket, buffer);
-	if (messageToRecive != "")
-	{
-		sendToClient(clientSocket, messageToRecive.c_str());
+		sendToClient(it->first, it->second.c_str());	
 	}
 
 	IExecutable* executor = space->getExecutor(buffer);
@@ -393,7 +385,6 @@ void Server::handleClientMessage(const int clientSocket)
 	}
 
 	delete outgoingMessageProvider;
-	delete incomingMessageProvider;
 	delete executor;
 }
 

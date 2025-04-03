@@ -14,6 +14,7 @@
 
 class BroadcastCommand : public IOutgoingMessageProvider
 {
-    std::string getOutgoingMessage(const Server& server, const int clientSocket, const char* buffer);
-    std::vector<int> getTargetSockets(const Server& server, const int clientSocket, const char* buffer);
+public:
+    std::map<int, std::string> getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer);
+    
 };

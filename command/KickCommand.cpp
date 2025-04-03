@@ -13,28 +13,12 @@
 #include <cassert>
 #include "KickCommand.hpp"
 
-std::string KickCommand::getOutgoingMessage(const Server& server, const int clientSocket, const char* buffer)
+std::map<int, std::string> KickCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
-	return "";
-}
-
-std::string KickCommand::getIncomingMessage(const Server& server, const int clientSocket, const char* buffer)
-{
-	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return "";
-}
-
-std::vector<int> KickCommand::getTargetSockets(const Server& server, const int clientSocket, const char* buffer)
-{
-	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return std::vector<int>();
+	return std::map<int, std::string>();
 }
 
 void KickCommand::execute(Server& server, const int clientSocket, const char* buffer)

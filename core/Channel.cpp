@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/24 18:20:19 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 15:08:53 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/03 10:51:00 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,26 +74,9 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 		return new BroadcastCommand();
 	}
 
-	std::string command = getCommandSection(buffer);
-	
-	return NULL;
-}
 
-IIncomingMessageProvider* Channel::getIncomingMessageProvider(const char* buffer)
-{
-	assert(buffer != NULL);
-	
-	IIncomingMessageProvider* provider = Space::getIncomingMessageProvider(buffer);
-	if (provider != NULL)
-	{
-		return provider;
-	}
-	
 	std::string command = getCommandSection(buffer);
-	if (std::strncmp("/help", command.c_str(), command.size()) == 0)
-	{
-		return new HelpCommand();
-	}
+	
 	return NULL;
 }
 

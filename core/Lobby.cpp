@@ -5,13 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/26 13:02:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 15:07:36 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/03 10:48:49 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/03 10:50:54 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cassert>
 #include <cstring>
+#include <string>
 #include "Lobby.hpp"
 
 Lobby::~Lobby()
@@ -28,19 +29,6 @@ IOutgoingMessageProvider* Lobby::getOutgoingMessageProvider(const char* buffer)
 		return provider;
 	}
 
-	std::string command = getCommandSection(buffer);
-	return NULL;
-}
-
-IIncomingMessageProvider* Lobby::getIncomingMessageProvider(const char* buffer)
-{
-	assert(buffer != NULL);
-	IIncomingMessageProvider* provider = Space::getIncomingMessageProvider(buffer);
-	if (provider != NULL)
-	{
-		return provider;
-	}
-	
 	std::string command = getCommandSection(buffer);
 	return NULL;
 }
