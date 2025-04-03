@@ -6,13 +6,14 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 13:00:29 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 13:09:15 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <algorithm>
 #include <cassert>
 #include <cstring>
+#include <sstream>
 #include "ChannelListCommand.hpp"
 #include "DirectMessageCommand.hpp"
 #include "ErrorCommand.hpp"
@@ -78,7 +79,18 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	std::string command = getCommandSection(buffer);
 	if (std::strncmp("MODE", command.c_str(), command.size()) == 0)
 	{
-		return new ModeCommand;
+		std::stringstream ss(buffer);
+		std::string command;
+		std::getline(ss, command, ' ');
+		std::getline(ss, command, ' ');
+		if (command[0] == '#')
+		{
+			return new ModeCommand;
+		}
+		else
+		{
+			return new ErrorCommand();
+		}
 	}
 	else if (std::strncmp("PART", command.c_str(), command.size()) == 0)
 	{
