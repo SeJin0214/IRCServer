@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:19:57 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 13:04:40 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 19:56:37 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,11 @@ public:
 	bool setTopic(int clientSocket, std::string& title);
 	unsigned int getPassword() const;
 	bool toggleMode(User& user, const eMode mode);
+	bool enterUser(int clientSocket, User& user);
+	void exitUser(int clientSocket);
 
 private:
-	std::vector<std::string> mOperators;
+	std::vector<std::string> mOperatorNicknames;
 	unsigned char mModeFlag;
 	std::string mTopic;
 	unsigned int mPassword;

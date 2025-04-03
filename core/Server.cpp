@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:03 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 12:17:22 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 20:01:59 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ Server::Server(const char* port, const char* password)
 		std::cerr << "fail socket" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	
+
 	int on = 1;
 	if (setsockopt(mServerSocket, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(int)) == -1)
 	{
@@ -155,7 +155,7 @@ Space* Server::findSpace(const int clientSocket)
 }
 
 // return <socket, User>
-Result<std::pair<int, User> > Server::findUser(std::string nickname)
+Result<std::pair<int, User> > Server::findUser(const std::string nickname)
 {
 	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
 	while (it != mChannels.end())
@@ -177,7 +177,7 @@ Result<std::pair<int, User> > Server::findUser(std::string nickname)
 	return emptyUser;
 }
 
-Channel* Server::findChannelOrNull(std::string topic)
+Channel* Server::findChannelOrNull(const std::string topic) const
 {
 	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
 	while (it != mChannels.end())
@@ -191,6 +191,24 @@ Channel* Server::findChannelOrNull(std::string topic)
 	}
 	return NULL;
 }
+
+Channel* Server::findChannelOrNull(const int clientSocket) const
+{
+	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
+	while (it != mChannels.end())
+	{
+		Channel* channel = it->second;
+		Result<User> result = channel->findUser(clientSocket);
+		if (result.hasSucceeded())
+		{
+			return channel;
+		}
+		++it;
+	}
+	return NULL;
+}
+
+
 
 // TODO: i == STDIN_FILENO 일 때, 서버 콘솔에서 입력 처리, 서버 운영자 명령어 처리
 bool Server::run()
@@ -371,7 +389,7 @@ void Server::handleClientMessage(const int clientSocket)
 	Space* space = findSpace(clientSocket);
 
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
-	
+
 	std::map<int, std::string> socketAndMessages = outgoingMessageProvider->getSocketAndMessages(*this, clientSocket, buffer);
 	for (std::map<int, std::string>::const_iterator it = socketAndMessages.begin(); it != socketAndMessages.end(); ++it)
 	{
@@ -507,4 +525,23 @@ bool Server::isInvalidNameFormatted(const char* password) const
         }
     }
     return false;
+}
+
+void Server::QuitServer(const int clientSocket)
+{
+	Channel* channel = findChannelOrNull(clientSocket);
+	if (channel != NULL)
+	{
+		channel->exitUser(clientSocket);
+		if (channel->getUserCount() == 0)
+		{
+			mChannels.erase(channel->getTopic());
+			delete channel;
+		}
+	}
+	else
+	{
+		mLobby.exitUser(clientSocket);
+	}
+	close(clientSocket);
 }
