@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:03 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 10:50:04 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 12:17:22 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -362,14 +362,14 @@ void Server::handleClientMessage(const int clientSocket)
 		sendToClient(clientSocket, over);
 		return;
 	}
-	// 만약 ctrl + d가 들어왔다면 다른 예외 처리
-	buffer[readLength - 1] = '\0';
-
+	else if (readLength == 0)
+	{
+		// User에 버퍼 담아 두기
+		return;
+	}
+	
 	Space* space = findSpace(clientSocket);
 
-	// 보낼 대상과 메시지를
-	// 당하는 사람과 
-	// 주변 사람으로 구분하기
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
 	
 	std::map<int, std::string> socketAndMessages = outgoingMessageProvider->getSocketAndMessages(*this, clientSocket, buffer);

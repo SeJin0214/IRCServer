@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:19:57 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 10:50:37 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 11:09:03 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ public:
 	bool toggleMode(User& user, const eMode mode);
 	// 유저의 이름을 바꾸는 setter
 
-	
 private:
 	std::vector<std::string> mOperators;
 	unsigned char mModeFlag;

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 10:49:56 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 11:52:36 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,11 @@
 #include <sstream>
 #include <cstring>
 #include "DirectMessageCommand.hpp"
+#include "ChannelListCommand.hpp"
 #include "IOutgoingMessageProvider.hpp"
+#include "JoinCommand.hpp"
+#include "QuitCommand.hpp"
+#include "SendChannelMessageCommand.hpp"
 #include "Space.hpp"
 #include "Util.hpp"
 
@@ -31,7 +35,30 @@ IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer)
 	std::string command = getCommandSection(buffer);
 	if (std::strncmp("PRIVMSG", command.c_str(), command.size()) == 0)
 	{
-		return new DirectMessageCommand();
+		std::stringstream ss(buffer);
+		std::string command;
+		std::getline(ss, command, ' ');
+		std::getline(ss, command, ' ');
+		if (command[0] == '#')
+		{
+			return new SendChannelMessageCommand();
+		}
+		else
+		{
+			return new DirectMessageCommand();
+		}
+	}
+	else if (std::strncmp("LIST", command.c_str(), command.size()) == 0)
+	{
+		return new ChannelListCommand();
+	}
+	else if (std::strncmp("QUIT", command.c_str(), command.size()) == 0)
+	{
+		return new QuitCommand();
+	}
+	else if (std::strncmp("JOIN", command.c_str(), command.size()) == 0)
+	{
+		return new JoinCommand();
 	}
 	return NULL;
 }

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:48:49 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 10:50:54 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 11:54:20 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ IExecutable* Lobby::getExecutor(const char* buffer)
 	{
 		return executor;
 	}
-	
+
 	std::string command = getCommandSection(buffer);
 	return NULL;
 
