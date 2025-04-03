@@ -7,6 +7,8 @@
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
 /*   Updated: 2025/04/02 13:01:37 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/03 10:50:03 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/03 20:01:59 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +27,7 @@
 #include "Util.hpp"
 #include "Result.hpp"
 #include "IOutgoingMessageProvider.hpp"
-// #include "IIncomingMessageProvider.hpp"
+#include "IIncomingMessageProvider.hpp"
 #define SYSCALL_FAIL (-1)
 
 Server::Server(const char* port, const char* password)
@@ -50,7 +52,7 @@ Server::Server(const char* port, const char* password)
 		std::cerr << "fail socket" << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	
+
 	int on = 1;
 	if (setsockopt(mServerSocket, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(int)) == -1)
 	{
@@ -153,6 +155,59 @@ Space* Server::findSpace(const int clientSocket)
 		++it;
 	}
 	return &mLobby;
+}
+// return <socket, User>
+Result<std::pair<int, User> > Server::findUser(const std::string nickname)
+{
+	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
+	while (it != mChannels.end())
+	{
+		Result<std::pair<int, User> > result = it->second->findUser(nickname);
+		if (result.hasSucceeded())
+		{
+			return result;
+		}
+		++it;
+	}
+	Result<std::pair<int, User> > result = mLobby.findUser(nickname);
+	if (result.hasSucceeded())
+	{
+		return result;
+	}
+	std::pair<int, User> socketAndUser(-1, User("", ""));
+	Result<std::pair<int, User> > emptyUser(socketAndUser, false);
+	return emptyUser;
+}
+
+Channel* Server::findChannelOrNull(const std::string topic) const
+{
+	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
+	while (it != mChannels.end())
+	{
+		Channel* channel = it->second;
+		if (channel->getTopic() == topic)
+		{
+			return channel;
+		}
+		++it;
+	}
+	return NULL;
+}
+
+Channel* Server::findChannelOrNull(const int clientSocket) const
+{
+	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
+	while (it != mChannels.end())
+	{
+		Channel* channel = it->second;
+		Result<User> result = channel->findUser(clientSocket);
+		if (result.hasSucceeded())
+		{
+			return channel;
+		}
+		++it;
+	}
+	return NULL;
 }
 
 // TODO: i == STDIN_FILENO 일 때, 서버 콘솔에서 입력 처리, 서버 운영자 명령어 처리
@@ -318,7 +373,6 @@ void Server::handleClientMessage(const int clientSocket)
 	
 	const int readLength = recv(clientSocket, buffer, MAX_BUFFER, 0);
 
-	 // "PRIVMSG" 확인   //채널인지 개인메시지인지 확인// 개인메시지일때 인원수 체크 , 각각 보내주기 
 	clearStream(clientSocket);
 	if (readLength > 500)
 	{
@@ -335,6 +389,9 @@ void Server::handleClientMessage(const int clientSocket)
 	std::vector<int> sockets = outgoingMessageProvider->getTargetSockets(*this, clientSocket, buffer);
 	std::string messageToSend = outgoingMessageProvider->getOutgoingMessage(*this, clientSocket, buffer);
 	for (size_t i = 0; i < sockets.size(); ++i)
+
+	std::map<int, std::string> socketAndMessages = outgoingMessageProvider->getSocketAndMessages(*this, clientSocket, buffer);
+	for (std::map<int, std::string>::const_iterator it = socketAndMessages.begin(); it != socketAndMessages.end(); ++it)
 	{
 		sendToClient(sockets[i], messageToSend.c_str());
 	}
@@ -476,4 +533,23 @@ bool Server::isInvalidNameFormatted(const char* password) const
         }
     }
     return false;
+}
+
+void Server::QuitServer(const int clientSocket)
+{
+	Channel* channel = findChannelOrNull(clientSocket);
+	if (channel != NULL)
+	{
+		channel->exitUser(clientSocket);
+		if (channel->getUserCount() == 0)
+		{
+			mChannels.erase(channel->getTopic());
+			delete channel;
+		}
+	}
+	else
+	{
+		mLobby.exitUser(clientSocket);
+	}
+	close(clientSocket);
 }

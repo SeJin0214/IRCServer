@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 13:12:10 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 20:01:34 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,35 @@ bool Channel::toggleMode(User& user, const eMode mode)
 	const unsigned char bitFlag = 1 << mode;
 	mModeFlag ^= bitFlag;
 	return true;
+}
+
+bool Channel::enterUser(int clientSocket, User& user)
+{
+	if (getUserCount() == 0)
+	{
+		mOperatorNicknames.push_back(user.getNickname());
+	}
+	assert(getUserCount() > 0);
+	bool bSucceed = Space::enterUser(clientSocket, user);
+	assert(bSucceed);
+	return true;
+}
+
+void Channel::exitUser(int clientSocket)
+{
+	std::vector<std::string>::iterator it = mOperatorNicknames.begin();
+	std::map<int, User>::iterator mit = mUsers.find(clientSocket);
+	while (it != mOperatorNicknames.end())
+	{
+		if (*it == mit->second.getNickname())
+		{
+			mOperatorNicknames.erase(it);
+			break;
+		}
+		++it;
+	}
+	assert(it != mOperatorNicknames.end());
+	Space::exitUser(clientSocket);
 }
 
 bool Channel::isOperator(const User& user) const

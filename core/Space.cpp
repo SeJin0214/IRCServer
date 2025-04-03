@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 13:00:20 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 19:43:37 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,11 @@ std::vector<int> Space::getClientSockets() const
 		++it;
 	}
 	return result;
+}
+
+int Space::getUserCount() const
+{
+	return static_cast<int>(mUsers.size());
 }
 
 bool Space::enterUser(int clientSocket, User& user)

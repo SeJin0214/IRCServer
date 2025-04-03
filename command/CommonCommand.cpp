@@ -1,23 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Util.hpp                                           :+:      :+:    :+:   */
+/*   CommonCommand.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/24 13:53:59 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 19:22:47 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/03 17:09:53 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/03 17:10:07 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-#include <string>
+#include "CommonCommand.hpp"
 
-class Util
+std::string CommonCommand::getPrefixMessage(const User& user)
 {
-
-public:
-	static unsigned int generateHash65599(const char* str);
-	static std::string getLowercaseString(const std::string& str);
-
-};
+	
+}

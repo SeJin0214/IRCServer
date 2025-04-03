@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:51:10 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 13:00:41 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 19:45:56 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,11 @@ public:
 	std::vector<int> getClientSockets() const;
 	std::vector<std::string> getNicknames() const;
 	std::vector<std::string> getUsernames() const;
+	int getUserCount() const;
 	Result<User> findUser(const int clientSocket) const;
 	Result<std::pair<int, User> > findUser(std::string nickname) const;
-	bool enterUser(int clientSocket, User& user);
-	void exitUser(int clientSocket);
+	virtual bool enterUser(int clientSocket, User& user);
+	virtual void exitUser(int clientSocket);
 
 protected:
 	Space() {};

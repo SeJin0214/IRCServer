@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 11:22:22 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 10:51:54 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 16:26:16 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ std::map<int, std::string> DirectMessageCommand::getSocketAndMessages(Server& se
 	int colonIdx = str.find_first_of(":", lastIdxOfNick);
     std::string username = str.substr(firstIdxOfNick, lastIdxOfNick - firstIdxOfNick);
 	std::string temp;
-	std::string privmsg(" PRIVMSG ");
 	std::string msg = str.substr(colonIdx - 1);
 	std::stringstream ss(username);
 	std::string ret;
@@ -43,12 +42,11 @@ std::map<int, std::string> DirectMessageCommand::getSocketAndMessages(Server& se
 		if(User.hasSucceeded() == true)
 		{
 			std::string who = ":[닉네임]![username]@[host]";
-			ret = who + privmsg + temp + msg;
+			ret = who + " PRIVMSG " + temp + msg;
 			socketAndMessage[User.getValue().first] = ret;
 		}
 		else
 		{
-			// std::string errorMsg = " :No such nick/channel";
 			ret = ":server 401 " + temp + " :No such nick/channel";
 			socketAndMessage[User.getValue().first] = ret;
 		}
@@ -56,7 +54,6 @@ std::map<int, std::string> DirectMessageCommand::getSocketAndMessages(Server& se
 	return socketAndMessage;
 	// usernamesplit(',') a a a strtok
 	// find user () << 매칭후 맞으면
-
 }
 // <<<<<<< HEAD
 
