@@ -6,20 +6,17 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 11:21:16 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 11:25:47 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 10:33:19 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include "IOutgoingMessageProvider.hpp"
-#include "IIncomingMessageProvider.hpp"
 
-class DirectMessageCommand : public IOutgoingMessageProvider, public IIncomingMessageProvider
+class DirectMessageCommand : public IOutgoingMessageProvider
 {
 
 public:
-    std::string getOutgoingMessage(const Server& server, const int clientSocket, const char* buffer);
-    std::string getIncomingMessage(const Server& server, const int clientSocket, const char* buffer);
-    std::vector<int> getTargetSockets(const Server& server, const int clientSocket, const char* buffer);
+    std::map<int, std::string> getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer);
 
 };

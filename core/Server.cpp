@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 14:46:37 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 10:45:43 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@
 #include "Util.hpp"
 #include "Result.hpp"
 #include "IOutgoingMessageProvider.hpp"
-#include "IIncomingMessageProvider.hpp"
 #define SYSCALL_FAIL (-1)
 
 Server::Server(const char* port, const char* password)
@@ -369,19 +368,11 @@ void Server::handleClientMessage(const int clientSocket)
 	Space* space = findSpace(clientSocket);
 
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
-	std::vector<int> sockets = outgoingMessageProvider->getTargetSockets(*this, clientSocket, buffer);
-	std::string messageToSend = outgoingMessageProvider->getOutgoingMessage(*this, clientSocket, buffer);
-	for (size_t i = 0; i < sockets.size(); ++i)
-	{
-		sendToClient(sockets[i], messageToSend.c_str());
-	}
-
 	
-	IIncomingMessageProvider* incomingMessageProvider = space->getIncomingMessageProvider(buffer);
-	std::string messageToRecive = incomingMessageProvider->getIncomingMessage(*this, clientSocket, buffer);
-	if (messageToRecive != "")
+	std::map<int, std::string> socketAndMessages = outgoingMessageProvider->getSocketAndMessages(*this, clientSocket, buffer);
+	for (std::map<int, std::string>::const_iterator it = socketAndMessages.begin(); it != socketAndMessages.end(); ++it)
 	{
-		sendToClient(clientSocket, messageToRecive.c_str());
+		sendToClient(it->first, it->second.c_str());	
 	}
 
 	IExecutable* executor = space->getExecutor(buffer);
@@ -391,7 +382,6 @@ void Server::handleClientMessage(const int clientSocket)
 	}
 
 	delete outgoingMessageProvider;
-	delete incomingMessageProvider;
 	delete executor;
 }
 

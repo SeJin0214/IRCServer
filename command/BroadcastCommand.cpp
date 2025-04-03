@@ -13,19 +13,9 @@
 #include <cassert>
 #include "BroadcastCommand.hpp"
 
-std::string BroadcastCommand::getOutgoingMessage(const Server& server, const int clientSocket, const char* buffer)
+std::map<int, std::string> BroadcastCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
-	std::string result(buffer);
-	return result;
-}
-
-std::vector<int> BroadcastCommand::getTargetSockets(const Server& server, const int clientSocket, const char* buffer)
-{
-	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return std::vector<int>();
 }

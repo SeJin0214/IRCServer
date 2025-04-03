@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:20:19 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 14:48:14 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 10:40:54 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,31 +75,12 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	std::string command;
 	std::getline(ss, command, ' ');
 	command = Util::getLowercaseString(command);
-	if (std::strncmp("/msg", command.c_str(), command.size()) == 0)
+	if (std::strncmp("/", command.c_str(), command.size()) == 0)
 	{
 		// 조건문 추가
 		return new DirectMessageCommand();
 	}
 	
-	return NULL;
-}
-
-IIncomingMessageProvider* Channel::getIncomingMessageProvider(const char* buffer)
-{
-	assert(buffer != NULL);
-	
-	std::stringstream ss(buffer);
-	std::string command;
-	std::getline(ss, command, ' ');
-	command = Util::getLowercaseString(command);
-	if (std::strncmp("/help", command.c_str(), command.size()) == 0)
-	{
-		return new HelpCommand();
-	}
-	else if (std::strncmp("/msg", command.c_str(), command.size()) == 0)
-	{
-		return new DirectMessageCommand();
-	}
 	return NULL;
 }
 

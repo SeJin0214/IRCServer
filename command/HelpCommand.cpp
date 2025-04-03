@@ -13,11 +13,11 @@
 #include <cassert>
 #include "HelpCommand.hpp"
 
-std::string HelpCommand::getIncomingMessage(const Server& server, const int clientSocket, const char* buffer)
+std::map<int, std::string> HelpCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
-	return "";
 }
+
     

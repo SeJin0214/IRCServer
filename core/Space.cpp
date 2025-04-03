@@ -6,31 +6,26 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:52:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 14:47:54 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 10:42:33 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cassert>
 #include "IOutgoingMessageProvider.hpp"
-#include "IIncomingMessageProvider.hpp"
 #include "Space.hpp"
 
 Space::~Space()
 {
-
+	
 }
 
-/* getter */
 
+
+/* getter */
 IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer)
 {
 	assert(buffer != NULL);
-	return NULL;
-}
-
-IIncomingMessageProvider* Space::getIncomingMessageProvider(const char* buffer)
-{
-	assert(buffer != NULL);
+	
 	return NULL;
 }
 
@@ -130,3 +125,4 @@ Result<std::pair<int, User> > Space::findUser(std::string nickname) const
 	Result<std::pair<int, User> > result(socketAndUser, false);
 	return result;
 }
+

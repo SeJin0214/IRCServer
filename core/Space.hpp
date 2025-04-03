@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:50:56 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 14:45:32 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 10:40:09 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ public:
 	virtual ~Space();
 	/* getter */
 	virtual IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer);
-	virtual IIncomingMessageProvider* getIncomingMessageProvider(const char* buffer);
 	virtual IExecutable* getExecutor(const char* buffer);
 	std::vector<int> getFdSet() const;
 	std::vector<int> getClientSockets() const;
