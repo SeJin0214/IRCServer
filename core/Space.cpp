@@ -6,14 +6,18 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:52:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 14:47:54 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 15:55:29 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cassert>
+#include <sstream>
+#include <cstring>
+#include "DirectMessageCommand.hpp"
 #include "IOutgoingMessageProvider.hpp"
 #include "IIncomingMessageProvider.hpp"
 #include "Space.hpp"
+#include "Util.hpp"
 
 Space::~Space()
 {
@@ -21,23 +25,44 @@ Space::~Space()
 }
 
 /* getter */
-
 IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer)
 {
 	assert(buffer != NULL);
+
+	std::string command = getCommandSection(buffer);
+	if (std::strncmp("PRIVMSG", command.c_str(), command.size()) == 0)
+	{
+		return new DirectMessageCommand();
+	}
 	return NULL;
 }
 
 IIncomingMessageProvider* Space::getIncomingMessageProvider(const char* buffer)
 {
 	assert(buffer != NULL);
+
+	std::string command = getCommandSection(buffer);
+	if (std::strncmp("/msg", command.c_str(), command.size()) == 0)
+	{
+		return new DirectMessageCommand();
+	}
 	return NULL;
 }
 
 IExecutable* Space::getExecutor(const char* buffer)
 {
 	assert(buffer != NULL);
+	std::string command = getCommandSection(buffer);
+	
 	return NULL;
+}
+
+std::string Space::getCommandSection(const char* buffer)
+{
+	std::stringstream ss(buffer);
+	std::string command;
+	std::getline(ss, command, ' ');
+	return command;
 }
 
 std::vector<int> Space::getFdSet() const

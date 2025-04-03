@@ -6,15 +6,13 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:20:19 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 14:48:14 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 15:08:53 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <algorithm>
 #include <cassert>
 #include <cstring>
-#include <iostream>
-#include <sstream>
 #include "BroadcastCommand.hpp"
 #include "ChannelListCommand.hpp"
 #include "DirectMessageCommand.hpp"
@@ -66,20 +64,17 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 {
 	assert(buffer != NULL);
 
-	if (std::strncmp(buffer, "/", 1) != 0)
+	IOutgoingMessageProvider* provider = Space::getOutgoingMessageProvider(buffer);
+	if (provider != NULL)
+	{
+		return provider;
+	}
+	else if (std::strncmp(buffer, "/", 1) != 0)
 	{
 		return new BroadcastCommand();
 	}
 
-	std::stringstream ss(buffer);
-	std::string command;
-	std::getline(ss, command, ' ');
-	command = Util::getLowercaseString(command);
-	if (std::strncmp("/msg", command.c_str(), command.size()) == 0)
-	{
-		// 조건문 추가
-		return new DirectMessageCommand();
-	}
+	std::string command = getCommandSection(buffer);
 	
 	return NULL;
 }
@@ -88,17 +83,16 @@ IIncomingMessageProvider* Channel::getIncomingMessageProvider(const char* buffer
 {
 	assert(buffer != NULL);
 	
-	std::stringstream ss(buffer);
-	std::string command;
-	std::getline(ss, command, ' ');
-	command = Util::getLowercaseString(command);
+	IIncomingMessageProvider* provider = Space::getIncomingMessageProvider(buffer);
+	if (provider != NULL)
+	{
+		return provider;
+	}
+	
+	std::string command = getCommandSection(buffer);
 	if (std::strncmp("/help", command.c_str(), command.size()) == 0)
 	{
 		return new HelpCommand();
-	}
-	else if (std::strncmp("/msg", command.c_str(), command.size()) == 0)
-	{
-		return new DirectMessageCommand();
 	}
 	return NULL;
 }
@@ -106,7 +100,13 @@ IIncomingMessageProvider* Channel::getIncomingMessageProvider(const char* buffer
 IExecutable* Channel::getExecutor(const char* buffer)
 {
 	assert(buffer != NULL);
+	IExecutable* executor = Space::getExecutor(buffer);
+	if (executor != NULL)
+	{
+		return executor;
+	}
 	
+	std::string command = getCommandSection(buffer);
 	return NULL;
 }
 

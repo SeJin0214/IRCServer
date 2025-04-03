@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 16:50:56 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 14:45:32 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 15:07:01 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,6 @@ public:
 protected:
 	Space() {};
 	std::map<int, User> mUsers; // <int, User *>
+	std::string getCommandSection(const char* buffer);
 
 };

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:36:09 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 14:45:58 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 09:06:09 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ public:
 	Server(const char* port, const char* password);
 	~Server();
 	bool run();
+	Result<std::pair<int, User> > findUser(std::string nickname);
+	Channel* findChannelOrNull(std::string topic);
 private:
 	enum { MAX_BUFFER = 512 };
 	Lobby mLobby;
@@ -38,8 +40,6 @@ private:
 	int getMaxFd() const;
 	void stop();
 	Space* findSpace(const int clientSocket);
-	Result<std::pair<int, User> > findUser(std::string nickname);
-	Channel* findChannelOrNull(std::string topic);
 	void acceptClient();
 	void clearStream(const int socket);
 	bool sendToClient(const int clientSocket, const char* message);

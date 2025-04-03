@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 14:46:37 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/02 17:07:10 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -368,6 +368,9 @@ void Server::handleClientMessage(const int clientSocket)
 
 	Space* space = findSpace(clientSocket);
 
+	// 보낼 대상과 메시지를
+	// 당하는 사람과 
+	// 주변 사람으로 구분하기
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
 	std::vector<int> sockets = outgoingMessageProvider->getTargetSockets(*this, clientSocket, buffer);
 	std::string messageToSend = outgoingMessageProvider->getOutgoingMessage(*this, clientSocket, buffer);
@@ -376,7 +379,6 @@ void Server::handleClientMessage(const int clientSocket)
 		sendToClient(sockets[i], messageToSend.c_str());
 	}
 
-	
 	IIncomingMessageProvider* incomingMessageProvider = space->getIncomingMessageProvider(buffer);
 	std::string messageToRecive = incomingMessageProvider->getIncomingMessage(*this, clientSocket, buffer);
 	if (messageToRecive != "")
