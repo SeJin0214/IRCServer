@@ -317,6 +317,8 @@ void Server::handleClientMessage(const int clientSocket)
 	char buffer[MAX_BUFFER] = { 0, };
 	
 	const int readLength = recv(clientSocket, buffer, MAX_BUFFER, 0);
+
+	 // "PRIVMSG" 확인   //채널인지 개인메시지인지 확인// 개인메시지일때 인원수 체크 , 각각 보내주기 
 	clearStream(clientSocket);
 	if (readLength > 500)
 	{
