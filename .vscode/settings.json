@@ -54,6 +54,7 @@
         "xtr1common": "cpp",
         "xutility": "cpp",
         "sstream": "cpp",
+<<<<<<< HEAD
         "charconv": "cpp",
         "chrono": "cpp",
         "ctime": "cpp",
@@ -63,6 +64,8 @@
         "span": "cpp",
         "text_encoding": "cpp",
         "variant": "cpp",
+=======
+>>>>>>> develop
         "cassert": "cpp"
     }
 }

@@ -6,7 +6,7 @@
 #    By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/19 16:33:48 by sejjeong          #+#    #+#              #
-#    Updated: 2025/04/02 12:50:08 by sejjeong         ###   ########.fr        #
+#    Updated: 2025/04/03 13:01:45 by sejjeong         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,13 +29,19 @@ SRCS = $(SRCS_DIR)/main.cpp \
 		$(CORE_DIR)/User.cpp \
 		$(CORE_DIR)/Lobby.cpp \
 		$(CORE_DIR)/Util.cpp \
-		$(COMMAND_DIR)/BroadcastCommand.cpp \
-		$(COMMAND_DIR)/HelpCommand.cpp \
 		$(COMMAND_DIR)/ChannelListCommand.cpp \
 		$(COMMAND_DIR)/DirectMessageCommand.cpp \
+		$(COMMAND_DIR)/ErrorCommand.cpp \
+		$(COMMAND_DIR)/HelpCommand.cpp \
 		$(COMMAND_DIR)/InviteCommand.cpp \
+		$(COMMAND_DIR)/JoinCommand.cpp \
 		$(COMMAND_DIR)/KickCommand.cpp \
+		$(COMMAND_DIR)/ModeCommand.cpp \
+		$(COMMAND_DIR)/PartCommand.cpp \
+		$(COMMAND_DIR)/QuitCommand.cpp \
 		$(COMMAND_DIR)/SendChannelMessageCommand.cpp \
+		$(COMMAND_DIR)/TopicCommand.cpp \
+		$(COMMAND_DIR)/WhoCommand.cpp \
 
 
 OBJS = ${SRCS:.cpp=.o}

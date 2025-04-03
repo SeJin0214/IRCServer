@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/24 12:36:09 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 10:41:15 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/03 10:49:47 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/03 10:49:49 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <map>
 #include "Channel.hpp"
 #include "Lobby.hpp"
+#include "Result.hpp"
 
 class Server
 {
@@ -24,6 +25,8 @@ public:
 	Server(const char* port, const char* password);
 	~Server();
 	bool run();
+	Result<std::pair<int, User> > findUser(std::string nickname);
+	Channel* findChannelOrNull(std::string topic);
 private:
 	enum { MAX_BUFFER = 512 };
 	Lobby mLobby;

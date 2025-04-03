@@ -5,20 +5,24 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/24 18:20:19 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 13:11:22 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/03 13:12:10 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <algorithm>
 #include <cassert>
 #include <cstring>
-#include <iostream>
 #include <sstream>
-#include "BroadcastCommand.hpp"
 #include "ChannelListCommand.hpp"
 #include "DirectMessageCommand.hpp"
+#include "ErrorCommand.hpp"
 #include "HelpCommand.hpp"
+#include "InviteCommand.hpp"
+#include "KickCommand.hpp"
+#include "ModeCommand.hpp"
+#include "PartCommand.hpp"
+#include "TopicCommand.hpp"
 #include "Channel.hpp"
 #include "Util.hpp"
 #include "Result.hpp"
@@ -51,11 +55,6 @@ unsigned int Channel::getPassword() const
 	return mPassword;
 }
 
-std::string Channel::getCommandList() const
-{
-	return "";
-}
-
 /* setter */
 bool Channel::setTopic(const int clientSocket, std::string& title)
 {
@@ -71,48 +70,84 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 {
 	assert(buffer != NULL);
 
+// <<<<<<< HEAD
 	std::cout << "first : " << buffer << std::endl;
-	if (std::strncmp(buffer, "/", 1) != 0)
+	// if (std::strncmp(buffer, "/", 1) != 0)
+// =======
+	IOutgoingMessageProvider* provider = Space::getOutgoingMessageProvider(buffer);
+// >>>>>>> develop
+	if (provider != NULL)
 	{
-		return new BroadcastCommand();
+		return provider;
 	}
 
+// <<<<<<< HEAD
 	std::stringstream ss(buffer);
 	std::string command;
 	std::getline(ss, command, ' ');
 	command = Util::getLowercaseString(command);
 	std::cout << "second : " << buffer << std::endl;
 	if (std::strncmp("/msg", command.c_str(), command.size()) == 0)
+// =======
+	std::string command = getCommandSection(buffer);
+	if (std::strncmp("MODE", command.c_str(), command.size()) == 0)
+// >>>>>>> develop
 	{
-		return new DirectMessageCommand();
+		std::stringstream ss(buffer);
+		std::string command;
+		std::getline(ss, command, ' ');
+		std::getline(ss, command, ' ');
+		if (command[0] == '#')
+		{
+			return new ModeCommand();
+		}
+		else
+		{
+			return new ErrorCommand();
+		}
 	}
-
-	return NULL;
-}
-
-IIncomingMessageProvider* Channel::getIncomingMessageProvider(const char* buffer)
-{
-	assert(buffer != NULL);
-	
-	std::stringstream ss(buffer);
-	std::string command;
-	std::getline(ss, command, ' ');
-	command = Util::getLowercaseString(command);
-	if (std::strncmp("/help", command.c_str(), command.size()) == 0)
+	else if (std::strncmp("PART", command.c_str(), command.size()) == 0)
 	{
-		return new HelpCommand();
+		return new PartCommand();
 	}
-	else if (std::strncmp("/msg", command.c_str(), command.size()) == 0)
+	else if (std::strncmp("INVITE", command.c_str(), command.size()) == 0)
 	{
-		return new DirectMessageCommand();
+		return new InviteCommand();
 	}
-	return NULL;
+	else if (std::strncmp("TOPIC", command.c_str(), command.size()) == 0)
+	{
+		return new TopicCommand();
+	}
+	return new ErrorCommand();
 }
 
 IExecutable* Channel::getExecutor(const char* buffer)
 {
 	assert(buffer != NULL);
 	
+	IExecutable* executor = Space::getExecutor(buffer);
+	if (executor != NULL)
+	{
+		return executor;
+	}
+
+	std::string command = getCommandSection(buffer);
+	if (std::strncmp("MODE", command.c_str(), command.size()) == 0)
+	{
+		return new ModeCommand;
+	}
+	else if (std::strncmp("PART", command.c_str(), command.size()) == 0)
+	{
+		return new PartCommand;
+	}
+	else if (std::strncmp("INVITE", command.c_str(), command.size()) == 0)
+	{
+		return new InviteCommand;
+	}
+	else if (std::strncmp("TOPIC", command.c_str(), command.size()) == 0)
+	{
+		return new TopicCommand;
+	}
 	return NULL;
 }
 

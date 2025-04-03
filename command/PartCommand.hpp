@@ -1,24 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IIncomingMessageProvider.hpp                       :+:      :+:    :+:   */
+/*   PartCommand.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/31 16:15:59 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 11:12:39 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/03 11:41:14 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/03 12:49:10 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-#include <string>
-#include <vector>
-#include "Server.hpp"
+#include "IExecutable.hpp"
+#include "IOutgoingMessageProvider.hpp"
 
-class IIncomingMessageProvider
+class PartCommand : public IOutgoingMessageProvider, public IExecutable
 {
 public:
-	virtual ~IIncomingMessageProvider() {};
-	virtual std::string getIncomingMessage(const Server& server, const int clientSocket, const char* buffer) = 0;
-
+    std::map<int, std::string> getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer);
+    void execute(Server& server, const int clientSocket, const char* buffer);
+    
 };

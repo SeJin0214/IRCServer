@@ -25,7 +25,7 @@
 #include "Util.hpp"
 #include "Result.hpp"
 #include "IOutgoingMessageProvider.hpp"
-#include "IIncomingMessageProvider.hpp"
+// #include "IIncomingMessageProvider.hpp"
 #define SYSCALL_FAIL (-1)
 
 Server::Server(const char* port, const char* password)

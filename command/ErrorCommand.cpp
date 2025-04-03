@@ -1,24 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   IOutgoingMessageProvider.hpp                       :+:      :+:    :+:   */
+/*   ErrorCommand.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/02 10:33:05 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 10:30:59 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/03 12:53:02 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/03 12:53:40 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cassert>
+#include "ErrorCommand.hpp"
 
-#pragma once
-#include <string>
-#include <map>
-#include "Server.hpp"
-#include <iostream>
-class IOutgoingMessageProvider
+std::map<int, std::string> ErrorCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
 {
-public:
-	virtual ~IOutgoingMessageProvider() {};
-	virtual std::map<int, std::string> getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) = 0;
-};
+	assert(buffer != NULL);
+	(void) server;
+	(void) clientSocket;
+	return std::map<int, std::string>();
+}
