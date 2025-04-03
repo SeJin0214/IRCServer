@@ -23,5 +23,4 @@ public:
     std::string getIncomingMessage(const Server& server, const int clientSocket, const char* buffer);
     std::vector<int> getTargetSockets(const Server& server, const int clientSocket, const char* buffer);
     void execute(Server& server, const int clientSocket, const char* buffer);
-
 };

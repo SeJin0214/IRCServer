@@ -31,6 +31,7 @@ std::string DirectMessageCommand::getOutgoingMessage(const Server& server, const
 	int lastIdxOfNick = str.find_first_of(" ", firstIdxOfNick);
     std::string username = str.substr(firstIdxOfNick, lastIdxOfNick - firstIdxOfNick);
 	// find user () << 매칭후 맞으면
+
 	return (str.substr(lastIdxOfNick + 2));
 
 	while (buffer)
