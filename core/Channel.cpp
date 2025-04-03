@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 13:09:15 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 13:12:10 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 		std::getline(ss, command, ' ');
 		if (command[0] == '#')
 		{
-			return new ModeCommand;
+			return new ModeCommand();
 		}
 		else
 		{
@@ -94,15 +94,15 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	}
 	else if (std::strncmp("PART", command.c_str(), command.size()) == 0)
 	{
-		return new PartCommand;
+		return new PartCommand();
 	}
 	else if (std::strncmp("INVITE", command.c_str(), command.size()) == 0)
 	{
-		return new InviteCommand;
+		return new InviteCommand();
 	}
 	else if (std::strncmp("TOPIC", command.c_str(), command.size()) == 0)
 	{
-		return new TopicCommand;
+		return new TopicCommand();
 	}
 	return new ErrorCommand();
 }
