@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:48:49 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 11:54:20 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 13:00:04 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <cstring>
 #include <string>
 #include "Lobby.hpp"
+#include "ErrorCommand.hpp"
 
 Lobby::~Lobby()
 {
@@ -28,9 +29,7 @@ IOutgoingMessageProvider* Lobby::getOutgoingMessageProvider(const char* buffer)
 	{
 		return provider;
 	}
-
-	std::string command = getCommandSection(buffer);
-	return NULL;
+	return new ErrorCommand();
 }
 
 IExecutable* Lobby::getExecutor(const char* buffer)
@@ -41,8 +40,6 @@ IExecutable* Lobby::getExecutor(const char* buffer)
 	{
 		return executor;
 	}
-
-	std::string command = getCommandSection(buffer);
 	return NULL;
 
 }

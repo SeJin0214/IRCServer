@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:37:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 11:42:06 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 12:49:19 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,4 +19,11 @@ std::map<int, std::string> ModeCommand::getSocketAndMessages(const Server& serve
 	(void) server;
 	(void) clientSocket;
 	return std::map<int, std::string>();
+}
+
+void ModeCommand::execute(Server& server, const int clientSocket, const char* buffer)
+{
+	assert(buffer != NULL);
+	(void) server;
+	(void) clientSocket;
 }

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 11:52:36 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 13:00:20 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,20 @@ IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer)
 	}
 	return NULL;
 }
+
 IExecutable* Space::getExecutor(const char* buffer)
 {
 	assert(buffer != NULL);
 	std::string command = getCommandSection(buffer);
 	
+	if (std::strncmp("QUIT", command.c_str(), command.size()) == 0)
+	{
+		return new QuitCommand();
+	}
+	else if (std::strncmp("JOIN", command.c_str(), command.size()) == 0)
+	{
+		return new JoinCommand();
+	}
 	return NULL;
 }
 

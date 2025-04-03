@@ -1,23 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PartCommand.hpp                                    :+:      :+:    :+:   */
+/*   ErrorCommand.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/03 11:41:14 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 12:49:10 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/03 12:53:02 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/03 12:53:40 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-#include "IExecutable.hpp"
-#include "IOutgoingMessageProvider.hpp"
+#include <cassert>
+#include "ErrorCommand.hpp"
 
-class PartCommand : public IOutgoingMessageProvider, public IExecutable
+std::map<int, std::string> ErrorCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
 {
-public:
-    std::map<int, std::string> getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer);
-    void execute(Server& server, const int clientSocket, const char* buffer);
-    
-};
+	assert(buffer != NULL);
+	(void) server;
+	(void) clientSocket;
+	return std::map<int, std::string>();
+}

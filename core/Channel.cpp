@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 12:38:52 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/03 13:00:29 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <cstring>
 #include "ChannelListCommand.hpp"
 #include "DirectMessageCommand.hpp"
+#include "ErrorCommand.hpp"
 #include "HelpCommand.hpp"
 #include "InviteCommand.hpp"
 #include "KickCommand.hpp"
@@ -69,12 +70,13 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	assert(buffer != NULL);
 
 	IOutgoingMessageProvider* provider = Space::getOutgoingMessageProvider(buffer);
-	std::string command = getCommandSection(buffer);
 	if (provider != NULL)
 	{
 		return provider;
 	}
-	else if (std::strncmp("MODE", command.c_str(), command.size()) == 0)
+
+	std::string command = getCommandSection(buffer);
+	if (std::strncmp("MODE", command.c_str(), command.size()) == 0)
 	{
 		return new ModeCommand;
 	}
@@ -90,19 +92,36 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	{
 		return new TopicCommand;
 	}
-	return NULL; // 뭘 보내야 하나?
+	return new ErrorCommand();
 }
 
 IExecutable* Channel::getExecutor(const char* buffer)
 {
 	assert(buffer != NULL);
+	
 	IExecutable* executor = Space::getExecutor(buffer);
 	if (executor != NULL)
 	{
 		return executor;
 	}
-	
+
 	std::string command = getCommandSection(buffer);
+	if (std::strncmp("MODE", command.c_str(), command.size()) == 0)
+	{
+		return new ModeCommand;
+	}
+	else if (std::strncmp("PART", command.c_str(), command.size()) == 0)
+	{
+		return new PartCommand;
+	}
+	else if (std::strncmp("INVITE", command.c_str(), command.size()) == 0)
+	{
+		return new InviteCommand;
+	}
+	else if (std::strncmp("TOPIC", command.c_str(), command.size()) == 0)
+	{
+		return new TopicCommand;
+	}
 	return NULL;
 }
 

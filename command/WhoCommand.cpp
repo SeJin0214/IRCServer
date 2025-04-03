@@ -1,23 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PartCommand.hpp                                    :+:      :+:    :+:   */
+/*   WhoCommand.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/03 11:41:14 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 12:49:10 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/03 13:01:53 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/03 13:02:45 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-#include "IExecutable.hpp"
-#include "IOutgoingMessageProvider.hpp"
+#include <cassert>
+#include "WhoCommand.hpp"
 
-class PartCommand : public IOutgoingMessageProvider, public IExecutable
+std::map<int, std::string> WhoCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
 {
-public:
-    std::map<int, std::string> getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer);
-    void execute(Server& server, const int clientSocket, const char* buffer);
-    
-};
+	assert(buffer != NULL);
+	(void) server;
+	(void) clientSocket;
+	return std::map<int, std::string>();
+}
