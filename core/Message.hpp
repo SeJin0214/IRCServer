@@ -1,24 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   CommonCommand.hpp                                  :+:      :+:    :+:   */
+/*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/03 17:08:38 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 17:10:12 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/03 10:49:47 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/04 13:42:38 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-#include "User.hpp"
-#include <sys/socket.h> 
-#include <netinet/in.h>
-#include <arpa/inet.h>
+#pragma
+#include <map>
+#include <vector>
+#include <iostream>
 
-class CommonCommand
+class Message
 {
-public:
-	static std::string getPrefixMessage(const User& user, int clientsocket);
-	static std::string getHostIP(int sockfd);
+public :
+    std::vector<std::pair<int, std::string>> getMessage() const;
+    void addMessage(int socket, std::string msg);
+private :
+    std::vector <std::pair<int, std::string> > mMsg;
 };

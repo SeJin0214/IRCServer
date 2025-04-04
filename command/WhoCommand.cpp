@@ -13,9 +13,11 @@
 #include <cassert>
 #include "WhoCommand.hpp"
 
+
 std::map<int, std::string> WhoCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
+
 	(void) server;
 	(void) clientSocket;
 	return std::map<int, std::string>();

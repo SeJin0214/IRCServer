@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:05:45 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 20:03:21 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/04 12:41:48 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ std::map<int, std::string> QuitCommand::getSocketAndMessages(const Server& serve
 
 	std::map<int, std::string> result;
 	
+	// 호스트 주소는 주어진 함수를 이용해서 제작  
 	std::string message = "ERROR :Closing link: (root@127.0.0.1) [";
 	message += buffer;
 	message += "]";

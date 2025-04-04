@@ -12,6 +12,7 @@
 
 #include <cassert>
 #include "DirectMessageCommand.hpp"
+#include "CommonCommand.hpp"
 #include <iostream>
 #include <sstream>
 #include "User.hpp"
@@ -21,12 +22,13 @@ std::map<int, std::string> DirectMessageCommand::getSocketAndMessages(Server& se
 	assert(buffer != NULL);
 	assert(buffer != "");
 	std::map<int, std::string> socketAndMessage;
+	CommonCommand commoncommand;
 
 	// 	127.000.000.001.53570-127.000.000.001.06667: PRIVMSG donjeong,sejjeong :tnlqkf
 	// 127.000.000.001.06667-127.000.000.001.54892: :donkim!root@127.0.0.1 PRIVMSG donjeong :tnlqkf
 	// 127.000.000.001.06667-127.000.000.001.47094: :donkim!root@127.0.0.1 PRIVMSG sejjeong :tnlqkf
 	// :server 401 nickname target :No such nick/channel
-	(void) clientSocket;
+
 	std::string str = std::string (buffer);
 	size_t firstIdxOfNick = str.find("PRIVMSG") + 8;
 	int lastIdxOfNick = str.find_first_of(" ", 0);
@@ -38,17 +40,17 @@ std::map<int, std::string> DirectMessageCommand::getSocketAndMessages(Server& se
 	std::string ret;
 	for (int i = 0; getline(ss, temp, ','); i++)
 	{
-		Result<std::pair<int, User>> User = server.findUser(temp);
-		if(User.hasSucceeded() == true)
+		Result<std::pair<int, User>> user = server.findUser(temp);
+		if(user.hasSucceeded() == true)
 		{
-			std::string who = ":[닉네임]![username]@[host]";
-			ret = who + " PRIVMSG " + temp + msg;
-			socketAndMessage[User.getValue().first] = ret;
+			User host = server.findChannelOrNull(clientSocket)->findUser(clientSocket).getValue();
+			ret = commoncommand.getPrefixMessage(host, clientSocket) + " PRIVMSG " + temp + msg;
+			socketAndMessage[user.getValue().first] = ret;
 		}
 		else
 		{
 			ret = ":server 401 " + temp + " :No such nick/channel";
-			socketAndMessage[User.getValue().first] = ret;
+			socketAndMessage[user.getValue().first] = ret;
 		}
 	}
 	return socketAndMessage;

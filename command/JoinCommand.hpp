@@ -17,7 +17,6 @@
 class JoinCommand : public IOutgoingMessageProvider, public IExecutable
 {
 public:
-    std::map<int, std::string> getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer);
+    Message getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer);
     void execute(Server& server, const int clientSocket, const char* buffer);
-    
 };
