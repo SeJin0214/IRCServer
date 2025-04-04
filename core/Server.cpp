@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:03 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 20:01:59 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:00:49 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,15 +93,13 @@ fd_set Server::getFdSet() const
 	
 	FD_SET(mServerSocket, &master);
 	FD_SET(STDIN_FILENO, &master);
-	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
-	while (it != mChannels.end())
+	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
-		std::vector<int> fdSet = it->second->getFdSet();
+		std::vector<int> fdSet = mChannels[i]->getFdSet();
 		for (size_t i = 0; i < fdSet.size(); ++i)
 		{
 			FD_SET(fdSet[i], &master);
 		}
-		++it;
 	}
 	std::vector<int> fdSet = mLobby.getFdSet();
 	for (size_t i = 0; i < fdSet.size(); ++i)
@@ -115,10 +113,9 @@ int Server::getMaxFd() const
 {
 	int maxFd = mServerSocket;
 
-	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
-	while (it != mChannels.end())
+	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
-		std::vector<int> fdSet = it->second->getFdSet();
+		std::vector<int> fdSet = mChannels[i]->getFdSet();
 		for (size_t i = 0; i < fdSet.size(); ++i)
 		{
 			if (fdSet[i] > maxFd)
@@ -126,7 +123,6 @@ int Server::getMaxFd() const
 				maxFd = fdSet[i];
 			}
 		}
-		++it;
 	}
 	std::vector<int> fdSet = mLobby.getFdSet();
 	for (size_t i = 0; i < fdSet.size(); ++i)
@@ -141,31 +137,33 @@ int Server::getMaxFd() const
 
 Space* Server::findSpace(const int clientSocket)
 {
-	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
-	while (it != mChannels.end())
+	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
-		Result<User> result = it->second->findUser(clientSocket);
+		Result<User> result = mChannels[i]->findUser(clientSocket);
 		if (result.hasSucceeded())
 		{
-			return it->second;
+			return mChannels[i];
 		}
-		++it;
 	}
 	return &mLobby;
+}
+
+bool Server::addChannel(const std::string& topic)
+{
+	Channel* newChannel = new Channel(topic, "");
+	mChannels.push_back(newChannel);
 }
 
 // return <socket, User>
 Result<std::pair<int, User> > Server::findUser(const std::string nickname)
 {
-	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
-	while (it != mChannels.end())
+	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
-		Result<std::pair<int, User> > result = it->second->findUser(nickname);
+		Result<std::pair<int, User> > result = mChannels[i]->findUser(nickname);
 		if (result.hasSucceeded())
 		{
 			return result;
 		}
-		++it;
 	}
 	Result<std::pair<int, User> > result = mLobby.findUser(nickname);
 	if (result.hasSucceeded())
@@ -179,31 +177,27 @@ Result<std::pair<int, User> > Server::findUser(const std::string nickname)
 
 Channel* Server::findChannelOrNull(const std::string topic) const
 {
-	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
-	while (it != mChannels.end())
+	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
-		Channel* channel = it->second;
+		Channel* channel = mChannels[i];
 		if (channel->getTopic() == topic)
 		{
 			return channel;
 		}
-		++it;
 	}
 	return NULL;
 }
 
 Channel* Server::findChannelOrNull(const int clientSocket) const
 {
-	std::map<std::string, Channel *>::const_iterator it = mChannels.begin();
-	while (it != mChannels.end())
+	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
-		Channel* channel = it->second;
+		Channel* channel = mChannels[i];
 		Result<User> result = channel->findUser(clientSocket);
 		if (result.hasSucceeded())
 		{
 			return channel;
 		}
-		++it;
 	}
 	return NULL;
 }
@@ -249,7 +243,7 @@ bool Server::run()
 
 // TODO: User의 패킷을 받는 방식 변경, 모두 영어로 변경할 것
 void Server::acceptClient()
-{
+{	
 	struct sockaddr_in clientAddr;
     socklen_t clientLen = sizeof(clientAddr);
 	const int clientSocket = accept(mServerSocket, (struct sockaddr *)&clientAddr, &clientLen);
@@ -260,8 +254,10 @@ void Server::acceptClient()
 		return;
 	}
 
-	const char* message = "비밀번호를 입력해주세요.\r\n";
-	sendToClient(clientSocket, message);
+	// 패킷 확인하고 
+	// 로그인 방에 집어 넣기
+	
+	// handleClientMessage 호출하기 
 
 	char buffer[MAX_BUFFER] = { 0, };
 	
@@ -285,6 +281,10 @@ void Server::acceptClient()
 	const char *refusalMessage = "비밀번호가 3회 일치 하지 않습니다. 다시 접속해 주세요.\r\n";
 	sendToClient(clientSocket, refusalMessage);
 	close(clientSocket);
+
+
+	
+
 }
 
 bool Server::acceptUser(const int clientSocket)
@@ -413,10 +413,9 @@ void Server::stop()
 
 bool Server::isDuplicatedUsername(const char* buffer) const
 {
-	std::map<std::string, Channel *> :: const_iterator begin = mChannels.begin();
-	for (; begin != mChannels.end(); begin++)
+	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
-		std::vector<std::string> usernames = (begin->second)->getUsernames();
+		std::vector<std::string> usernames = mChannels[i]->getUsernames();
 		for (size_t i = 0; i < usernames.size(); i++)
 		{
 			if (usernames[i] == buffer)
@@ -438,10 +437,9 @@ bool Server::isDuplicatedUsername(const char* buffer) const
 
 bool Server::isDuplicatedNickname(const char* buffer) const
 {
-	std::map<std::string, Channel *> :: const_iterator begin = mChannels.begin();
-	for (; begin != mChannels.end(); begin++)
+	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
-		std::vector<std::string> nicknames = (begin->second)->getNicknames();
+		std::vector<std::string> nicknames = mChannels[i]->getNicknames();
 		for (size_t i = 0; i < nicknames.size(); i++)
 		{
 			if (nicknames[i] == buffer)
@@ -535,7 +533,14 @@ void Server::QuitServer(const int clientSocket)
 		channel->exitUser(clientSocket);
 		if (channel->getUserCount() == 0)
 		{
-			mChannels.erase(channel->getTopic());
+			for (std::vector<Channel *>::iterator it = mChannels.begin(); it != mChannels.end(); ++it)
+			{
+				if ((*it)->getTopic() == channel->getTopic())
+				{
+					mChannels.erase(it);
+					break;
+				}
+			}
 			delete channel;
 		}
 	}
