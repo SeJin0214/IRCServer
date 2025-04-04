@@ -22,16 +22,16 @@ std::map<int, std::string> DirectMessageCommand::getSocketAndMessages(Server& se
 	assert(buffer != "");
 	std::map<int, std::string> socketAndMessage;
 
-	// :donkim3!root@127.0.0.1 PRIVMSG donkim,donjeong :thhrtxh xh h xh hxhx
-	//맞으면 
-	// :[닉네임]![username]@[host] PRIVMSG [상대닉] :thhrtxh xh h xh hxhx << 변환 후 리턴
-
+	// 	127.000.000.001.53570-127.000.000.001.06667: PRIVMSG donjeong,sejjeong :tnlqkf
+	// 127.000.000.001.06667-127.000.000.001.54892: :donkim!root@127.0.0.1 PRIVMSG donjeong :tnlqkf
+	// 127.000.000.001.06667-127.000.000.001.47094: :donkim!root@127.0.0.1 PRIVMSG sejjeong :tnlqkf
+	// :server 401 nickname target :No such nick/channel
 	(void) clientSocket;
 	std::string str = std::string (buffer);
 	size_t firstIdxOfNick = str.find("PRIVMSG") + 8;
-	int lastIdxOfNick = str.find_first_of(" ", firstIdxOfNick);
+	int lastIdxOfNick = str.find_first_of(" ", 0);
 	int colonIdx = str.find_first_of(":", lastIdxOfNick);
-    std::string username = str.substr(firstIdxOfNick, lastIdxOfNick - firstIdxOfNick);
+    std::string username = str.substr(0, lastIdxOfNick - firstIdxOfNick);
 	std::string temp;
 	std::string msg = str.substr(colonIdx - 1);
 	std::stringstream ss(username);
@@ -52,10 +52,7 @@ std::map<int, std::string> DirectMessageCommand::getSocketAndMessages(Server& se
 		}
 	}
 	return socketAndMessage;
-	// usernamesplit(',') a a a strtok
-	// find user () << 매칭후 맞으면
 }
-// <<<<<<< HEAD
 
 std::string DirectMessageCommand::getIncomingMessage(const Server& server, const int clientSocket, const char* buffer)
 {
@@ -73,5 +70,3 @@ std::vector<int> DirectMessageCommand::getTargetSockets(const Server& server, co
 	(void) clientSocket;
 	return std::vector<int>();
 }
-// =======
-// >>>>>>> develop
