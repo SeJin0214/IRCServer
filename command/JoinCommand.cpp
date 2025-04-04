@@ -58,7 +58,7 @@ Message JoinCommand::getSocketAndMessages(const Server& server, const int client
 		std::vector<std::string> nick = (server.findChannelOrNull(clientSocket))->getNicknames();
 		for (size_t i = 0; i < nick.size(); i++)
 		{
-			// @ hostname  nick [] [] [] [] [] 
+			// @ hostname
 			Channel* channel = server.findChannelOrNull(clientSocket);
 			User user = channel->findUser(nick[i]).getValue().second;
 			int usersocket = channel->findUser(nick[i]).getValue().first;

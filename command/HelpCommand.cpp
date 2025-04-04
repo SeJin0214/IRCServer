@@ -20,5 +20,3 @@ std::map<int, std::string> HelpCommand::getSocketAndMessages(const Server& serve
 	(void) clientSocket;
 	return std::map<int, std::string>();
 }
-
-    

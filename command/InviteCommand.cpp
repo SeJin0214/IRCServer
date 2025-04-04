@@ -24,14 +24,11 @@ std::map<int, std::string> InviteCommand::getSocketAndMessages(const Server& ser
 	std::string pars = buf.substr(7);
 	if (buf.substr(buf.size() - 2) == "\r\n")
 		pars = buf.substr(7, buf.size() - 2);
-	std::string temp;
+	std::string temp, channelName, guest;
 
 	std::stringstream ss(pars);
-	while (getline(ss, temp, ' '))
-	{
-
-	}
 		
+	ss >> temp >> guest >> channelName;
 	
 	// 127.000.000.001.06667-127.000.000.001.54574: :irc.local 341 donkim donjeong :#channel // 서버 -> donkim
 	// 127.000.000.001.06667-127.000.000.001.54586: :donkim!root@127.0.0.1 INVITE donjeong :#channel // 서버 -> donjeong;

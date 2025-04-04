@@ -55,20 +55,3 @@ std::map<int, std::string> DirectMessageCommand::getSocketAndMessages(Server& se
 	}
 	return socketAndMessage;
 }
-
-std::string DirectMessageCommand::getIncomingMessage(const Server& server, const int clientSocket, const char* buffer)
-{
-	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return "";
-}
-
-std::vector<int> DirectMessageCommand::getTargetSockets(const Server& server, const int clientSocket, const char* buffer)
-{
-	assert(buffer != NULL);
-
-	(void) server;
-	(void) clientSocket;
-	return std::vector<int>();
-}
