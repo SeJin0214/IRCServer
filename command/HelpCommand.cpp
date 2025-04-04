@@ -13,12 +13,12 @@
 #include <cassert>
 #include "HelpCommand.hpp"
 
-std::map<int, std::string> HelpCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
+std::vector<std::pair<int, std::string> > HelpCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
-	return std::map<int, std::string>();
+	return std::vector<std::pair<int, std::string> >();
 }
 
     

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:19:57 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 19:56:37 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/04 20:59:22 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ class Channel : public Space
 
 public:
 	virtual ~Channel();
-	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer);
-	IExecutable* getExecutor(const char* buffer);
+	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const;
+	IExecutable* getExecutor(const char* buffer) const;
 	Channel(const std::string& title, const char* password);
 	bool operator<(const Channel& rhs);
 	std::string getTopic() const;

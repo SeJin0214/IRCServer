@@ -6,7 +6,7 @@
 #    By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/19 16:33:48 by sejjeong          #+#    #+#              #
-#    Updated: 2025/04/03 13:01:45 by sejjeong         ###   ########.fr        #
+#    Updated: 2025/04/04 18:40:59 by sejjeong         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,10 +37,12 @@ SRCS = $(SRCS_DIR)/main.cpp \
 		$(COMMAND_DIR)/JoinCommand.cpp \
 		$(COMMAND_DIR)/KickCommand.cpp \
 		$(COMMAND_DIR)/ModeCommand.cpp \
+		$(COMMAND_DIR)/NickCommand.cpp \
 		$(COMMAND_DIR)/PartCommand.cpp \
 		$(COMMAND_DIR)/QuitCommand.cpp \
 		$(COMMAND_DIR)/SendChannelMessageCommand.cpp \
 		$(COMMAND_DIR)/TopicCommand.cpp \
+		$(COMMAND_DIR)/UserCommand.cpp \
 		$(COMMAND_DIR)/WhoCommand.cpp \
 
 

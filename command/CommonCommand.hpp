@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 17:08:38 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 17:10:12 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/04 20:59:52 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,5 +16,5 @@
 class CommonCommand
 {
 public:
-	static std::string getPrefixMessage(const User& user);
+	static std::string getPrefixMessage(const User& user, int clientSocket);
 };

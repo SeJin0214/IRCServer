@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 20:01:34 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/04 20:59:23 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ bool Channel::setTopic(const int clientSocket, std::string& title)
 	return true;
 }
 
-IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer)
+IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer) const
 {
 	assert(buffer != NULL);
 
@@ -107,7 +107,7 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	return new ErrorCommand();
 }
 
-IExecutable* Channel::getExecutor(const char* buffer)
+IExecutable* Channel::getExecutor(const char* buffer) const
 {
 	assert(buffer != NULL);
 	

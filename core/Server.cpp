@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:03 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 14:00:49 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/04 21:01:35 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,18 @@ Server::~Server()
 	mbRunning = false;
 }
 
+std::vector<const Space *> Server::getSpaces() const
+{
+	std::vector<const Space *> spaces;
+	for (size_t i = 0; i < mChannels.size(); ++i)
+	{
+		spaces.push_back(mChannels[i]);
+	}
+	spaces.push_back(&mLobby);
+	spaces.push_back(&mLoggedInSpace);
+	return spaces;
+}
+
 /* getter */
 fd_set Server::getFdSet() const
 {
@@ -93,18 +105,15 @@ fd_set Server::getFdSet() const
 	
 	FD_SET(mServerSocket, &master);
 	FD_SET(STDIN_FILENO, &master);
-	for (size_t i = 0; i < mChannels.size(); ++i)
+
+	std::vector<const Space *> spaces = getSpaces();
+	for (size_t i = 0; i < spaces.size(); ++i)
 	{
-		std::vector<int> fdSet = mChannels[i]->getFdSet();
+		std::vector<int> fdSet = spaces[i]->getFdSet();
 		for (size_t i = 0; i < fdSet.size(); ++i)
 		{
 			FD_SET(fdSet[i], &master);
 		}
-	}
-	std::vector<int> fdSet = mLobby.getFdSet();
-	for (size_t i = 0; i < fdSet.size(); ++i)
-	{
-		FD_SET(fdSet[i], &master);
 	}
 	return master;
 }
@@ -113,9 +122,10 @@ int Server::getMaxFd() const
 {
 	int maxFd = mServerSocket;
 
-	for (size_t i = 0; i < mChannels.size(); ++i)
+	std::vector<const Space *> spaces = getSpaces();
+	for (size_t i = 0; i < spaces.size(); ++i)
 	{
-		std::vector<int> fdSet = mChannels[i]->getFdSet();
+		std::vector<int> fdSet = spaces[i]->getFdSet();
 		for (size_t i = 0; i < fdSet.size(); ++i)
 		{
 			if (fdSet[i] > maxFd)
@@ -124,28 +134,23 @@ int Server::getMaxFd() const
 			}
 		}
 	}
-	std::vector<int> fdSet = mLobby.getFdSet();
-	for (size_t i = 0; i < fdSet.size(); ++i)
-	{
-		if (fdSet[i] > maxFd)
-		{
-			maxFd = fdSet[i];
-		}
-	}
 	return maxFd;
 }
 
-Space* Server::findSpace(const int clientSocket)
+
+const Space* Server::findSpace(const int clientSocket) const
 {
-	for (size_t i = 0; i < mChannels.size(); ++i)
+	std::vector<const Space *> spaces = getSpaces();
+	for (size_t i = 0; i < spaces.size(); ++i)
 	{
-		Result<User> result = mChannels[i]->findUser(clientSocket);
+		Result<User> result = spaces[i]->findUser(clientSocket);
 		if (result.hasSucceeded())
 		{
-			return mChannels[i];
+			return spaces[i];
 		}
 	}
-	return &mLobby;
+	assert(false);
+	return NULL;
 }
 
 bool Server::addChannel(const std::string& topic)
@@ -170,7 +175,7 @@ Result<std::pair<int, User> > Server::findUser(const std::string nickname)
 	{
 		return result;
 	}
-	std::pair<int, User> socketAndUser(-1, User("", ""));
+	std::pair<int, User> socketAndUser(-1, User());
 	Result<std::pair<int, User> > emptyUser(socketAndUser, false);
 	return emptyUser;
 }
@@ -241,7 +246,6 @@ bool Server::run()
 	return (true);
 }
 
-// TODO: User의 패킷을 받는 방식 변경, 모두 영어로 변경할 것
 void Server::acceptClient()
 {	
 	struct sockaddr_in clientAddr;
@@ -253,72 +257,10 @@ void Server::acceptClient()
 		assert(false);
 		return;
 	}
-
-	// 패킷 확인하고 
-	// 로그인 방에 집어 넣기
 	
-	// handleClientMessage 호출하기 
-
-	char buffer[MAX_BUFFER] = { 0, };
 	
-	const char* passwordFailedMessage = "비밀번호가 일치하지 않습니다. 다시 시도해 주세요\r\n";
-
-	if (attemptReceiveValidData(clientSocket, buffer, &Server::isInvalidPassword, passwordFailedMessage, 3))
-    {
-		char clientIP[INET_ADDRSTRLEN];
-		inet_ntop(AF_INET, &clientAddr.sin_addr, clientIP, INET_ADDRSTRLEN);
-		std::cout << "클라이언트 연결: " << clientIP << ":" << ntohs(clientAddr.sin_port) << std::endl;
-
-		const char* welcomMessage = "IRC 서버에 오신 것을 환영합니다!\r\n";
-		sendToClient(clientSocket, welcomMessage);
-
-		if (acceptUser(clientSocket))
-		{
-			return;
-		}
-	}
-	
-	const char *refusalMessage = "비밀번호가 3회 일치 하지 않습니다. 다시 접속해 주세요.\r\n";
-	sendToClient(clientSocket, refusalMessage);
-	close(clientSocket);
-
-
-	
-
-}
-
-bool Server::acceptUser(const int clientSocket)
-{
-	const char* requestMessage = "유저이름을 입력해주세요.\r\n";
-	sendToClient(clientSocket, requestMessage);
-	char buffer[MAX_BUFFER] = {	0, };
-	
-	const char* duplicatedUsernameMessage = "유저이름이 이미 존재합니다. 다시 시도해주세요\r\n";
-	if (attemptReceiveValidData(clientSocket, buffer, &Server::isDuplicatedUsername, duplicatedUsernameMessage, __INT_MAX__) == false)
-	{
-		sendToClient(clientSocket, "유저이름 생성 시도가 실패하였습니다. 다시 접속해 주세요.\r\n");
-		return false;
-	}
-
-	const char* requestNicknameMessage = "닉네임을 입력해주세요.\r\n";
-	sendToClient(clientSocket, requestNicknameMessage);
-	
-	std::string username = buffer;
-	const char* duplicatedNicknameMessage = "닉네임이 이미 존재합니다. 다시 시도해주세요\r\n";
-	if (attemptReceiveValidData(clientSocket, buffer, &Server::isDuplicatedNickname, duplicatedNicknameMessage, __INT_MAX__) == false)
-	{
-		sendToClient(clientSocket, "닉네임 생성 시도가 실패하였습니다. 다시 접속해 주세요.\r\n");
-		return false;
-	}
-
-	std::string nickname = buffer;
-
-	User user(username, nickname);
-	mLobby.enterUser(clientSocket, user);
-	
-	const char* welcomeMessage = "Welcome to our channel!\r\n";
-	sendToClient(clientSocket, welcomeMessage);
-	return true;
+	User user;
+	mLoggedInSpace.enterUser(clientSocket, user);
 }
 
 /**
@@ -376,8 +318,6 @@ void Server::handleClientMessage(const int clientSocket)
 	clearStream(clientSocket);
 	if (readLength > 500)
 	{
-		const char* over = "메시지는 500자 이내로 보내야 합니다.\r\n";
-		sendToClient(clientSocket, over);
 		return;
 	}
 	else if (readLength == 0)
@@ -386,14 +326,15 @@ void Server::handleClientMessage(const int clientSocket)
 		return;
 	}
 	
-	Space* space = findSpace(clientSocket);
+	const Space* space = findSpace(clientSocket);
 
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
 
-	std::map<int, std::string> socketAndMessages = outgoingMessageProvider->getSocketAndMessages(*this, clientSocket, buffer);
-	for (std::map<int, std::string>::const_iterator it = socketAndMessages.begin(); it != socketAndMessages.end(); ++it)
+	std::vector<std::pair<int, std::string> > socketAndMessages = outgoingMessageProvider->getSocketAndMessages(*this, clientSocket, buffer);
+	for (size_t i = 0; i < socketAndMessages.size(); ++i)
 	{
-		sendToClient(it->first, it->second.c_str());	
+		std::pair<int, std::string> socketAndMessage = socketAndMessages[i];
+		sendToClient(socketAndMessage.first, socketAndMessage.second.c_str());
 	}
 
 	IExecutable* executor = space->getExecutor(buffer);

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 19:43:37 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/04 21:01:19 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ Space::~Space()
 }
 
 /* getter */
-IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer)
+IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer) const
 {
 	assert(buffer != NULL);
 
@@ -63,7 +63,7 @@ IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer)
 	return NULL;
 }
 
-IExecutable* Space::getExecutor(const char* buffer)
+IExecutable* Space::getExecutor(const char* buffer) const
 {
 	assert(buffer != NULL);
 	std::string command = getCommandSection(buffer);
@@ -79,7 +79,7 @@ IExecutable* Space::getExecutor(const char* buffer)
 	return NULL;
 }
 
-std::string Space::getCommandSection(const char* buffer)
+std::string Space::getCommandSection(const char* buffer) const
 {
 	std::stringstream ss(buffer);
 	std::string command;
@@ -140,7 +140,22 @@ int Space::getUserCount() const
 	return static_cast<int>(mUsers.size());
 }
 
-bool Space::enterUser(int clientSocket, User& user)
+bool Space::trySetAuthenticated(const int clientSocket)
+{
+
+}
+
+bool Space::trySetNickname(const int clientSocket)
+{
+
+}
+
+bool Space::trySetUsername(const int clientSocket)
+{
+
+}
+
+bool Space::enterUser(int clientSocket, User &user)
 {
 	mUsers.insert(std::pair<int, User>(clientSocket, user));
 	return true;
@@ -178,7 +193,7 @@ Result<std::pair<int, User> > Space::findUser(std::string nickname) const
 			return result;
 		}
 	}
-	std::pair<int, User> socketAndUser(-1, User("", ""));
+	std::pair<int, User> socketAndUser(-1, User());
 	Result<std::pair<int, User> > result(socketAndUser, false);
 	return result;
 }

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:40:16 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 12:49:13 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/04 20:59:25 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 class TopicCommand : public IOutgoingMessageProvider, public IExecutable
 {
 public:
-    std::map<int, std::string> getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer);
+    std::vector<std::pair<int, std::string> > getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const;
     void execute(Server& server, const int clientSocket, const char* buffer);
     
 };

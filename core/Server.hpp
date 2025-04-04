@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:47 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 13:42:38 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/04 20:59:17 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <map>
 #include "Channel.hpp"
 #include "Lobby.hpp"
+#include "LoggedInSpace.hpp"
 #include "Result.hpp"
 
 class Server
@@ -33,20 +34,22 @@ public:
 private:
 	enum { MAX_BUFFER = 512 };
 	Lobby mLobby;
+	LoggedInSpace mLoggedInSpace;
 	std::vector<Channel *> mChannels;
 	int mServerSocket;
 	bool mbRunning;
 	const int mPort;
 	const unsigned int mPassword;
 	
+	// 채널 토픽 세터 만들기
 	fd_set getFdSet() const;
 	int getMaxFd() const;
+	std::vector<const Space*> getSpaces() const;
 	void stop();
-	Space* findSpace(const int clientSocket);
+	const Space* findSpace(const int clientSocket) const;
 	void acceptClient();
 	void clearStream(const int socket);
 	bool sendToClient(const int clientSocket, const char* message);
-	bool acceptUser(const int clientSocket);
 	void handleClientMessage(const int clientSocket);
 	bool isDuplicatedUsername(const char* buffer) const;
 	bool isDuplicatedNickname(const char* buffer) const;
