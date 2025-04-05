@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 21:01:19 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 09:09:52 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,17 +142,35 @@ int Space::getUserCount() const
 
 bool Space::trySetAuthenticated(const int clientSocket)
 {
-
+	std::map<int, User>::iterator it = mUsers.find(clientSocket);
+	if (it != mUsers.end())
+	{
+		it->second.setAthenticated();
+		return true;
+	}
+	return false;
 }
 
-bool Space::trySetNickname(const int clientSocket)
+bool Space::trySetNickname(const int clientSocket, std::string& nickname)
 {
-
+	std::map<int, User>::iterator it = mUsers.find(clientSocket);
+	if (it != mUsers.end())
+	{
+		it->second.setNickname(nickname);
+		return true;
+	}
+	return false;
 }
 
-bool Space::trySetUsername(const int clientSocket)
+bool Space::trySetUsername(const int clientSocket, std::string& username)
 {
-
+	std::map<int, User>::iterator it = mUsers.find(clientSocket);
+	if (it != mUsers.end())
+	{
+		it->second.setUsername(username);
+		return true;
+	}
+	return false;
 }
 
 bool Space::enterUser(int clientSocket, User &user)

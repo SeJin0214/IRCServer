@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:51:10 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 20:58:53 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 09:06:42 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ public:
 	int getUserCount() const;
 	/* setter */
 	bool trySetAuthenticated(const int clientSocket);
-	bool trySetNickname(const int clientSocket);
-	bool trySetUsername(const int clientSocket);
+	bool trySetNickname(const int clientSocket, std::string& nickname);
+	bool trySetUsername(const int clientSocket, std::string& username);
 	
 	Result<User> findUser(const int clientSocket) const;
 	Result<std::pair<int, User> > findUser(std::string nickname) const;

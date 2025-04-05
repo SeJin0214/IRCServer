@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:19:57 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 20:59:22 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 09:20:15 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ public:
 	bool toggleMode(User& user, const eMode mode);
 	bool enterUser(int clientSocket, User& user);
 	void exitUser(int clientSocket);
+	bool isOperator(const User& user) const;
+	bool isOperator(const int userSocket) const;
 
 private:
 	std::vector<std::string> mOperatorNicknames;
@@ -37,7 +39,5 @@ private:
 	std::string mTopic;
 	unsigned int mPassword;
 	
-	bool isOperator(const User& user) const;
-	bool isOperator(const int userSocket) const;
 	
 };
