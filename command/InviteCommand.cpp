@@ -15,7 +15,7 @@
 #include "Server.hpp"
 #include <sstream>
 
-std::map<int, std::string> InviteCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
+std::vector<std::pair<int, std::string> > InviteCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
 
@@ -58,7 +58,7 @@ std::map<int, std::string> InviteCommand::getSocketAndMessages(const Server& ser
 
     (void) server;
 	(void) clientSocket;
-	return std::map<int, std::string>();
+	return std::vector<std::pair<int, std::string> >();
 }
 
 

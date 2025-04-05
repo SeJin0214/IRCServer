@@ -18,6 +18,6 @@ class InviteCommand : public IOutgoingMessageProvider, public IExecutable
 {
 
 public:
-    std::map<int, std::string> getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer);
+    std::vector<std::pair<int, std::string> > getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const;
     void execute(Server& server, const int clientSocket, const char* buffer);
 };

@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ErrorCommand.cpp                                   :+:      :+:    :+:   */
+/*   LoggedInSpace.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/03 12:53:02 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 21:00:09 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/04 17:11:43 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/04 20:59:18 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <cassert>
-#include "ErrorCommand.hpp"
+#pragma once
+#include "Space.hpp"
 
-std::vector<std::pair<int, std::string> > ErrorCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+class LoggedInSpace : public Space
 {
-	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
-}
+	
+public:
+	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const;
+	IExecutable* getExecutor(const char* buffer) const;
+};

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:51:10 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 13:26:36 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 11:29:18 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,29 @@ class Space
 public:
 	virtual ~Space();
 	/* getter */
-	virtual IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer);
-	virtual IExecutable* getExecutor(const char* buffer);
+	virtual IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const;
+	virtual IExecutable* getExecutor(const char* buffer) const;
 	std::vector<int> getFdSet() const;
 	std::vector<int> getClientSockets() const;
 	std::vector<std::string> getNicknames() const;
 	std::vector<std::string> getUsernames() const;
 	int getUserCount() const;
+	/* setter */
+	bool trySetAuthenticated(const int clientSocket);
+	bool trySetNickname(const int clientSocket, const std::string& nickname);
+	bool trySetUsername(const int clientSocket, const std::string& username);
+	
 	Result<User> findUser(const int clientSocket) const;
-	Result<std::pair<int, User> > findUser(std::string nickname) const;
-	virtual bool enterUser(int clientSocket, User& user);
-	virtual void exitUser(int clientSocket);
+	Result<std::pair<int, User> > findUser(const std::string& nickname) const;
+	virtual bool enterUser(const int clientSocket, const User& user);
+	virtual void exitUser(const int clientSocket);
 
 protected:
 	Space() {};
 	std::map<int, User> mUsers; // <int, User *>
+ 
 	std::string getCommandSection(const char* buffer);
 	
-};
+  	std::string getCommandSection(const char* buffer) const;
+
+ };

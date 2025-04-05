@@ -1,22 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ErrorCommand.cpp                                   :+:      :+:    :+:   */
+/*   UserCommand.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/03 12:53:02 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 21:00:09 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/04 17:36:20 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/04 20:59:25 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cassert>
-#include "ErrorCommand.hpp"
+#include "UserCommand.hpp"
 
-std::vector<std::pair<int, std::string> > ErrorCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+std::vector<std::pair<int, std::string> > UserCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
 	return std::vector<std::pair<int, std::string> >();
+}
+
+void UserCommand::execute(Server& server, const int clientSocket, const char* buffer)
+{
+	assert(buffer != NULL);
+	(void) server;
+	(void) clientSocket;
 }

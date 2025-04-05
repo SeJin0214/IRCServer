@@ -6,13 +6,12 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 13:01:53 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 13:02:45 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/04 20:59:24 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cassert>
 #include "WhoCommand.hpp"
-
 
 Message WhoCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
 {
@@ -46,3 +45,11 @@ Message WhoCommand::getSocketAndMessages(const Server& server, const int clientS
 	msg.addMessage (clientSocket,":irc.local 315 " + nickname + " " + channelName + " :End of /WHO list.");
 	return msg;
 }
+
+std::vector<std::pair<int, std::string> > WhoCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+{
+	assert(buffer != NULL);
+	(void) server;
+	(void) clientSocket;
+	return std::vector<std::pair<int, std::string> >();
+ }

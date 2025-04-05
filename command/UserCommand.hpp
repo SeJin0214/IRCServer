@@ -1,22 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ErrorCommand.cpp                                   :+:      :+:    :+:   */
+/*   UserCommand.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/03 12:53:02 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 21:00:09 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/04 17:34:49 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/04 20:59:24 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <cassert>
-#include "ErrorCommand.hpp"
+#pragma once
+#include "IExecutable.hpp"
+#include "IOutgoingMessageProvider.hpp"
 
-std::vector<std::pair<int, std::string> > ErrorCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+class UserCommand : public IOutgoingMessageProvider, public IExecutable
 {
-	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
-}
+public:
+    std::vector<std::pair<int, std::string> > getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const;
+    void execute(Server& server, const int clientSocket, const char* buffer);
+    
+};

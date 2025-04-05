@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 19:43:37 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 11:23:12 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ Space::~Space()
 }
 
 /* getter */
-IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer)
+IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer) const
 {
 	assert(buffer != NULL);
 
@@ -63,7 +63,7 @@ IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer)
 	return NULL;
 }
 
-IExecutable* Space::getExecutor(const char* buffer)
+IExecutable* Space::getExecutor(const char* buffer) const
 {
 	assert(buffer != NULL);
 	std::string command = getCommandSection(buffer);
@@ -79,7 +79,7 @@ IExecutable* Space::getExecutor(const char* buffer)
 	return NULL;
 }
 
-std::string Space::getCommandSection(const char* buffer)
+std::string Space::getCommandSection(const char* buffer) const
 {
 	std::stringstream ss(buffer);
 	std::string command;
@@ -140,14 +140,49 @@ int Space::getUserCount() const
 	return static_cast<int>(mUsers.size());
 }
 
-bool Space::enterUser(int clientSocket, User& user)
+bool Space::trySetAuthenticated(const int clientSocket)
 {
+	std::map<int, User>::iterator it = mUsers.find(clientSocket);
+	if (it != mUsers.end())
+	{
+		it->second.setAthenticated();
+		return true;
+	}
+	return false;
+}
+
+bool Space::trySetNickname(const int clientSocket, const std::string& nickname)
+{
+	std::map<int, User>::iterator it = mUsers.find(clientSocket);
+	if (it != mUsers.end())
+	{
+		it->second.setNickname(nickname);
+		return true;
+	}
+	return false;
+}
+
+bool Space::trySetUsername(const int clientSocket, const std::string& username)
+{
+	std::map<int, User>::iterator it = mUsers.find(clientSocket);
+	if (it != mUsers.end())
+	{
+		it->second.setUsername(username);
+		return true;
+	}
+	return false;
+}
+
+bool Space::enterUser(const int clientSocket, const User &user)
+{
+	assert(mUsers.find(clientSocket) == mUsers.end());
 	mUsers.insert(std::pair<int, User>(clientSocket, user));
 	return true;
 }
 
-void Space::exitUser(int clientSocket)
+void Space::exitUser(const int clientSocket)
 {
+	assert(mUsers.find(clientSocket) != mUsers.end());
 	mUsers.erase(clientSocket);
 }
 
@@ -166,7 +201,7 @@ Result<User> Space::findUser(const int clientSocket) const
 	}
 }
 
-Result<std::pair<int, User> > Space::findUser(std::string nickname) const
+Result<std::pair<int, User> > Space::findUser(const std::string& nickname) const
 {
 	for (std::map<int, User>::const_iterator it = mUsers.begin(); it != mUsers.end(); ++it)
 	{
@@ -178,7 +213,7 @@ Result<std::pair<int, User> > Space::findUser(std::string nickname) const
 			return result;
 		}
 	}
-	std::pair<int, User> socketAndUser(-1, User("", ""));
+	std::pair<int, User> socketAndUser(-1, User());
 	Result<std::pair<int, User> > result(socketAndUser, false);
 	return result;
 }

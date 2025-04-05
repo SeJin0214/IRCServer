@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:05:45 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 12:41:48 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 11:46:22 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,20 @@
 #include "QuitCommand.hpp"
 #include "CommonCommand.hpp"
 
-std::map<int, std::string> QuitCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
+std::vector<std::pair<int, std::string> > QuitCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
 
-	std::map<int, std::string> result;
+	std::vector<std::pair<int, std::string> > result;
 	
 	// 호스트 주소는 주어진 함수를 이용해서 제작  
 	std::string message = "ERROR :Closing link: (root@127.0.0.1) [";
 	message += buffer;
-	message += "]";
+	message += "]\r\n";
 	
+	// 다시 할게요~~
 	std::pair<int, std::string> socketAndMessage(clientSocket, message);
-	result.insert(socketAndMessage);
+	result.push_back(socketAndMessage);
 
 	Channel* channel = server.findChannelOrNull(clientSocket);
 	if (channel == NULL)
@@ -39,7 +40,7 @@ std::map<int, std::string> QuitCommand::getSocketAndMessages(const Server& serve
 	assert(temp.hasSucceeded());
 	
 	User user = temp.getValue();
-	message = CommonCommand::getPrefixMessage(user) + " QUIT :" + buffer;
+	message = CommonCommand::getPrefixMessage(user, clientSocket) + " QUIT :" + buffer + "\r\n";
 	std::vector<int> clientSockets = channel->getClientSockets();
 	for (size_t i = 0; i < clientSockets.size(); ++i)
 	{
@@ -48,7 +49,7 @@ std::map<int, std::string> QuitCommand::getSocketAndMessages(const Server& serve
 			continue;
 		}
 		std::pair<int, std::string> socketAndMessage(clientSockets[i], message);
-		result.insert(socketAndMessage);
+		result.push_back(socketAndMessage);
 	}
 	return result;
 }

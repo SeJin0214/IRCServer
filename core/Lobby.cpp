@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:48:49 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 13:00:04 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/04 19:51:39 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ Lobby::~Lobby()
 	
 }
 
-IOutgoingMessageProvider* Lobby::getOutgoingMessageProvider(const char* buffer)
+IOutgoingMessageProvider* Lobby::getOutgoingMessageProvider(const char* buffer) const
 {
 	assert(buffer != NULL);
 	IOutgoingMessageProvider* provider = Space::getOutgoingMessageProvider(buffer);
@@ -32,7 +32,7 @@ IOutgoingMessageProvider* Lobby::getOutgoingMessageProvider(const char* buffer)
 	return new ErrorCommand();
 }
 
-IExecutable* Lobby::getExecutor(const char* buffer)
+IExecutable* Lobby::getExecutor(const char* buffer) const
 {
 	assert(buffer != NULL);
 	IExecutable* executor = Space::getExecutor(buffer);

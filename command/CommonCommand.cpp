@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 17:09:53 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 17:10:07 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 11:47:25 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,13 @@
 std::string CommonCommand::getPrefixMessage(const User& user, int clientsocket)
 {
 	return (":"+ user.getNickname() + "!" + user.getUsername() + "@" + getHostIP(clientsocket));
+}
+
+std::string CommonCommand::getPrefixMessage(const User& user, const int clientSocket)
+{
+	(void) user;
+	(void) clientSocket;
+	return "";
 }
 
 std::string CommonCommand::getHostIP(int sockfd)

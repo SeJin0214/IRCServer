@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 15:01:36 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/03/26 15:29:42 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 09:55:50 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 
 enum eMode
 {
+ 
 	MODE_INVITE_ONLY, 
 	MODE_TITLE_LOCK,
-	MODE_USER_LIMIT
+  	MODE_INVITE_ONLY,
+	MODE_TOPIC_LOCK,
+ 	MODE_USER_LIMIT
 };

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 13:01:32 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/03 10:40:28 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 11:22:02 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ class Lobby : public Space
 
 public:
 	virtual ~Lobby();
-	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer);
-	IExecutable* getExecutor(const char* buffer);
+	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const;
+	IExecutable* getExecutor(const char* buffer) const;
 private:
 
 };
