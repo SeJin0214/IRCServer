@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 09:09:52 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 11:23:12 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ bool Space::trySetAuthenticated(const int clientSocket)
 	return false;
 }
 
-bool Space::trySetNickname(const int clientSocket, std::string& nickname)
+bool Space::trySetNickname(const int clientSocket, const std::string& nickname)
 {
 	std::map<int, User>::iterator it = mUsers.find(clientSocket);
 	if (it != mUsers.end())
@@ -162,7 +162,7 @@ bool Space::trySetNickname(const int clientSocket, std::string& nickname)
 	return false;
 }
 
-bool Space::trySetUsername(const int clientSocket, std::string& username)
+bool Space::trySetUsername(const int clientSocket, const std::string& username)
 {
 	std::map<int, User>::iterator it = mUsers.find(clientSocket);
 	if (it != mUsers.end())
@@ -173,14 +173,16 @@ bool Space::trySetUsername(const int clientSocket, std::string& username)
 	return false;
 }
 
-bool Space::enterUser(int clientSocket, User &user)
+bool Space::enterUser(const int clientSocket, const User &user)
 {
+	assert(mUsers.find(clientSocket) == mUsers.end());
 	mUsers.insert(std::pair<int, User>(clientSocket, user));
 	return true;
 }
 
-void Space::exitUser(int clientSocket)
+void Space::exitUser(const int clientSocket)
 {
+	assert(mUsers.find(clientSocket) != mUsers.end());
 	mUsers.erase(clientSocket);
 }
 
@@ -199,7 +201,7 @@ Result<User> Space::findUser(const int clientSocket) const
 	}
 }
 
-Result<std::pair<int, User> > Space::findUser(std::string nickname) const
+Result<std::pair<int, User> > Space::findUser(const std::string& nickname) const
 {
 	for (std::map<int, User>::const_iterator it = mUsers.begin(); it != mUsers.end(); ++it)
 	{

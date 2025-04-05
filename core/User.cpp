@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 19:13:06 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 20:54:42 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 11:39:30 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,13 @@ std::string User::getNickname() const
 	return mNickname;
 }
 
-void User::setNickname(std::string& nickname)
+void User::setNickname(const std::string& nickname)
 {
 	mNickname = nickname;
 	mbHasNickname = true;
 }
 
-void User::setUsername(std::string& username)
+void User::setUsername(const std::string& username)
 {
 	mUsername = username;
 	mbHasUsername = true; 
@@ -72,4 +72,16 @@ void User::setUsername(std::string& username)
 void User::setAthenticated()
 {
 	mbAuthenticated = true;
+}
+
+bool User::addjoinedChannel(std::string& title)
+{
+	(void) title;
+	return true;
+}
+
+bool User::removejoinedChannel(std::string& title)
+{
+	(void) title;
+	return true;
 }

@@ -6,7 +6,7 @@
 #    By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/19 16:33:48 by sejjeong          #+#    #+#              #
-#    Updated: 2025/04/04 18:40:59 by sejjeong         ###   ########.fr        #
+#    Updated: 2025/04/05 11:48:28 by sejjeong         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,13 +23,15 @@ COMMAND_DIR = $(SRCS_DIR)/command
 INCLUDE = -I $(SRCS_DIR)/core -I $(SRCS_DIR)/command 
 
 SRCS = $(SRCS_DIR)/main.cpp \
+		$(CORE_DIR)/Channel.cpp \
+		$(CORE_DIR)/Lobby.cpp \
+		$(CORE_DIR)/LoggedInSpace.cpp \
 		$(CORE_DIR)/Server.cpp \
 		$(CORE_DIR)/Space.cpp \
-		$(CORE_DIR)/Channel.cpp \
 		$(CORE_DIR)/User.cpp \
-		$(CORE_DIR)/Lobby.cpp \
 		$(CORE_DIR)/Util.cpp \
 		$(COMMAND_DIR)/ChannelListCommand.cpp \
+		$(COMMAND_DIR)/CommonCommand.cpp \
 		$(COMMAND_DIR)/DirectMessageCommand.cpp \
 		$(COMMAND_DIR)/ErrorCommand.cpp \
 		$(COMMAND_DIR)/HelpCommand.cpp \
@@ -39,6 +41,7 @@ SRCS = $(SRCS_DIR)/main.cpp \
 		$(COMMAND_DIR)/ModeCommand.cpp \
 		$(COMMAND_DIR)/NickCommand.cpp \
 		$(COMMAND_DIR)/PartCommand.cpp \
+		$(COMMAND_DIR)/PassCommand.cpp \
 		$(COMMAND_DIR)/QuitCommand.cpp \
 		$(COMMAND_DIR)/SendChannelMessageCommand.cpp \
 		$(COMMAND_DIR)/TopicCommand.cpp \

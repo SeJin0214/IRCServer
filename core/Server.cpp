@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:03 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 21:01:35 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 11:38:18 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,6 @@ int Server::getMaxFd() const
 	return maxFd;
 }
 
-
 const Space* Server::findSpace(const int clientSocket) const
 {
 	std::vector<const Space *> spaces = getSpaces();
@@ -153,10 +152,35 @@ const Space* Server::findSpace(const int clientSocket) const
 	return NULL;
 }
 
-bool Server::addChannel(const std::string& topic)
+bool Server::addChannel(const std::string& title)
 {
-	Channel* newChannel = new Channel(topic, "");
+	Channel* existedChannel = findChannelOrNull(title);
+	if (existedChannel->getTitle() == title)
+	{
+		return false;
+	}
+	Channel* newChannel = new Channel(title, "");
 	mChannels.push_back(newChannel);
+	return true;
+}
+
+Result<User> Server::findUser(const int clientSocket)
+{
+	for (size_t i = 0; i < mChannels.size(); ++i)
+	{
+		Result<User> result = mChannels[i]->findUser(clientSocket);
+		if (result.hasSucceeded())
+		{
+			return result;
+		}
+	}
+	Result<User> result = mLobby.findUser(clientSocket);
+	if (result.hasSucceeded())
+	{
+		return result;
+	}
+	Result<User> emptyUser(User(), false);
+	return emptyUser;
 }
 
 // return <socket, User>
@@ -180,12 +204,12 @@ Result<std::pair<int, User> > Server::findUser(const std::string nickname)
 	return emptyUser;
 }
 
-Channel* Server::findChannelOrNull(const std::string topic) const
+Channel* Server::findChannelOrNull(const std::string title) const
 {
 	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
 		Channel* channel = mChannels[i];
-		if (channel->getTopic() == topic)
+		if (channel->getTitle() == title)
 		{
 			return channel;
 		}
@@ -207,7 +231,47 @@ Channel* Server::findChannelOrNull(const int clientSocket) const
 	return NULL;
 }
 
+bool Server::trySetAuthenticatedInLoggedSpace(const int clientSocket)
+{
+	Channel* channel = findChannelOrNull(clientSocket);
+	return channel->trySetAuthenticated(clientSocket);
+}
 
+bool Server::trySetNicknameInLoggedSpace(const int clientSocket, const std::string& nickname)
+{
+	Channel* channel = findChannelOrNull(clientSocket);
+	return channel->trySetNickname(clientSocket, nickname);
+}
+
+bool Server::trySetUsernameInLoggedSpace(const int clientSocket, const std::string& username)
+{
+	Channel* channel = findChannelOrNull(clientSocket);
+	return channel->trySetUsername(clientSocket, username);
+}
+
+bool Server::enterUserInLobby(const int clientSocket, const User& user)
+{
+	return mLobby.enterUser(clientSocket, user);
+}
+
+bool Server::exitUserInLobby(const int clientSocket)
+{
+	mLobby.exitUser(clientSocket);
+	return true;
+}
+
+bool Server::enterUserInChannel(const int clientSocket, const User& user, const std::string& title)
+{
+	Channel* channel = findChannelOrNull(title);
+	return channel->enterUser(clientSocket, user);
+}
+
+bool Server::exitUserInChannel(const int clientSocket, const std::string& title)
+{
+	Channel* channel = findChannelOrNull(title);
+	channel->exitUser(clientSocket);
+	return true;
+}
 
 // TODO: i == STDIN_FILENO 일 때, 서버 콘솔에서 입력 처리, 서버 운영자 명령어 처리
 bool Server::run()
@@ -318,6 +382,7 @@ void Server::handleClientMessage(const int clientSocket)
 	clearStream(clientSocket);
 	if (readLength > 500)
 	{
+		// max message
 		return;
 	}
 	else if (readLength == 0)

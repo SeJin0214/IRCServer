@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 20:59:23 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 10:24:37 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@
 #include "Result.hpp"
 
 Channel::Channel(const std::string& title, const char* password) 
-: mTopic(title)
+: mModeFlag(0)
+, mTitle(title)
 , mPassword(Util::generateHash65599(password))
 {
 	
@@ -41,7 +42,7 @@ Channel::~Channel()
 
 bool Channel::operator<(const Channel& rhs)
 {
-	return mTopic < rhs.mTopic;
+	return mTitle < rhs.mTitle;
 }
 
 /* getter */
@@ -50,19 +51,24 @@ std::string Channel::getTopic() const
 	return mTopic;
 }
 
+std::string Channel::getTitle() const
+{
+	return mTitle;
+}
+
 unsigned int Channel::getPassword() const
 {
 	return mPassword;
 }
 
 /* setter */
-bool Channel::setTopic(const int clientSocket, std::string& title)
+bool Channel::setTopic(const int clientSocket, std::string& topic)
 {
 	if (isOperator(clientSocket) == false)
 	{
 		return false;
 	}
-	mTopic = title;
+	mTopic = topic;
 	return true;
 }
 
@@ -148,7 +154,7 @@ bool Channel::toggleMode(User& user, const eMode mode)
 	return true;
 }
 
-bool Channel::enterUser(int clientSocket, User& user)
+bool Channel::enterUser(const int clientSocket, const User& user)
 {
 	if (getUserCount() == 0)
 	{
@@ -157,10 +163,10 @@ bool Channel::enterUser(int clientSocket, User& user)
 	assert(getUserCount() > 0);
 	bool bSucceed = Space::enterUser(clientSocket, user);
 	assert(bSucceed);
-	return true;
+	return bSucceed;
 }
 
-void Channel::exitUser(int clientSocket)
+void Channel::exitUser(const int clientSocket)
 {
 	std::vector<std::string>::iterator it = mOperatorNicknames.begin();
 	std::map<int, User>::iterator mit = mUsers.find(clientSocket);
@@ -174,7 +180,6 @@ void Channel::exitUser(int clientSocket)
 		++it;
 	}
 	assert(it != mOperatorNicknames.end());
-	Space::exitUser(clientSocket);
 }
 
 bool Channel::isOperator(const User& user) const

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:51:10 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 09:06:42 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 11:29:18 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@ public:
 	int getUserCount() const;
 	/* setter */
 	bool trySetAuthenticated(const int clientSocket);
-	bool trySetNickname(const int clientSocket, std::string& nickname);
-	bool trySetUsername(const int clientSocket, std::string& username);
+	bool trySetNickname(const int clientSocket, const std::string& nickname);
+	bool trySetUsername(const int clientSocket, const std::string& username);
 	
 	Result<User> findUser(const int clientSocket) const;
-	Result<std::pair<int, User> > findUser(std::string nickname) const;
-	virtual bool enterUser(int clientSocket, User& user);
-	virtual void exitUser(int clientSocket);
+	Result<std::pair<int, User> > findUser(const std::string& nickname) const;
+	virtual bool enterUser(const int clientSocket, const User& user);
+	virtual void exitUser(const int clientSocket);
 
 protected:
 	Space() {};
