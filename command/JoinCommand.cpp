@@ -27,7 +27,7 @@ Message JoinCommand::getSocketAndMessages(const Server& server, const int client
 	std::string nickname = user.getNickname();
 	if (buf.find("JOIN"))
 	{
-		std::string channelName = buf.substr(6, buf.size() - 2);
+		std::string channelName = buf.substr(5, buf.size() - 2);
 		Channel *channel = server.findChannelOrNull(clientSocket);
 		std::vector<std::string> nick = channel->getNicknames();
 		std::vector<int> userSockets = channel->getClientSockets();

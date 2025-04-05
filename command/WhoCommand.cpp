@@ -31,7 +31,7 @@ Message WhoCommand::getSocketAndMessages(const Server& server, const int clientS
 		msg.addMessage(clientSocket, ":irc.local 315 " + nickname + " " + guestNick + " :End of /WHO list.");
 		return msg;
 	}
-	std::string channelName = buf.substr(5, idxOfGuestNick);
+	std::string channelName = buf.substr(4, idxOfGuestNick);
 	std::vector<std::string> nick = (server.findChannelOrNull(clientSocket))->getNicknames();
 	for (size_t i = 0; i < nick.size(); i++)
 	{
