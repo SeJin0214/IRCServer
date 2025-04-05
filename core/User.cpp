@@ -76,12 +76,19 @@ void User::setAthenticated()
 
 bool User::addjoinedChannel(std::string& title)
 {
-	(void) title;
+	joinedChannels.push_back (title);
 	return true;
 }
 
 bool User::removejoinedChannel(std::string& title)
 {
-	(void) title;
-	return true;
+	for (std::vector<std::string> :: iterator it = joinedChannels.begin(); it != joinedChannels.end(); ++it)
+	{
+		if (*it == title)
+		{
+			joinedChannels.erase(it);
+			return true;
+		}				
+	}
+	return false;
 }

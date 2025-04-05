@@ -28,16 +28,20 @@ Message ChannelListCommand::getSocketAndMessages(const Server& server, const int
 // :irc.local 323 donkim3 :End of channel list.
 
 
-
+// sejjeong
 //로그인  pass nick user 명령어
-// mode 기능 출력
-// join 기능
-// part 기능 출력
-// kick 기능 출력
+
+//donjeong
+// mode 기능 
+
+
+// donkim3
 // invite 기능 출ㄹ/
 // quit  기능
 // topic 기능 출력
 // list 기능 출력
+// kick 기능 출력
+// part 기능 출력
 std::vector<std::pair<int, std::string> > ChannelListCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);

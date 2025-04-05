@@ -33,11 +33,10 @@ public:
     ~User();
 
 private:
-    std::vector<std::string> joinedChannels; 
+    std::vector<std::string> joinedChannels;
     std::string mUsername;
     std::string mNickname;
     bool mbAuthenticated;
     bool mbHasNickname;
     bool mbHasUsername;
-
 };
