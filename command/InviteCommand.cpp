@@ -28,7 +28,8 @@ Message InviteCommand::getSocketAndMessages(Server& server, const int clientSock
 	buf.erase(buf.size() - 2); // donjeong #channel
 	std::stringstream ss(buf);
 	ss >> userNick >> channelName;
-	Result<std::pair<int, User>> u = server.findUser(userNick);
+	Result<std::pair<int, User>> user = server.findUser(userNick);
+	Result<std::pair<int, User>> userInChannel = server.findChannelOrNull(clientSocket)->findUser(userNick);
 	if (!ss.eof()) // 2개 이상이므로 
 	{
 		// 2명 이상 초대;
@@ -50,7 +51,7 @@ Message InviteCommand::getSocketAndMessages(Server& server, const int clientSock
 		msg.addMessage(clientSocket, ":irc.local 482 " + userNick + " " + channelName + "  :You must be a channel op or higher to send an invite.");
 		return msg;
 	}
-	else if (u.hasSucceeded() == false)
+	else if (user.hasSucceeded() == false)
 	{
 		// Nickname이 없음;
 
@@ -59,20 +60,21 @@ Message InviteCommand::getSocketAndMessages(Server& server, const int clientSock
 		msg.addMessage (clientSocket, ":irc.local 401 " + server.findUser(clientSocket).getValue().getNickname() + " " + userNick + " :No such nick");
 		return msg;
 	}
-	else if (          )
+	else if (userInChannel.hasSucceeded() == true)
 	{
 		//  채널에 있는 donkim3 초대
 	// INVITE donkim3 #channel
+		msg.addMessage(clientSocket, ":irc.local 443 " + userNick + " " + userNick + " " + channelName + "  :is already on channel");
+		return msg;
 	// :irc.local 443 donkim3 donkim3 #channel :is already on channel
-
-
 	}
-
-
-
-    (void) server;
-	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
+	else
+	{
+		//성공
+		msg.addMessage(clientSocket, ":irc.local 443 " + server.findUser(clientSocket).getValue().getNickname() + " " + userNick + " :" + channelName);
+		return msg;
+	}
+	return msg
 }
 
 
