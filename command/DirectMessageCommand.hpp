@@ -17,6 +17,6 @@ class DirectMessageCommand : public IOutgoingMessageProvider
 {
 
 public:
-    std::map<int, std::string> getSocketAndMessages(Server& server, const int clientSocket, const char* buffer);
+    Message getSocketAndMessages(Server& server, const int clientSocket, const char* buffer);
 
 };

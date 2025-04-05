@@ -13,10 +13,26 @@
 #include <cassert>
 #include "ChannelListCommand.hpp"
 
-std::map<int, std::string> ChannelListCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
+Message ChannelListCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return std::map<int, std::string>();
+	// std::string nickName = server.find
 }
+
+// 127.000.000.001.06667-127.000.000.001.58162: :irc.local 321 donkim3 Channel :Users Name
+// :irc.local 322 donkim3 #ccc 1 :[+nt] 
+// :irc.local 322 donkim3 #bbb 2 :[+nt] 
+// :irc.local 322 donkim3 #aaa 2 :[+nt] 
+// :irc.local 323 donkim3 :End of channel list.
+
+
+
+//로그인  pass nick user 명령어
+// mode 기능 출력
+// join 기능
+// part 기능 출력
+// kick 기능 출력
+// invite 기능 출ㄹ/
+// quit  기능
+// topic 기능 출력
+// list 기능 출력

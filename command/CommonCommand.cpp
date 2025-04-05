@@ -22,7 +22,7 @@ std::string CommonCommand::getHostIP(int sockfd)
     struct sockaddr_storage addr;
     socklen_t addr_len = sizeof(addr);
     char ip_str[AF_INET];
-    
+
     // 소켓의 로컬 주소 정보 가져오기
     if (getsockname(sockfd, (struct sockaddr*)&addr, &addr_len) == -1)
 	{

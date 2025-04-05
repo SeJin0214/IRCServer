@@ -20,7 +20,7 @@
 
 class Server
 {
-	
+
 public:
 	Server(const char* port, const char* password);
 	~Server();
@@ -57,6 +57,4 @@ private:
 	bool isInvalidNameFormatted(const char* password) const;
 	bool attemptReceiveValidData(const int clientSocket, char *buffer, \
 		bool (Server::*isInvalid)(const char *) const, const char *message, const int maxCount);
-	
-
 };

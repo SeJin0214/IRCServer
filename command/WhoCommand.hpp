@@ -16,6 +16,6 @@
 class WhoCommand : public IOutgoingMessageProvider
 {
 public:
-    std::map<int, std::string> getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer);
+    Message getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer);
 
 };

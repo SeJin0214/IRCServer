@@ -30,14 +30,17 @@ public:
 	bool toggleMode(User& user, const eMode mode);
 	bool enterUser(int clientSocket, User& user);
 	void exitUser(int clientSocket);
+	bool isOperator(const User& user) const;
+	bool isOperator(const int userSocket) const;
+	
 
 private:
 	std::vector<std::string> mOperatorNicknames;
 	unsigned char mModeFlag;
 	std::string mTopic;
 	unsigned int mPassword;
-	
-	bool isOperator(const User& user) const;
-	bool isOperator(const int userSocket) const;
+
+
+
 	
 };

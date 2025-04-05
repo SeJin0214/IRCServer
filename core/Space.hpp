@@ -42,5 +42,5 @@ protected:
 	Space() {};
 	std::map<int, User> mUsers; // <int, User *>
 	std::string getCommandSection(const char* buffer);
-
+	
 };

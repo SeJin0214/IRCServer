@@ -13,12 +13,33 @@
 #include <cassert>
 #include "ModeCommand.hpp"
 
-std::map<int, std::string> ModeCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
+Message ModeCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return std::map<int, std::string>();
+	Message msg;
+	CommonCommand commoncommand;
+
+	std::string buf(buffer);
+	User user = server.findChannelOrNull(clientSocket)->findUser(clientSocket).getValue();
+	std::string nickname = user.getNickname();
+
+	std::stringstream ss (buf);
+	std::string temp, channelName;
+	ss >> temp >> channelName;
+	channelName.erase(0, 1);
+	if (ss.eof()) //MODE #channel     /r/n
+	{
+		channelName.erase(channelName.size() - 2);
+		// :irc.local 324 sejjeong #channel :+nt   //sejjeong     +knt :12345678
+		// :irc.local 329 sejjeong #channel :1743734234
+
+		//좀더 확인해야함
+	}
+	else  //MODE #channel b
+	{
+		msg.addMessage(clientSocket, ":irc.local 368 " + nickname + " #channel :End of channel ban list");
+		return msg;
+	}
 }
 
 void ModeCommand::execute(Server& server, const int clientSocket, const char* buffer)

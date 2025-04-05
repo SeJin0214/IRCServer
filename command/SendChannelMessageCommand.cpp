@@ -13,10 +13,26 @@
 #include <cassert>
 #include "SendChannelMessageCommand.hpp"
 
-std::map<int, std::string> SendChannelMessageCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
+Message SendChannelMessageCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return std::map<int, std::string>();
+	assert(buffer != "");
+	std::map<int, std::string> socketAndMessage;
+	CommonCommand commoncommand;
+	Message retMsg;
+
+	// PRIVMSG #aaa :asdfasdf
+	// donkim!root@127.0.0.1 PRIVMSG #aaa :asdfasdf
+	std::string str(buffer);
+	std::stringstream ss(str);
+	std::string temp;
+	std::string channelName;
+	ss >> temp >> channelName;
+	channelName.erase(0, 1);
+	//채널에 있는 유저들의 소켓 필요
+	//user -> 채널네임 findchannel(channelName)  채널 나옴
+	// 채널 돌면서 getClientSockets() 로 소켓벡터 얻음
+	// clientSocket 과 다르면 하나씩 보냄
+
+	return retMsg;
 }

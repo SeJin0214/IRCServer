@@ -17,7 +17,8 @@
 #include "Server.hpp"
 #include <iostream>
 #include "Message.hpp"
-
+#include "CommonCommand.hpp"
+#include <sstream>
 class IOutgoingMessageProvider
 {
 public:
