@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 13:38:01 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 19:28:30 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,54 +123,9 @@ std::vector<std::string> Space::getUsernames() const
 	return result;
 }
 
-std::vector<int> Space::getClientSockets() const
-{
-	std::vector<int> result;
-	std::map<int, User>::const_iterator it = mUsers.begin();
-	while (it != mUsers.end())
-	{
-		result.push_back(it->first);
-		++it;
-	}
-	return result;
-}
-
 int Space::getUserCount() const
 {
 	return static_cast<int>(mUsers.size());
-}
-
-bool Space::trySetAuthenticated(const int clientSocket)
-{
-	std::map<int, User>::iterator it = mUsers.find(clientSocket);
-	if (it != mUsers.end())
-	{
-		it->second.setAthenticated();
-		return true;
-	}
-	return false;
-}
-
-bool Space::trySetNickname(const int clientSocket, const std::string& nickname)
-{
-	std::map<int, User>::iterator it = mUsers.find(clientSocket);
-	if (it != mUsers.end())
-	{
-		it->second.setNickname(nickname);
-		return true;
-	}
-	return false;
-}
-
-bool Space::trySetUsername(const int clientSocket, const std::string& username)
-{
-	std::map<int, User>::iterator it = mUsers.find(clientSocket);
-	if (it != mUsers.end())
-	{
-		it->second.setUsername(username);
-		return true;
-	}
-	return false;
 }
 
 bool Space::enterUser(const int clientSocket, const User &user)
@@ -182,7 +137,6 @@ bool Space::enterUser(const int clientSocket, const User &user)
 
 void Space::exitUser(const int clientSocket)
 {
-	assert(mUsers.find(clientSocket) != mUsers.end());
 	mUsers.erase(clientSocket);
 }
 
@@ -196,7 +150,7 @@ Result<User> Space::findUser(const int clientSocket) const
 	}
 	else
 	{
-		Result<User> result(it->second, false);
+		Result<User> result(User(), false);
 		return result;	
 	}
 }

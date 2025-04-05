@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 18:44:17 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 13:37:40 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 17:54:25 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "Util.hpp"
 #include "PassCommand.hpp"
 
+#include <iostream>
 void PassCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
@@ -23,6 +24,7 @@ void PassCommand::execute(Server& server, const int clientSocket, const char* bu
 	size_t startIndex = std::strlen("PASS ");
 	char temp[MAX_BUFFER] = { 0, };
 	strcpy(temp, buffer + startIndex);
+	temp[std::strlen(temp) - 1] = '\0';
 
 	assert(std::strncmp(temp, buffer + startIndex, std::strlen(temp)) == 0);
 	if (Util::generateHash65599(temp) == server.getPassword())

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 17:36:00 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 13:37:32 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 19:32:49 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,11 @@ std::vector<std::pair<int, std::string> > NickCommand::getSocketAndMessages(cons
 	size_t startIndex = std::strlen("NICK ");
 	char nickname[MAX_BUFFER] = { 0, };
 	strcpy(nickname, buffer + startIndex);
+	nickname[std::strlen(nickname) - 1] = '\0';
 
 	std::vector<std::pair<int, std::string> > result;
 	size_t nicknameLength = std::strlen(nickname);
+	// NICKNAME 확인하기 
 	if (nicknameLength == 0)
 	{
 		std::string message = server.getServerName() + " 431 * " + nickname + " :No nickname given";

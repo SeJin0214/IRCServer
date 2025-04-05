@@ -1,35 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   User.hpp                                           :+:      :+:    :+:   */
+/*   LoginInfo.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/24 19:13:00 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 16:12:19 by sejjeong         ###   ########.fr       */
+/*   Created: 2025/04/05 15:07:31 by sejjeong          #+#    #+#             */
+/*   Updated: 2025/04/05 16:11:18 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <string>
-#include <vector>
+#include <ctime>
 
-class User
+class LoginInfo
 {
-    
-public:
-    User();
-    User(const std::string& nickname, const std::string& username);
-    std::string getUsername() const;
-    std::string getNickname() const;
-    void setNickname(const std::string& nickname);
-    void setUsername(const std::string& username);
-    bool addjoinedChannel(std::string& title);
-    bool removejoinedChannel(std::string& title);
-    ~User();
 
+public:
+	LoginInfo();
+	std::string getUsername() const;
+    std::string getNickname() const;
+    bool hasNickname() const;
+    bool hasUsername() const;
+    bool isPassed() const;
+	bool isValidInfo() const;
+	bool isTimeout() const;
+	void setAthenticated();
+	void setNickname(const std::string& nickname);
+    void setUsername(const std::string& username);
 private:
-    std::vector<std::string> joinedChannels; 
-    std::string mUsername;
+	enum { MAX_TIME = 7 };
+	std::string mUsername;
     std::string mNickname;
+    bool mbAuthenticated;
+	clock_t mStartTime;
+	
 };

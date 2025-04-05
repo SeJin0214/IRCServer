@@ -54,6 +54,8 @@
         "xtr1common": "cpp",
         "xutility": "cpp",
         "sstream": "cpp",
-        "cassert": "cpp"
+        "cassert": "cpp",
+        "ctime": "cpp",
+        "set": "cpp"
     }
 }

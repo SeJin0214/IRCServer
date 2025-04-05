@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:05:45 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 13:37:42 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 16:40:37 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ std::vector<std::pair<int, std::string> > QuitCommand::getSocketAndMessages(cons
 	
 	User user = temp.getValue();
 	message = CommonCommand::getPrefixMessage(user, clientSocket) + " QUIT :" + buffer + "\r\n";
-	std::vector<int> clientSockets = channel->getClientSockets();
+	std::vector<int> clientSockets = channel->getFdSet();
 	for (size_t i = 0; i < clientSockets.size(); ++i)
 	{
 		if (clientSockets[i] == clientSocket)

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 13:37:57 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 16:34:02 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,6 @@ void Channel::exitUser(const int clientSocket)
 		}
 		++it;
 	}
-	assert(it != mOperatorNicknames.end());
 }
 
 bool Channel::isOperator(const User& user) const

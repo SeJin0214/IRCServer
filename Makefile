@@ -6,13 +6,13 @@
 #    By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/19 16:33:48 by sejjeong          #+#    #+#              #
-#    Updated: 2025/04/05 13:38:05 by sejjeong         ###   ########.fr        #
+#    Updated: 2025/04/05 17:21:44 by sejjeong         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ircserv
 C++ = c++
-FLAGS= -Wall -Wextra -Werror -std=c++98
+FLAGS= -Wall -Wextra -Werror -std=c++98 -g
 
 RM = rm
 RM_FLAGS = -rf
@@ -26,6 +26,7 @@ SRCS = $(SRCS_DIR)/main.cpp \
 		$(CORE_DIR)/Channel.cpp \
 		$(CORE_DIR)/Lobby.cpp \
 		$(CORE_DIR)/LoggedInSpace.cpp \
+		$(CORE_DIR)/LoginInfo.cpp \
 		$(CORE_DIR)/Server.cpp \
 		$(CORE_DIR)/Space.cpp \
 		$(CORE_DIR)/User.cpp \

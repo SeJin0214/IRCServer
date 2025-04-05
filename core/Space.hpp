@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:51:10 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 13:38:02 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 17:03:30 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,20 +28,17 @@ public:
 	/* getter */
 	virtual IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const;
 	virtual IExecutable* getExecutor(const char* buffer) const;
-	std::vector<int> getFdSet() const;
-	std::vector<int> getClientSockets() const;
-	std::vector<std::string> getNicknames() const;
-	std::vector<std::string> getUsernames() const;
-	int getUserCount() const;
-	/* setter */
-	bool trySetAuthenticated(const int clientSocket);
-	bool trySetNickname(const int clientSocket, const std::string& nickname);
-	bool trySetUsername(const int clientSocket, const std::string& username);
-	
-	Result<User> findUser(const int clientSocket) const;
-	Result<std::pair<int, User> > findUser(const std::string& nickname) const;
 	virtual bool enterUser(const int clientSocket, const User& user);
 	virtual void exitUser(const int clientSocket);
+	std::vector<int> getFdSet() const;
+	int getUserCount() const;
+	std::vector<std::string> getNicknames() const;
+	std::vector<std::string> getUsernames() const;
+	Result<User> findUser(const int clientSocket) const;
+	
+
+	// 이 둘은 channel과 lobby에만 있어야 함, 이동할 지 생각하기, 
+	Result<std::pair<int, User> > findUser(const std::string& nickname) const;
 
 protected:
 	Space() {};

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 19:13:06 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 13:38:03 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 16:12:16 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,36 +15,20 @@
 User::User()
 : mUsername("")
 , mNickname("")
-, mbAuthenticated(false)
-, mbHasNickname(false)
-, mbHasUsername(false)
 {
 
 }
 
-bool User::operator==(const User& rhs) const
+User::User(const std::string& username, const std::string& nickname)
+: mUsername(username)
+, mNickname(nickname)
 {
-	return mUsername == rhs.mUsername;
+
 }
 
 User::~User()
 {
 
-}
-
-bool User::hasNickname() const
-{
-	return mbHasNickname;
-}
-
-bool User::hasUsername() const
-{
-	return mbHasUsername;
-}
-
-bool User::isPassed() const
-{
-	return mbAuthenticated;
 }
 
 std::string User::getUsername() const
@@ -60,18 +44,11 @@ std::string User::getNickname() const
 void User::setNickname(const std::string& nickname)
 {
 	mNickname = nickname;
-	mbHasNickname = true;
 }
 
 void User::setUsername(const std::string& username)
 {
 	mUsername = username;
-	mbHasUsername = true; 
-}
-
-void User::setAthenticated()
-{
-	mbAuthenticated = true;
 }
 
 bool User::addjoinedChannel(std::string& title)
