@@ -46,10 +46,4 @@ private:
 	std::string mTitle;
 	std::string mTopic;
 	unsigned int mPassword;
- 
-
-
-
-  	
- 	
 };

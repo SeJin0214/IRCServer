@@ -20,7 +20,6 @@ Message ChannelListCommand::getSocketAndMessages(const Server& server, const int
 	// std::string nickName = server.find
 	return msg;
 }
-
 // 127.000.000.001.06667-127.000.000.001.58162: :irc.local 321 donkim3 Channel :Users Name
 // :irc.local 322 donkim3 #ccc 1 :[+nt] 
 // :irc.local 322 donkim3 #bbb 2 :[+nt] 

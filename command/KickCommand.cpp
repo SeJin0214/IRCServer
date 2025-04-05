@@ -16,6 +16,15 @@
 std::vector<std::pair<int, std::string> > KickCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
+
+	//  KICK #channel donjeong :     //donjeong 강퇴당한사람
+	//   :donkim!root@127.0.0.1  KICK #channel donjeong :
+	//       ->KICK 명령어 사용한 호스트
+
+	//clientsocket(클라이언트)의 isoperator
+	//이름이 채널에 있는지 확인 ->에러메시지 발송 :irc.local 401 donkim donjeongss :No such nick
+	//msg 보내기
+
 	(void) server;
 	(void) clientSocket;
 	return std::vector<std::pair<int, std::string> >();

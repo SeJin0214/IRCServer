@@ -31,6 +31,18 @@ std::vector<std::pair<int, std::string> > InviteCommand::getSocketAndMessages(co
 	while (getline(ss, temp, ' '))
 	{
 	}
+
+
+
+	//이름이 있는 유저인지 확인 -> 있으면 에러처리 발송
+	//있다면 이 채널에 있는지 확인  -> 있으면 에러처리 발송
+	//없으면 초대 보내기   -> 초대메시지 발송
+
+
+
+
+	// 2 개 들어오면 error;
+
 	//:irc.local 341 donkim donjeong :#channel // 서버 -> donkim
 	// :donkim!root@127.0.0.1 INVITE donjeong :#channel // 서버 -> donjeong;
 
@@ -40,10 +52,13 @@ std::vector<std::pair<int, std::string> > InviteCommand::getSocketAndMessages(co
 // 127.000.000.001.40182-127.000.000.001.06667: INVITE sejjeong #channel
 	// 127.000.000.001.06667-127.000.000.001.40182: :irc.local 482 donjeong #channel :You must be a channel op or higher to send an invite.
 
+
+
 	// Nickname이 없음;
-	// invite donjeong,sejjeong 
+	// invite donjeong,sejjeong
 // INVITE donjeong,sejjeong #channel
 	//:irc.local 401 donkim donjeong,sejjeong :No such nick
+
 
 	// 2명 이상 초대;
 	// invite donjeong sejjeong 
@@ -52,7 +67,7 @@ std::vector<std::pair<int, std::string> > InviteCommand::getSocketAndMessages(co
 	// server -> donkim3
 
 	//  채널에 있는 donkim3 초대
-// PRIVMSG #channel :invite donkim3 
+// PRIVMSG #channel :invite donkim3
 	// irc.local 443 donkim3 donkim3 #channel :is already on channel
 
 
