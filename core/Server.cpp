@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:03 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 11:38:18 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 13:38:00 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@
 #define SYSCALL_FAIL (-1)
 
 Server::Server(const char* port, const char* password)
-: mbRunning(false)
+: mName("irc.local")
+, mbRunning(false)
 , mPort(std::atoi(port))
 , mPassword(Util::generateHash65599(password))
 {
@@ -97,6 +98,17 @@ std::vector<const Space *> Server::getSpaces() const
 }
 
 /* getter */
+
+std::string Server::getServerName() const
+{
+	return mName;
+}
+
+unsigned int Server::getPassword() const
+{
+	return mPassword;
+}
+
 fd_set Server::getFdSet() const
 {
 	fd_set master;
@@ -306,6 +318,9 @@ bool Server::run()
 				handleClientMessage(i);
 			}
 		}
+		
+		// 로그인쪽 뒤져보고 
+		// 5초 안에도 완성이 안 되어 있으면 close
 	}
 	return (true);
 }
@@ -394,15 +409,17 @@ void Server::handleClientMessage(const int clientSocket)
 	const Space* space = findSpace(clientSocket);
 
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
-
-	std::vector<std::pair<int, std::string> > socketAndMessages = outgoingMessageProvider->getSocketAndMessages(*this, clientSocket, buffer);
-	for (size_t i = 0; i < socketAndMessages.size(); ++i)
+	if (outgoingMessageProvider != NULL)
 	{
-		std::pair<int, std::string> socketAndMessage = socketAndMessages[i];
-		sendToClient(socketAndMessage.first, socketAndMessage.second.c_str());
+		std::vector<std::pair<int, std::string>> socketAndMessages = outgoingMessageProvider->getSocketAndMessages(*this, clientSocket, buffer);
+		for (size_t i = 0; i < socketAndMessages.size(); ++i)
+		{
+			std::pair<int, std::string> socketAndMessage = socketAndMessages[i];
+			sendToClient(socketAndMessage.first, socketAndMessage.second.c_str());
+		}
 	}
 
-	IExecutable* executor = space->getExecutor(buffer);
+	IExecutable *executor = space->getExecutor(buffer);
 	if (executor != NULL)
 	{
 		executor->execute(*this, clientSocket, buffer);
@@ -443,23 +460,16 @@ bool Server::isDuplicatedUsername(const char* buffer) const
 
 bool Server::isDuplicatedNickname(const char* buffer) const
 {
-	for (size_t i = 0; i < mChannels.size(); ++i)
+	std::vector<const Space *> spaces = getSpaces();
+	for (size_t i = 0; i < spaces.size(); ++i)
 	{
-		std::vector<std::string> nicknames = mChannels[i]->getNicknames();
+		std::vector<std::string> nicknames = spaces[i]->getNicknames();
 		for (size_t i = 0; i < nicknames.size(); i++)
 		{
 			if (nicknames[i] == buffer)
 			{
 				return true;
 			}
-		}
-	}
-	std::vector<std::string> nicknames = mLobby.getNicknames();
-	for (size_t i = 0; i < nicknames.size(); i++)
-	{
-		if (nicknames[i] == buffer)
-		{
-			return true;
 		}
 	}
 	return false;

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 10:24:37 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 13:37:57 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,9 +184,9 @@ void Channel::exitUser(const int clientSocket)
 
 bool Channel::isOperator(const User& user) const
 {
-	for (std::map<int, User>::const_iterator it = mUsers.begin(); it != mUsers.end(); ++it)
+	for (size_t i = 0; i < mOperatorNicknames.size(); ++i)
 	{
-		if (it->second == user)
+		if (mOperatorNicknames[i] == user.getNickname())
 		{
 			return true;
 		}
@@ -196,9 +196,10 @@ bool Channel::isOperator(const User& user) const
 
 bool Channel::isOperator(const int userSocket) const
 {
-	for (std::map<int, User>::const_iterator it = mUsers.begin(); it != mUsers.end(); ++it)
+	Result<User> user = findUser(userSocket);
+	for (size_t i = 0; i < mOperatorNicknames.size(); ++i)
 	{
-		if (it->first == userSocket)
+		if (mOperatorNicknames[i] == user.getValue().getNickname())
 		{
 			return true;
 		}

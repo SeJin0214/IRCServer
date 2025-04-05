@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 17:13:46 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 11:40:47 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 13:37:59 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,7 @@ IOutgoingMessageProvider* LoggedInSpace::getOutgoingMessageProvider(const char *
 	assert(buffer != NULL);
 
 	std::string command = getCommandSection(buffer);
-	if (std::strncmp("PASS", command.c_str(), command.size()) == 0)
-	{
-		return new PassCommand();
-	}
-	else if (std::strncmp("USER", command.c_str(), command.size()) == 0)
-	{
-		return new UserCommand();
-	}
-	else if (std::strncmp("NICK", command.c_str(), command.size()) == 0)
+	if (std::strncmp("NICK", command.c_str(), command.size()) == 0)
 	{
 		return new NickCommand();
 	}
