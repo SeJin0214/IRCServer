@@ -6,20 +6,20 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 11:25:10 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 20:59:26 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 13:37:43 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cassert>
+#include <cstring>
 #include "SendChannelMessageCommand.hpp"
 
  
-MessageBetch SendChannelMessageCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
-	assert(buffer != "");
+	assert(std::strcmp(buffer, "") != 0);
 	std::map<int, std::string> socketAndMessage;
-	CommonCommand commoncommand;
 	MessageBetch retMsg;
 
 	// PRIVMSG #aaa :asdfasdf
@@ -34,6 +34,9 @@ MessageBetch SendChannelMessageCommand::getSocketAndMessages(const Server& serve
 	//user -> 채널네임 findchannel(channelName)  채널 나옴
 	// 채널 돌면서 getClientSockets() 로 소켓벡터 얻음
 	// clientSocket 과 다르면 하나씩 보냄
+
+	(void) clientSocket;
+	(void) server;
 
 	return retMsg;
 }

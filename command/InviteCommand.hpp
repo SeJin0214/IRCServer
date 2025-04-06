@@ -18,6 +18,6 @@ class InviteCommand : public IOutgoingMessageProvider, public IExecutable
 {
 
 public:
-    MessageBetch getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const;
+    MessageBetch getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const;
     void execute(Server& server, const int clientSocket, const char* buffer);
 };

@@ -6,22 +6,16 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 17:09:53 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 11:47:25 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 13:37:49 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cstdio>
 #include "CommonCommand.hpp"
 
-std::string CommonCommand::getPrefixMessage(const User& user, int clientsocket)
+std::string CommonCommand::getPrefixMessage(const User& user, const int clientsocket)
 {
 	return (":"+ user.getNickname() + "!" + user.getUsername() + "@" + getHostIP(clientsocket));
-}
-
-std::string CommonCommand::getPrefixMessage(const User& user, const int clientSocket)
-{
-	(void) user;
-	(void) clientSocket;
-	return "";
 }
 
 std::string CommonCommand::getHostIP(int sockfd)
@@ -34,7 +28,7 @@ std::string CommonCommand::getHostIP(int sockfd)
     if (getsockname(sockfd, (struct sockaddr*)&addr, &addr_len) == -1)
 	{
         perror("getsockname 실패");
-        return;
+        return "";
     }
     
     // IP 주소를 문자열로 변환

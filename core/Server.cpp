@@ -8,7 +8,7 @@
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
 /*   Updated: 2025/04/02 13:01:37 by sejjeong         ###   ########.fr       */
 /*   Created: 2025/04/03 10:50:03 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 11:38:18 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 15:24:26 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,23 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <fcntl.h>
 #include <iostream>
+#include <sstream>
 #include <unistd.h>
 #include <netinet/in.h>
-#include <fcntl.h>
+#include <set>
 #include "Server.hpp"
 #include "Space.hpp"
 #include "Util.hpp"
 #include "Result.hpp"
 #include "IOutgoingMessageProvider.hpp"
+#include "MessageBetch.hpp"
 #define SYSCALL_FAIL (-1)
 
 Server::Server(const char* port, const char* password)
-: mbRunning(false)
+: mName("irc.local")
+, mbRunning(false)
 , mPort(std::atoi(port))
 , mPassword(Util::generateHash65599(password))
 {
@@ -82,8 +86,36 @@ Server::Server(const char* port, const char* password)
 
 Server::~Server()
 {
+	std::set<int> clientSockets;
+	std::vector<Space *> spaces = getSpaces();
+	for (size_t i = 0; i < spaces.size(); ++i)
+	{
+		std::vector<int> fdSet = spaces[i]->getFdSet();
+		for (size_t i = 0; i < fdSet.size(); ++i)
+		{
+			clientSockets.insert(fdSet[i]);
+		}
+	}
+
+	for (std::set<int>::iterator it = clientSockets.begin(); it != clientSockets.end(); ++it)
+	{
+		leaveServer(*it);
+	}
+
 	close(mServerSocket);
 	mbRunning = false;
+}
+
+std::vector<Space*> Server::getSpaces()
+{
+	std::vector<Space *> spaces;
+	for (size_t i = 0; i < mChannels.size(); ++i)
+	{
+		spaces.push_back(mChannels[i]);
+	}
+	spaces.push_back(&mLobby);
+	spaces.push_back(&mLoggedInSpace);
+	return spaces;
 }
 
 std::vector<const Space *> Server::getSpaces() const
@@ -99,6 +131,17 @@ std::vector<const Space *> Server::getSpaces() const
 }
 
 /* getter */
+
+std::string Server::getServerName() const
+{
+	return mName;
+}
+
+unsigned int Server::getPassword() const
+{
+	return mPassword;
+}
+
 fd_set Server::getFdSet() const
 {
 	fd_set master;
@@ -168,8 +211,6 @@ bool Server::addChannel(const std::string& title)
 
 Result<User> Server::findUser(const int clientSocket) const
 {
-	std::map<std::string, Channel *>::iterator it = mChannels.begin();
-	while (it != mChannels.end())
 	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
 		Result<User> result = mChannels[i]->findUser(clientSocket);
@@ -238,20 +279,26 @@ Channel* Server::findChannelOrNull(const int clientSocket) const
  
   bool Server::trySetAuthenticatedInLoggedSpace(const int clientSocket)
 {
-	Channel* channel = findChannelOrNull(clientSocket);
-	return channel->trySetAuthenticated(clientSocket);
+	return mLoggedInSpace.trySetAuthenticated(clientSocket);
 }
 
 bool Server::trySetNicknameInLoggedSpace(const int clientSocket, const std::string& nickname)
 {
-	Channel* channel = findChannelOrNull(clientSocket);
-	return channel->trySetNickname(clientSocket, nickname);
+	return mLoggedInSpace.trySetNickname(clientSocket, nickname);
 }
 
 bool Server::trySetUsernameInLoggedSpace(const int clientSocket, const std::string& username)
 {
-	Channel* channel = findChannelOrNull(clientSocket);
-	return channel->trySetUsername(clientSocket, username);
+	return mLoggedInSpace.trySetUsername(clientSocket, username);
+}
+
+void Server::enterServer(const int clientSocket, const User& user)
+{
+	std::string message = ":";
+	message += mName + " 001 " + user.getNickname() + " :Welcome to the Internet Relay Chat Network!\r\n";
+	sendToClient(clientSocket, message.c_str());
+	std::cout << clientSocket << ": joined server" << std::endl;
+	enterUserInLobby(clientSocket, user);
 }
 
 bool Server::enterUserInLobby(const int clientSocket, const User& user)
@@ -278,7 +325,7 @@ bool Server::exitUserInChannel(const int clientSocket, const std::string& title)
 	return true;
 }
 
- // TODO: i == STDIN_FILENO 일 때, 서버 콘솔에서 입력 처리, 서버 운영자 명령어 처리
+
 bool Server::run()
 {
 	mbRunning = true;
@@ -287,7 +334,11 @@ bool Server::run()
 	{
 		fd_set temp_fds = getFdSet();
 		int maxFd = getMaxFd();
-		if (select(maxFd + 1, &temp_fds, NULL, NULL, NULL) == SYSCALL_FAIL)
+		
+		struct timeval tv;
+		tv.tv_sec = 0;
+    	tv.tv_usec = 10000;
+		if (select(maxFd + 1, &temp_fds, NULL, NULL, &tv) == SYSCALL_FAIL)
 		{
 			assert(false);
 		}
@@ -304,13 +355,25 @@ bool Server::run()
 			}
 			else if (i == STDIN_FILENO)
 			{
-			
+				char buffer[MAX_BUFFER] = { 0, };
+				const int readLength = read(STDIN_FILENO, buffer, MAX_BUFFER);
+				if (readLength == 0)
+				{
+					return false;
+				}
+				assert(buffer[readLength - 1] == '\n');
+ 				buffer[readLength - 1] = '\0';
+				if (std::strncmp("quit", buffer, readLength) == 0)
+				{
+					mbRunning = false;
+				}
 			}
 			else
 			{
 				handleClientMessage(i);
 			}
 		}
+		mLoggedInSpace.admitOrExile(*this);
 	}
 	return (true);
 }
@@ -326,118 +389,66 @@ void Server::acceptClient()
 		assert(false);
 		return;
 	}
-	
-	
-	User user;
-	mLoggedInSpace.enterUser(clientSocket, user);
+	mLoggedInSpace.enterUser(clientSocket, User());
 }
 
-/**
- *  recv max 512 byte
-*/
-bool Server::attemptReceiveValidData(const int clientSocket, char *buffer, bool (Server::*isInvalid)(const char *) \
-const, const char *message, const int maxCount)
-{
-	int i = 0;
-	for (i = 0; i < maxCount; ++i)
-	{
-		const int readLength = recv(clientSocket, buffer, MAX_BUFFER, 0);
-		buffer[readLength - 1] = '\0';
-
-		if (readLength == MAX_BUFFER)
-		{
-			clearStream(clientSocket);
-		}
-
-		if (readLength < 0)
-		{
-			std::cerr << "데이터 수신 실패" << std::endl;
-			assert(false);
-			return false;
-		}
-		if ((this->*isInvalid)(buffer) == false)
-		{
-			break;
-		}
-		sendToClient(clientSocket, message);
-	}
-	if (i == maxCount)
-	{
-		return false;
-	}
-	return true;
-}
-
-void Server::clearStream(const int socket)
-{
-	char buffer[MAX_BUFFER] = { 0, };
-	while (recv(socket, buffer, sizeof(buffer), 0) > MAX_BUFFER - 1)
-	{
-		continue;
-	}
-}
-
-// TODO: 명령어 실행 구현
+// TODO: ctrl + d 구현하기
 void Server::handleClientMessage(const int clientSocket)
 {
 	char buffer[MAX_BUFFER] = { 0, };
 	
 	const int readLength = recv(clientSocket, buffer, MAX_BUFFER, 0);
 
-	clearStream(clientSocket);
-	if (readLength > 500)
+	if (readLength == 0)
 	{
-		// max message
-		return;
-	}
- 
-	// 만약 ctrl + d가 들어왔다면 다른 예외 처리
-	buffer[readLength - 1] = '\0';
-
-	Space* space = findSpace(clientSocket);
-  	else if (readLength == 0)
-	{
-		// User에 버퍼 담아 두기
 		return;
 	}
 	
+	assert(buffer[readLength - 1] == '\n');
+	buffer[readLength - 1] = '\0';
+	
+	std::stringstream ss(buffer);
+	std::string line;
+	while (true)
+	{
+		std::getline(ss, line);
+		if (ss.fail())
+		{
+			break;
+		}
+		assert(line[line.size() - 1] == '\r');
+		line[line.size() - 1] = '\0';
+		ExecuteCommandByProtocol(clientSocket, line.c_str());
+	}
+}
+
+// TODO: remove print
+void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer)
+{
 	const Space* space = findSpace(clientSocket);
  
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
-	std::vector<int> sockets = outgoingMessageProvider->getTargetSockets(*this, clientSocket, buffer);
-	std::string messageToSend = outgoingMessageProvider->getOutgoingMessage(*this, clientSocket, buffer);
-	for (size_t i = 0; i < sockets.size(); ++i)
-
-	std::vector<std::pair<int, std::string> > socketAndMessages = outgoingMessageProvider->getSocketAndMessages(*this, clientSocket, buffer);
-	for (size_t i = 0; i < socketAndMessages.size(); ++i)
+	if (outgoingMessageProvider != NULL)
 	{
- 
-		sendToClient(sockets[i], messageToSend.c_str());
+		MessageBetch messageBetch = outgoingMessageProvider->getMessageBetch(*this, clientSocket, buffer);
+		std::vector<std::pair<int, std::string> > socketAndMessages = messageBetch.getMessage();
+		for (size_t i = 0; i < socketAndMessages.size(); ++i)
+		{
+			std::pair<int, std::string> socketAndMessage = socketAndMessages[i];
+			sendToClient(socketAndMessage.first, socketAndMessage.second.c_str());
+		}
 	}
 
-	IIncomingMessageProvider* incomingMessageProvider = space->getIncomingMessageProvider(buffer);
-	std::string messageToRecive = incomingMessageProvider->getIncomingMessage(*this, clientSocket, buffer);
-	if (messageToRecive != "")
-	{
-		sendToClient(clientSocket, messageToRecive.c_str());
-  		std::pair<int, std::string> socketAndMessage = socketAndMessages[i];
-		sendToClient(socketAndMessage.first, socketAndMessage.second.c_str());
- 	}
-
-	IExecutable* executor = space->getExecutor(buffer);
+	IExecutable *executor = space->getExecutor(buffer);
 	if (executor != NULL)
 	{
 		executor->execute(*this, clientSocket, buffer);
 	}
+	
+	std::cout << buffer << "|" << std::endl;
 
 	delete outgoingMessageProvider;
-	delete incomingMessageProvider;
 	delete executor;
-}
-
-void Server::stop()
-{
-	mbRunning = false;
 }
 
 bool Server::isDuplicatedUsername(const char* buffer) const
@@ -466,23 +477,16 @@ bool Server::isDuplicatedUsername(const char* buffer) const
 
 bool Server::isDuplicatedNickname(const char* buffer) const
 {
-	for (size_t i = 0; i < mChannels.size(); ++i)
+	std::vector<const Space *> spaces = getSpaces();
+	for (size_t i = 0; i < spaces.size(); ++i)
 	{
-		std::vector<std::string> nicknames = mChannels[i]->getNicknames();
+		std::vector<std::string> nicknames = spaces[i]->getNicknames();
 		for (size_t i = 0; i < nicknames.size(); i++)
 		{
 			if (nicknames[i] == buffer)
 			{
 				return true;
 			}
-		}
-	}
-	std::vector<std::string> nicknames = mLobby.getNicknames();
-	for (size_t i = 0; i < nicknames.size(); i++)
-	{
-		if (nicknames[i] == buffer)
-		{
-			return true;
 		}
 	}
 	return false;
@@ -496,15 +500,17 @@ bool Server::sendToClient(const int clientSocket, const char* message)
 	return (true);
 }
 
+// TODO: 파싱 처리 보완할 것, 문자 등이 안 들어 오도록
 bool Server::isInvalidPortNumber(const char* port) const
 {
     size_t length = std::strlen(port);
-    if (!(length == 4 || length == 5))
+    if ((length == 4 || length == 5) == false)
+	{
+		std::cout << length << std::endl;
         return true;
-    int value = atoi (port);
-    if (!(value >= 1024 && value <= 65535))
-        return true;
-    return false;
+	}
+    int value = std::atoi(port);
+    return (value < 1024 || value == 65535);
 }
 
 bool Server::isInvalidPassword(const char* password) const
@@ -554,28 +560,34 @@ bool Server::isInvalidNameFormatted(const char* password) const
     return false;
 }
 
-void Server::QuitServer(const int clientSocket)
+
+void Server::leaveServer(const int clientSocket)
 {
-	Channel* channel = findChannelOrNull(clientSocket);
-	if (channel != NULL)
+	const char* quitProtocol = "QUIT :leaving";
+	ExecuteCommandByProtocol(clientSocket, quitProtocol);
+}
+
+void Server::executeOutgoing(const int clientSocket)
+{
+	std::vector<Space *> spaces = getSpaces();
+	for (size_t i = 0; i < spaces.size(); ++i)
 	{
-		channel->exitUser(clientSocket);
-		if (channel->getUserCount() == 0)
+		spaces[i]->exitUser(clientSocket);
+	}
+
+	std::vector<Channel *>::iterator it = mChannels.begin();
+	while (it != mChannels.end())
+	{
+		if ((*it)->getUserCount() == 0)
 		{
-			for (std::vector<Channel *>::iterator it = mChannels.begin(); it != mChannels.end(); ++it)
-			{
-				if ((*it)->getTopic() == channel->getTopic())
-				{
-					mChannels.erase(it);
-					break;
-				}
-			}
+			Channel* channel = *it;
+			it = mChannels.erase(it);
 			delete channel;
 		}
-	}
-	else
-	{
-		mLobby.exitUser(clientSocket);
+		else
+		{
+			++it;
+		}
 	}
 	close(clientSocket);
 }

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 10:24:37 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 12:42:11 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,25 +75,12 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 {
 	assert(buffer != NULL);
 
-//  
-	std::cout << "first : " << buffer << std::endl;
-	// if (std::strncmp(buffer, "/", 1) != 0)
-//   	IOutgoingMessageProvider* provider = Space::getOutgoingMessageProvider(buffer);
-//  	if (provider != NULL)
-	{
-		return provider;
-	}
-
-//  
 	std::stringstream ss(buffer);
 	std::string command;
 	std::getline(ss, command, ' ');
 	command = Util::getLowercaseString(command);
-	std::cout << "second : " << buffer << std::endl;
-	if (std::strncmp("/msg", command.c_str(), command.size()) == 0)
-//   	std::string command = getCommandSection(buffer);
 	if (std::strncmp("MODE", command.c_str(), command.size()) == 0)
-//  	{
+	{
 		std::stringstream ss(buffer);
 		std::string command;
 		std::getline(ss, command, ' ');
@@ -135,31 +122,49 @@ IExecutable* Channel::getExecutor(const char* buffer) const
 	std::string command = getCommandSection(buffer);
 	if (std::strncmp("MODE", command.c_str(), command.size()) == 0)
 	{
-		return new ModeCommand;
+		return new ModeCommand();
 	}
 	else if (std::strncmp("PART", command.c_str(), command.size()) == 0)
 	{
-		return new PartCommand;
+		return new PartCommand();
 	}
 	else if (std::strncmp("INVITE", command.c_str(), command.size()) == 0)
 	{
-		return new InviteCommand;
+		return new InviteCommand();
 	}
 	else if (std::strncmp("TOPIC", command.c_str(), command.size()) == 0)
 	{
-		return new TopicCommand;
+		return new TopicCommand();
 	}
 	return NULL;
 }
 
-bool Channel::toggleMode(User& user, const eMode mode)
-{	
-	if (isOperator(user) == false)
+
+bool Channel::isModeActive(const eMode mode)
+{
+	const unsigned char bitFlag = 1 << mode;
+	return (mModeFlag & bitFlag) != 0;
+}
+
+bool Channel::onMode(const int userSocket, const eMode mode)
+{
+	if (isOperator(userSocket) == false)
 	{
 		return false;
 	}
 	const unsigned char bitFlag = 1 << mode;
-	mModeFlag ^= bitFlag;
+	mModeFlag |= bitFlag;
+	return true;
+}
+
+bool Channel::offMode(const int userSocket, const eMode mode)
+{
+	if (isOperator(userSocket) == false)
+	{
+		return false;
+	}
+	const unsigned char bitFlag = 1 << mode;
+	mModeFlag &= ~bitFlag;
 	return true;
 }
 
@@ -188,14 +193,13 @@ void Channel::exitUser(const int clientSocket)
 		}
 		++it;
 	}
-	assert(it != mOperatorNicknames.end());
 }
 
 bool Channel::isOperator(const User& user) const
 {
-	for (std::map<int, User>::const_iterator it = mUsers.begin(); it != mUsers.end(); ++it)
+	for (size_t i = 0; i < mOperatorNicknames.size(); ++i)
 	{
-		if (it->second == user)
+		if (mOperatorNicknames[i] == user.getNickname())
 		{
 			return true;
 		}
@@ -205,9 +209,10 @@ bool Channel::isOperator(const User& user) const
 
 bool Channel::isOperator(const int userSocket) const
 {
-	for (std::map<int, User>::const_iterator it = mUsers.begin(); it != mUsers.end(); ++it)
+	Result<User> user = findUser(userSocket);
+	for (size_t i = 0; i < mOperatorNicknames.size(); ++i)
 	{
-		if (it->first == userSocket)
+		if (mOperatorNicknames[i] == user.getValue().getNickname())
 		{
 			return true;
 		}
@@ -248,7 +253,11 @@ void Channel::exitInvitedList (std::string& invitedUser)
 
 std::string Channel::modeState(void)
 {
-	std::string ret;
+	// std::string ret;
 
-	if (mModeFlag & 2 == 2)
+	// if (mModeFlag & 2 == 2)
+	// {
+
+	// }
+	return "";
 }

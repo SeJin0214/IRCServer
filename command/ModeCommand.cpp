@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:37:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 20:59:39 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 13:37:56 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 #include "ModeCommand.hpp"
 
  
-MessageBetch ModeCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+MessageBetch ModeCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
 	MessageBetch msg;
-	CommonCommand commoncommand;
+	// CommonCommand commoncommand;
 
 	std::string buf(buffer);
 	User user = server.findChannelOrNull(clientSocket)->findUser(clientSocket).getValue();
@@ -39,8 +39,8 @@ MessageBetch ModeCommand::getSocketAndMessages(const Server& server, const int c
 	else  //MODE #channel b
 	{
 		msg.addMessage(clientSocket, ":irc.local 368 " + nickname + " #channel :End of channel ban list");
-		return msg;
 	}
+	return msg;
 }
 
 void ModeCommand::execute(Server& server, const int clientSocket, const char* buffer)

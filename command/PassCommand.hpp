@@ -6,19 +6,18 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 18:41:09 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 09:34:18 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 13:37:41 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+#include "Server.hpp"
 #include "IExecutable.hpp"
-#include "IOutgoingMessageProvider.hpp"
 
-class PassCommand : public IOutgoingMessageProvider, public IExecutable
+class PassCommand : public IExecutable
 {
 
 public:
-    MessageBetch getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const;
     void execute(Server& server, const int clientSocket, const char* buffer);
 
 };

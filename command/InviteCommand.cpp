@@ -15,7 +15,7 @@
 #include "Server.hpp"
 #include <sstream>
 
-MessageBetch InviteCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+MessageBetch InviteCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
 
@@ -29,7 +29,7 @@ MessageBetch InviteCommand::getSocketAndMessages(const Server& server, const int
 	buf.erase(buf.size() - 2); // donjeong #channel
 	std::stringstream ss(buf);
 	ss >> guestNick >> channelName;
-	Result<std::pair<int, User>> guestInChannelPack = server.findChannelOrNull(clientSocket)->findUser(guestNick);
+	Result<std::pair<int, User> > guestInChannelPack = server.findChannelOrNull(clientSocket)->findUser(guestNick);
 	const User hostUser = server.findUser(clientSocket).getValue();
 	if (!ss.eof()) // 2개 이상
 	{
@@ -93,7 +93,7 @@ void InviteCommand::execute(Server& server, const int clientSocket, const char* 
 	std::stringstream ss(buf);
 	ss >> guest >> channelName;
 
-	Result<std::pair<int, User>> guestPack = server.findUser(guest);
+	Result<std::pair<int, User> > guestPack = server.findUser(guest);
 	int guestSocket = guestPack.getValue().first;
 	User guestUser = guestPack.getValue().second;
 	Channel* clientChannel = server.findChannelOrNull(clientSocket); 

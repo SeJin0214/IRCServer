@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 11:29:46 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 20:59:52 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 13:37:49 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,5 +16,5 @@
 class ChannelListCommand : public IOutgoingMessageProvider
 {
 public:
-    MessageBetch getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const;
+    MessageBetch getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const;
 };

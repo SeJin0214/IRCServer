@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:05:45 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 11:46:22 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 12:42:40 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "QuitCommand.hpp"
 #include "CommonCommand.hpp"
 
-MessageBetch QuitCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+MessageBetch QuitCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
 	MessageBetch msg;
@@ -41,7 +41,7 @@ MessageBetch QuitCommand::getSocketAndMessages(const Server& server, const int c
 	
 	User user = temp.getValue();
 	message = CommonCommand::getPrefixMessage(user, clientSocket) + " QUIT :" + buffer + "\r\n";
-	std::vector<int> clientSockets = channel->getClientSockets();
+	std::vector<int> clientSockets = channel->getFdSet();
 	for (size_t i = 0; i < clientSockets.size(); ++i)
 	{
 		if (clientSockets[i] == clientSocket)
@@ -56,14 +56,6 @@ MessageBetch QuitCommand::getSocketAndMessages(const Server& server, const int c
 
 void QuitCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
-	Channel* channel;
-	User user = server.findUser(clientSocket).getValue();
-	while (server.findChannelOrNull(clientSocket))
-	{
-		channel = server.findChannelOrNull(clientSocket);
-		std::string channelName = channel->getTitle();
-		user.removejoinedChannel(channelName);
-		channel->exitUser(clientSocket);
-	}
-	server.exitUserInLobby(clientSocket);
+	assert(buffer != NULL);
+	server.executeOutgoing(clientSocket);
 }

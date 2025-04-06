@@ -58,7 +58,20 @@
         "text_encoding": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
+<<<<<<< HEAD
         "variant": "cpp",
         "set": "cpp"
+=======
+        "xmemory": "cpp",
+        "xstddef": "cpp",
+        "xstring": "cpp",
+        "xtr1common": "cpp",
+        "xutility": "cpp",
+        "sstream": "cpp",
+        "cassert": "cpp",
+        "ctime": "cpp",
+        "set": "cpp",
+        "iomanip": "cpp"
+>>>>>>> develop
     }
 }

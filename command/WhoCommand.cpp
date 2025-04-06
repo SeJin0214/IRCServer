@@ -6,14 +6,14 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 13:01:53 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 20:59:24 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 13:37:47 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cassert>
 #include "WhoCommand.hpp"
 
-MessageBetch WhoCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+MessageBetch WhoCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
 	MessageBetch msg;

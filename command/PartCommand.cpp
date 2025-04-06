@@ -6,14 +6,14 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:41:48 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/04 21:00:17 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/05 13:37:39 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cassert>
 #include "PartCommand.hpp"
 
-MessageBetch PartCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+MessageBetch PartCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
 	MessageBetch msg;

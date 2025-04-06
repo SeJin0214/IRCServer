@@ -13,7 +13,7 @@
 #include <cassert>
 #include "KickCommand.hpp"
 
-MessageBetch KickCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+MessageBetch KickCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
 	MessageBetch msg;
