@@ -61,6 +61,20 @@ unsigned int Channel::getPassword() const
 }
 
 /* setter */
+
+unsigned int Channel::setPassword(std::string& password)
+{
+	unsigned int	hash = 0;
+
+	const char *str = password.c_str();
+	for (int i = 0; str[i] != '\0'; ++i)
+	{
+		hash = 65599 * hash + str[i];
+	}
+	mPassword = (hash ^ (hash >> 16));
+}
+
+
 bool Channel::setTopic(const int clientSocket, std::string& topic)
 {
 	if (isOperator(clientSocket) == false)
@@ -144,12 +158,51 @@ IExecutable* Channel::getExecutor(const char* buffer) const
 	return NULL;
 }
 
+std::string Channel::getActiveMode()
+{
+	std::stringstream ss;
+	ss << "+n";
+	if (isModeActive(MODE_INVITE_ONLY))
+	{
+		ss << "i";
+	}
+	if (isModeActive(MODE_KEY_LIMIT))
+	{
+		ss << "k";
+	}
+	if (isModeActive(MODE_LIMIT_USER))
+	{
+		ss << "l";
+	}
+	if (isModeActive(MODE_TOPIC_LOCK))
+	{
+		ss << "t";
+	}
+	return ss.str();
+}
+
+bool Channel::isPassword(std::string& password)
+{
+	unsigned int	hash = 0;
+
+	const char *str = password.c_str();
+	for (int i = 0; str[i] != '\0'; ++i)
+	{
+		hash = 65599 * hash + str[i];
+	}
+	if (mPassword == (hash ^ (hash >> 16)))
+		return true;
+	return false;
+}
+
 
 bool Channel::isModeActive(const eMode mode)
 {
 	const unsigned char bitFlag = 1 << mode;
 	return (mModeFlag & bitFlag) != 0;
 }
+
+
 
 bool Channel::onMode(const int userSocket, const eMode mode)
 {
@@ -198,6 +251,21 @@ void Channel::exitUser(const int clientSocket)
 		}
 		++it;
 	}
+}
+
+bool Channel::isAddUserAsAdmin(const std::string& userNickname)
+{
+	if (this->findUser(userNickname).hasSucceeded())
+	{
+		for (size_t i = 0; i < mOperatorNicknames.size(); ++i)
+		{
+			if (mOperatorNicknames[i] == userNickname)
+				return true;
+		}
+		mOperatorNicknames.push_back(userNickname);
+		return true;
+	}
+	return false;
 }
 
 bool Channel::isOperator(const User& user) const
@@ -254,15 +322,4 @@ void Channel::exitInvitedList (std::string& invitedUser)
 			break ;
 		}
 	}
-}
-
-std::string Channel::modeState(void)
-{
-	// std::string ret;
-
-	// if (mModeFlag & 2 == 2)
-	// {
-
-	// }
-	return "";
 }
