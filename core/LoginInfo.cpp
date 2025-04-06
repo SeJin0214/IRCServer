@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 15:09:17 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 16:11:35 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 12:48:01 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,8 @@ LoginInfo::LoginInfo()
 : mUsername("")
 , mNickname("")
 , mbAuthenticated(false)
-, mStartTime(std::clock())
 {
-
+	gettimeofday(&mStartTime, NULL);
 }
 
 std::string LoginInfo::getUsername() const
@@ -53,8 +52,9 @@ bool LoginInfo::isValidInfo() const
 
 bool LoginInfo::isTimeout() const
 {
-	clock_t currentTime = std::clock();
-	double sec = static_cast<double>(currentTime - mStartTime) / CLOCKS_PER_SEC;
+	struct timeval currentTime;
+	gettimeofday(&currentTime, NULL);
+	double sec = (currentTime.tv_sec - mStartTime.tv_sec) + (currentTime.tv_usec - mStartTime.tv_usec) / 1000000.0;
 	return sec > MAX_TIME;
 }
 

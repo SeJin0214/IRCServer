@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 16:34:02 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 12:42:11 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,14 +143,31 @@ IExecutable* Channel::getExecutor(const char* buffer) const
 	return NULL;
 }
 
-bool Channel::toggleMode(User& user, const eMode mode)
+bool Channel::isModeActive(const eMode mode)
 {
-	if (isOperator(user) == false)
+	const unsigned char bitFlag = 1 << mode;
+	return (mModeFlag & bitFlag) != 0;
+}
+
+bool Channel::onMode(const int userSocket, const eMode mode)
+{
+	if (isOperator(userSocket) == false)
 	{
 		return false;
 	}
 	const unsigned char bitFlag = 1 << mode;
-	mModeFlag ^= bitFlag;
+	mModeFlag |= bitFlag;
+	return true;
+}
+
+bool Channel::offMode(const int userSocket, const eMode mode)
+{
+	if (isOperator(userSocket) == false)
+	{
+		return false;
+	}
+	const unsigned char bitFlag = 1 << mode;
+	mModeFlag &= ~bitFlag;
 	return true;
 }
 

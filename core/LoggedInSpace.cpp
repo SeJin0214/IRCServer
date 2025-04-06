@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 17:13:46 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 19:24:36 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 15:23:52 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "NickCommand.hpp"
 #include "UserCommand.hpp"
 #include "PassCommand.hpp"
+#include "QuitCommand.hpp"
 
 IOutgoingMessageProvider* LoggedInSpace::getOutgoingMessageProvider(const char *buffer) const
 {
@@ -27,10 +28,13 @@ IOutgoingMessageProvider* LoggedInSpace::getOutgoingMessageProvider(const char *
 	{
 		return new NickCommand();
 	}
+	else if (std::strncmp("QUIT", command.c_str(), command.size()) == 0)
+	{
+		return new QuitCommand();
+	}
 	return NULL;
 }
 
-#include <iostream>
 IExecutable* LoggedInSpace::getExecutor(const char *buffer) const
 {
 	assert(buffer != NULL);
@@ -38,7 +42,6 @@ IExecutable* LoggedInSpace::getExecutor(const char *buffer) const
 	std::string command = getCommandSection(buffer);
 	if (std::strncmp("PASS", command.c_str(), command.size()) == 0)
 	{
-		std::cout << command << std::endl;
 		return new PassCommand();
 	}
 	else if (std::strncmp("USER", command.c_str(), command.size()) == 0)
@@ -48,6 +51,10 @@ IExecutable* LoggedInSpace::getExecutor(const char *buffer) const
 	else if (std::strncmp("NICK", command.c_str(), command.size()) == 0)
 	{
 		return new NickCommand();
+	}
+	else if (std::strncmp("QUIT", command.c_str(), command.size()) == 0)
+	{
+		return new QuitCommand();
 	}
 	return NULL;
 }
@@ -60,7 +67,7 @@ void LoggedInSpace::admitOrExile(Server& server)
 		LoginInfo info = it->second;
 		if (info.isValidInfo())
 		{
-			server.enterUserInLobby(it->first, User(info.getUsername(), info.getNickname()));
+			server.enterServer(it->first, User(info.getUsername(), info.getNickname()));
 			int clientSocket = it->first;
 			++it;
 			exitUser(clientSocket);
@@ -69,7 +76,7 @@ void LoggedInSpace::admitOrExile(Server& server)
 		{
 			int clientSocket = it->first;
 			++it;
-			server.QuitServer(clientSocket);
+			server.leaveServer(clientSocket);
 		}
 		else
 		{

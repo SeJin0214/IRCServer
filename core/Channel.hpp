@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:19:57 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 16:39:39 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 12:39:39 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@ public:
 	std::string getTopic() const;
 	bool setTopic(int clientSocket, std::string& topic);
 	unsigned int getPassword() const;
-	bool toggleMode(User& user, const eMode mode);
+	bool isModeActive(const eMode mode);
+	bool onMode(const int userSocket, const eMode mode);
+	bool offMode(const int userSocket, const eMode mode);
 	bool enterUser(const int clientSocket, const User& user);
 	void exitUser(const int clientSocket);
 	bool isOperator(const User& user) const;

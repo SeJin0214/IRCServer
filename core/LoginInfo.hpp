@@ -6,13 +6,13 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 15:07:31 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 16:11:18 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 12:50:02 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <string>
-#include <ctime>
+#include <sys/time.h> 
 
 class LoginInfo
 {
@@ -30,10 +30,10 @@ public:
 	void setNickname(const std::string& nickname);
     void setUsername(const std::string& username);
 private:
-	enum { MAX_TIME = 7 };
+	enum { MAX_TIME = 10 };
 	std::string mUsername;
     std::string mNickname;
     bool mbAuthenticated;
-	clock_t mStartTime;
+	struct timeval mStartTime;
 	
 };

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:05:45 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 16:40:37 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 12:42:40 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,5 @@ std::vector<std::pair<int, std::string> > QuitCommand::getSocketAndMessages(cons
 void QuitCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
-	server.QuitServer(clientSocket);
+	server.executeOutgoing(clientSocket);
 }

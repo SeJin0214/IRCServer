@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:47 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 17:36:30 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 15:08:47 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,15 @@ public:
 	bool trySetAuthenticatedInLoggedSpace(const int clientSocket);
 	bool trySetNicknameInLoggedSpace(const int clientSocket, const std::string& nickname);
 	bool trySetUsernameInLoggedSpace(const int clientSocket, const std::string& username);
+	void enterServer(const int clientSocket, const User& user);
 	bool enterUserInLobby(const int clientSocket, const User& user);
 	bool exitUserInLobby(const int clientSocket);
 	bool enterUserInChannel(const int clientSocket, const User& user, const std::string& title);
 	bool exitUserInChannel(const int clientSocket, const std::string& title);
 	bool addChannel(const std::string& title);
-	void QuitServer(const int clientSocket);
+	void leaveServer(const int clientSocket);
 	bool isDuplicatedNickname(const char* buffer) const;
+	void executeOutgoing(const int clientSocket);
 	// private으로 옮길 수도 있음
 	Channel* findChannelOrNull(const std::string title) const;
 	Channel* findChannelOrNull(const int clientSocket) const;
@@ -63,11 +65,11 @@ private:
 	int getMaxFd() const;
 	std::vector<const Space*> getSpaces() const;
 	std::vector<Space*> getSpaces();
-	void stop();
 	const Space* findSpace(const int clientSocket) const;
 	void acceptClient();
 	bool sendToClient(const int clientSocket, const char* message);
 	void handleClientMessage(const int clientSocket);
+	void ExecuteCommandByProtocol(const int clientSocket, const char* buffer);
 	bool isDuplicatedUsername(const char* buffer) const;
 	bool isInvalidPortNumber(const char* port) const;
 	bool isInvalidPasswordFormatted(const char* password) const;

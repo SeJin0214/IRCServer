@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:03 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 19:32:14 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 15:24:26 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <cstring>
 #include <fcntl.h>
 #include <iostream>
+#include <sstream>
 #include <unistd.h>
 #include <netinet/in.h>
 #include <set>
@@ -95,7 +96,7 @@ Server::~Server()
 
 	for (std::set<int>::iterator it = clientSockets.begin(); it != clientSockets.end(); ++it)
 	{
-		QuitServer(*it);
+		leaveServer(*it);
 	}
 
 	close(mServerSocket);
@@ -287,6 +288,15 @@ bool Server::trySetUsernameInLoggedSpace(const int clientSocket, const std::stri
 	return mLoggedInSpace.trySetUsername(clientSocket, username);
 }
 
+void Server::enterServer(const int clientSocket, const User& user)
+{
+	std::string message = ":";
+	message += mName + " 001 " + user.getNickname() + " :Welcome to the Internet Relay Chat Network!\r\n";
+	sendToClient(clientSocket, message.c_str());
+	std::cout << clientSocket << ": joined server" << std::endl;
+	enterUserInLobby(clientSocket, user);
+}
+
 bool Server::enterUserInLobby(const int clientSocket, const User& user)
 {
 	return mLobby.enterUser(clientSocket, user);
@@ -311,7 +321,7 @@ bool Server::exitUserInChannel(const int clientSocket, const std::string& title)
 	return true;
 }
 
-// TODO: i == STDIN_FILENO 일 때, 서버 콘솔에서 입력 처리, 서버 운영자 명령어 처리
+// TODO: stream clear 하기 
 bool Server::run()
 {
 	mbRunning = true;
@@ -341,7 +351,18 @@ bool Server::run()
 			}
 			else if (i == STDIN_FILENO)
 			{
-				
+				char buffer[MAX_BUFFER] = { 0, };
+				const int readLength = read(STDIN_FILENO, buffer, MAX_BUFFER);
+				if (readLength == 0)
+				{
+					return false;
+				}
+				assert(buffer[readLength - 1] == '\n');
+ 				buffer[readLength - 1] = '\0';
+				if (std::strncmp("quit", buffer, readLength) == 0)
+				{
+					mbRunning = false;
+				}
 			}
 			else
 			{
@@ -367,19 +388,38 @@ void Server::acceptClient()
 	mLoggedInSpace.enterUser(clientSocket, User());
 }
 
-// TODO: 명령어 실행 구현
+// TODO: ctrl + d 구현하기
 void Server::handleClientMessage(const int clientSocket)
 {
 	char buffer[MAX_BUFFER] = { 0, };
 	
-	// 캐리지 리턴 들어오는지 확인하기
 	const int readLength = recv(clientSocket, buffer, MAX_BUFFER, 0);
 	if (readLength == 0)
 	{
-		// User에 버퍼 담아 두기
 		return;
 	}
 	
+	assert(buffer[readLength - 1] == '\n');
+	buffer[readLength - 1] = '\0';
+	
+	std::stringstream ss(buffer);
+	std::string line;
+	while (true)
+	{
+		std::getline(ss, line);
+		if (ss.fail())
+		{
+			break;
+		}
+		assert(line[line.size() - 1] == '\r');
+		line[line.size() - 1] = '\0';
+		ExecuteCommandByProtocol(clientSocket, line.c_str());
+	}
+}
+
+// TODO: remove print
+void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer)
+{
 	const Space* space = findSpace(clientSocket);
 
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
@@ -398,16 +438,11 @@ void Server::handleClientMessage(const int clientSocket)
 	{
 		executor->execute(*this, clientSocket, buffer);
 	}
-
-	std::cout << buffer;
+	
+	std::cout << buffer << "|" << std::endl;
 
 	delete outgoingMessageProvider;
 	delete executor;
-}
-
-void Server::stop()
-{
-	mbRunning = false;
 }
 
 bool Server::isDuplicatedUsername(const char* buffer) const
@@ -519,7 +554,14 @@ bool Server::isInvalidNameFormatted(const char* password) const
     return false;
 }
 
-void Server::QuitServer(const int clientSocket)
+
+void Server::leaveServer(const int clientSocket)
+{
+	const char* quitProtocol = "QUIT :leaving";
+	ExecuteCommandByProtocol(clientSocket, quitProtocol);
+}
+
+void Server::executeOutgoing(const int clientSocket)
 {
 	std::vector<Space *> spaces = getSpaces();
 	for (size_t i = 0; i < spaces.size(); ++i)
