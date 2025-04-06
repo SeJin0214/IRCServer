@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 00:04:15 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 00:12:15 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -453,7 +453,14 @@ void Server::handleClientMessage(const int clientSocket)
 void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer)
 {
 	const Space* space = findSpace(clientSocket);
- 
+
+	IExecutable *executor = space->getExecutor(buffer);
+	if (executor != NULL)
+	{
+		executor->execute(*this, clientSocket, buffer);
+	}
+	delete executor;
+
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
 	if (outgoingMessageProvider != NULL)
 	{
@@ -467,13 +474,6 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 		}
 	}
 	delete outgoingMessageProvider;
-
-	IExecutable *executor = space->getExecutor(buffer);
-	if (executor != NULL)
-	{
-		executor->execute(*this, clientSocket, buffer);
-	}
-	delete executor;
 }
 
 bool Server::isDuplicatedUsername(const char* buffer) const

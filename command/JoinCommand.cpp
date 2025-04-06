@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:43:26 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/06 21:55:18 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 00:20:28 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,32 +34,35 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 	channelName.erase(0,1);
 	// std::string channelName = buf.substr(5, buf.size() - 2);
 	std::string nickname = user.getNickname();
+
 	Channel *channel = server.findChannelOrNull(channelName);
-	std::vector<std::string> nick = channel->getNicknames();//문제발생
+	assert(channel != NULL);
+
+	std::vector<std::string> nicknames = channel->getNicknames();
 	std::vector<int> userSockets = channel->getFdSet();
 	std::string userlist;
-	for (size_t i = 0; i < nick.size(); ++i)
+	for (size_t i = 0; i < nicknames.size(); ++i)
 	{
 		if (channel->isOperator(userSockets[i]))
 		{
 			userlist += "@";
 		}
-		userlist += nick[i];
-		if (i != nick.size())
+		userlist += nicknames[i];
+		if (i != nicknames.size())
 		{
 			userlist += ' ';
 		}
 	}
-	std::string clientMsg;
+
 	std::stringstream ret;
-	ss << CommonCommand::getPrefixMessage(user, clientSocket) << " " << join << " #" << channelName << "\r\n" << ":irc.local 353 " \
-		<< nickname << " = #" << channelName << " :" << userlist << "\r\n" << ":irc.local 366 " << nickname << " #" << \
-		channelName << " :End of /NAMES list.\r\n";
-	ss >> clientMsg;
-	msg.addMessage(clientSocket, clientMsg);
-	for (size_t i = 0; i < nick.size(); ++i)
+	ret << CommonCommand::getPrefixMessage(user, clientSocket) << " " << join << " #" << channelName << "\r\n" 
+	<< ":irc.local 353 " << nickname << " = #" << channelName << " :" << userlist << "\r\n" 
+	<< ":irc.local 366 " << nickname << " #" << channelName << " :End of /NAMES list.\r\n";
+	
+	msg.addMessage(clientSocket, ret.str());
+	for (size_t i = 0; i < nicknames.size(); ++i)
 	{
-		msg.addMessage(server.findUser(nick[i]).getValue().first, CommonCommand::getPrefixMessage(user, clientSocket) + " " + join + " #" + channelName + "\r\n");
+		msg.addMessage(server.findUser(nicknames[i]).getValue().first, CommonCommand::getPrefixMessage(user, clientSocket) + " " + join + " #" + channelName + "\r\n");
 	}
 	return msg;
 }
