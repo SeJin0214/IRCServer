@@ -17,7 +17,6 @@
 #include "ChannelListCommand.hpp"
 #include "DirectMessageCommand.hpp"
 #include "ErrorCommand.hpp"
-#include "HelpCommand.hpp"
 #include "InviteCommand.hpp"
 #include "KickCommand.hpp"
 #include "ModeCommand.hpp"
@@ -154,7 +153,7 @@ IExecutable* Channel::getExecutor(const char* buffer) const
 }
 
 bool Channel::toggleMode(User& user, const eMode mode)
-{
+{	
 	if (isOperator(user) == false)
 	{
 		return false;
@@ -214,4 +213,42 @@ bool Channel::isOperator(const int userSocket) const
 		}
 	}
 	return false;
+}
+
+bool Channel::isInvited (std::string& invitedUser)
+{
+	for (std::vector<std::string>::iterator it = mInvitedList.begin(); it != mInvitedList.end(); ++it)
+	{
+		if (*it == invitedUser)
+			return true;
+	}
+	return false;
+}
+
+void Channel::enterInvitedList (std::string& invitedUser)
+{
+	if (isInvited(invitedUser) == true)
+		return ;
+	mInvitedList.push_back (invitedUser);
+}
+
+void Channel::exitInvitedList (std::string& invitedUser)
+{
+	if (isInvited(invitedUser) == false)
+		return ;
+	for (std::vector<std::string>::iterator it = mInvitedList.begin(); it != mInvitedList.end(); ++it)
+	{
+		if (*it == invitedUser)
+		{
+			mInvitedList.erase(it);
+			break ;
+		}
+	}
+}
+
+std::string Channel::modeState(void)
+{
+	std::string ret;
+
+	if (mModeFlag & 2 == 2)
 }

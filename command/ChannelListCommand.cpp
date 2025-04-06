@@ -35,7 +35,7 @@ Message ChannelListCommand::getSocketAndMessages(const Server& server, const int
 
 
 // donkim3
-// invite 기능 출ㄹ/
+// invite 기능 출력 <------ ok
 // quit  기능
 // topic 기능 출력
 // list 기능 출력

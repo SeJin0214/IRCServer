@@ -56,6 +56,14 @@ std::vector<std::pair<int, std::string> > QuitCommand::getSocketAndMessages(cons
 
 void QuitCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
-	assert(buffer != NULL);
-	server.QuitServer(clientSocket);
+	Channel* channel;
+	User user = server.findUser(clientSocket).getValue();
+	while (server.findChannelOrNull(clientSocket))
+	{
+		channel = server.findChannelOrNull(clientSocket);
+		std::string channelName = channel->getTitle();
+		user.removejoinedChannel(channelName);
+		channel->exitUser(clientSocket);
+	}
+	server.exitUserInLobby(clientSocket);
 }
