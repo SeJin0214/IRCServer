@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:19:57 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/06 12:39:39 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 21:56:10 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ public:
 	std::string getTopic() const;
 	bool setTopic(int clientSocket, std::string& topic);
 	unsigned int getPassword() const;
-	// 가입자 명단
 	bool isInvited (std::string& invitedUser);
 	void enterInvitedList (std::string& invitedUser);
 	void exitInvitedList (std::string& invitedUser);

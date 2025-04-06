@@ -6,10 +6,10 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/02 13:01:37 by sejjeong         ###   ########.fr       */
-/*   Created: 2025/04/03 10:50:03 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/06 15:24:26 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 22:01:04 by sejjeong         ###   ########.fr       */
 /*                                                                            */
+/* ************************************************************************** */
+
 /* ************************************************************************** */
 
 #include <algorithm>
@@ -198,16 +198,16 @@ const Space* Server::findSpace(const int clientSocket) const
 	return NULL;
 }
 
-bool Server::addChannel(const std::string& title)
+Channel* Server::createChannel(const std::string& title)
 {
 	Channel* existedChannel = findChannelOrNull(title);
 	if (existedChannel && existedChannel->getTitle() == title)
 	{
-		return false;
+		return NULL;
 	}
 	Channel* newChannel = new Channel(title, "");
 	mChannels.push_back(newChannel);
-	return true;
+	return newChannel;
 }
 
 Result<User> Server::findUser(const int clientSocket) const
@@ -230,7 +230,7 @@ Result<User> Server::findUser(const int clientSocket) const
 }
 
 // return <socket, User>
-Result<std::pair<int, User> > Server::findUser(const std::string nickname) const
+Result<std::pair<int, User> > Server::findUser(const std::string& nickname) const
 {
 	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
@@ -250,7 +250,7 @@ Result<std::pair<int, User> > Server::findUser(const std::string nickname) const
 	return emptyUser;
 }
 
-Channel* Server::findChannelOrNull(const std::string title) const
+Channel* Server::findChannelOrNull(const std::string& title) const
 {
 	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
@@ -298,7 +298,6 @@ void Server::enterServer(const int clientSocket, const User& user)
 	std::string message = ":";
 	message += mName + " 001 " + user.getNickname() + " :Welcome to the Internet Relay Chat Network!\r\n";
 	sendToClient(clientSocket, message.c_str());
-	std::cout << clientSocket << ": joined server" << std::endl;
 	enterUserInLobby(clientSocket, user);
 }
 
@@ -316,13 +315,36 @@ bool Server::exitUserInLobby(const int clientSocket)
 bool Server::enterUserInChannel(const int clientSocket, const User& user, const std::string& title)
 {
 	Channel* channel = findChannelOrNull(title);
+	if (channel == NULL)
+	{
+		channel = createChannel(title);
+		assert(channel != NULL);
+	}
 	return channel->enterUser(clientSocket, user);
 }
 
 bool Server::exitUserInChannel(const int clientSocket, const std::string& title)
 {
 	Channel* channel = findChannelOrNull(title);
+	if (channel == NULL)
+	{
+		return false;
+	}
 	channel->exitUser(clientSocket);
+	if (channel->getUserCount() == 0)
+	{
+		std::vector<Channel *>::iterator it = mChannels.begin();
+		while (it != mChannels.end())
+		{
+			if ((*it)->getTitle() == channel->getTitle())
+			{
+				mChannels.erase(it);
+				break;
+			}
+			++it;
+		}
+		delete channel;
+	}
 	return true;
 }
 
@@ -423,11 +445,9 @@ void Server::handleClientMessage(const int clientSocket)
 	}
 }
 
-// TODO: remove print
 void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer)
 {
 	const Space* space = findSpace(clientSocket);
-	std::cout << buffer << "|" << std::endl;
  
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
 	if (outgoingMessageProvider != NULL)
@@ -440,15 +460,13 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 			sendToClient(socketAndMessage.first, socketAndMessage.second.c_str());
 		}
 	}
+	delete outgoingMessageProvider;
 
 	IExecutable *executor = space->getExecutor(buffer);
 	if (executor != NULL)
 	{
 		executor->execute(*this, clientSocket, buffer);
 	}
-	
-
-	delete outgoingMessageProvider;
 	delete executor;
 }
 
@@ -494,9 +512,11 @@ bool Server::isDuplicatedNickname(const char* buffer) const
 }
 
 // TODO: 에러처리 구현
-bool Server::sendToClient(const int clientSocket, const char* message)
+bool Server::sendToClient(const int clientSocket, const char* message) const
 {
-    send(clientSocket, message, std::strlen(message), 0);
+	char buffer[MAX_BUFFER] = { 0, };
+	sprintf(buffer, "%s\r\n", buffer);
+    send(clientSocket, buffer, std::strlen(buffer), 0);
 	// 에러 처리
 	return (true);
 }

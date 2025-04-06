@@ -6,52 +6,52 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:05:45 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/06 12:42:40 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 21:23:08 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cassert>
 #include <cstring>
 #include <unistd.h>
+#include <set>
 #include "QuitCommand.hpp"
 #include "CommonCommand.hpp"
 
 MessageBetch QuitCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
-	MessageBetch msg;
-	std::vector<std::pair<int, std::string> > result;
 	
-	// 호스트 주소는 주어진 함수를 이용해서 제작  
-	std::string message = "ERROR :Closing link: (root@127.0.0.1) [";
-	message += buffer;
-	message += "]\r\n";
+	std::string message = "ERROR :Closing link: (" + CommonCommand::getHostIP(clientSocket) + ") [" + buffer + "]";
+	MessageBetch messageBetch;
 	
-	// 다시 할게요~~
-	std::pair<int, std::string> socketAndMessage(clientSocket, message);
-	result.push_back(socketAndMessage);
-
+	messageBetch.addMessage(clientSocket, message);
 	Channel* channel = server.findChannelOrNull(clientSocket);
 	if (channel == NULL)
 	{
-		return msg;
+		return messageBetch;
 	}
-	Result<User> temp = channel->findUser(clientSocket);
-	assert(temp.hasSucceeded());
 	
-	User user = temp.getValue();
-	message = CommonCommand::getPrefixMessage(user, clientSocket) + " QUIT :" + buffer + "\r\n";
-	std::vector<int> clientSockets = channel->getFdSet();
-	for (size_t i = 0; i < clientSockets.size(); ++i)
+	// User current 함수 받으면 변경하기
+	Result<User> resultUser = server.findUser(clientSocket);
+	User user = resultUser.getValue();
+	std::string leaveMessage = CommonCommand::getPrefixMessage(user, clientSocket) + " QUIT :" + buffer + "\r\n";
+
+	std::set<int> socketsToSend;
+	std::vector<std::string> joinedChannels = user.getJoinedChannels();
+	for (size_t i = 0; i < joinedChannels.size(); ++i)
 	{
-		if (clientSockets[i] == clientSocket)
+		Channel* joinedChannel = server.findChannelOrNull(joinedChannels[i]);
+		std::vector<int> clientSockets = joinedChannel->getFdSet();
+		for (size_t i = 0; i < clientSockets.size(); ++i)
 		{
-			continue;
+			socketsToSend.insert(clientSockets[i]);
 		}
-		std::pair<int, std::string> socketAndMessage(clientSockets[i], message);
-		result.push_back(socketAndMessage);
 	}
-	return msg;
+	for (std::set<int>::iterator it = socketsToSend.begin(); it != socketsToSend.end(); ++it)
+	{
+		messageBetch.addMessage(*it, leaveMessage);
+	}
+	return messageBetch;
 }
 
 void QuitCommand::execute(Server& server, const int clientSocket, const char* buffer)

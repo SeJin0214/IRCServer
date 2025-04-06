@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:43:26 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 13:37:54 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/06 21:55:18 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 	Channel *channel = server.findChannelOrNull(channelName);
 	if (!channel)
 	{
-		server.addChannel(channelName);
+		server.createChannel(channelName);
 	}
 	std::cout << "@\n" << std::endl;
 	server.findChannelOrNull(channelName)->enterUser(clientSocket, server.findUser(clientSocket).getValue());
