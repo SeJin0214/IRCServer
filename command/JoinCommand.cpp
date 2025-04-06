@@ -21,8 +21,8 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 {
 	assert(buffer != NULL);
 	assert(std::strncmp(buffer, "JOIN ", std::strlen("JOIN ")) == 0);
+
 	MessageBetch msg;
-	CommonCommand commoncommand;
 	std::string buf(buffer);
 	User user = server.findChannelOrNull(clientSocket)->findUser(clientSocket).getValue();
 	std::string nickname = user.getNickname();
@@ -34,12 +34,16 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 	for (size_t i = 0; i < nick.size(); i++)
 	{
 		if (channel->isOperator(userSockets[i]))
+		{
 			userlist += "@";
+		}
 		userlist += nick[i];
 		if (i != nick.size())
+		{
 			userlist += ' ';
+		}
 	}
-	msg.addMessage(clientSocket, commoncommand.getPrefixMessage(user, clientSocket) + " " + buf);
+	msg.addMessage(clientSocket, CommonCommand::getPrefixMessage(user, clientSocket) + " " + buf);
 	msg.addMessage(clientSocket, ":irc.local 353 " + nickname + " = " + channelName + " :" + userlist);
 	msg.addMessage(clientSocket, ":irc.local 366 " + nickname + " " + channelName + " :End of /NAMES list.");
 	return msg;
@@ -56,5 +60,6 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 	Channel *channel = server.findChannelOrNull(channelName);
 	(void) channel;
 	(void) clientSocket;
+	// join 하나 만듦
 	// channel->enterUser(clientSocket, );
 }
