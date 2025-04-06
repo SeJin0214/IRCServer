@@ -19,22 +19,26 @@
  
 MessageBetch JoinCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
-	JoinCommand a;
-	a.execute(const_cast<Server&>(server), clientSocket, buffer);
+	// JoinCommand a;
+	// a.execute(const_cast<Server&>(server), clientSocket, buffer);
 	assert(buffer != NULL);
 	assert(std::strncmp(buffer, "JOIN ", std::strlen("JOIN ")) == 0);
-
+		//채널 30자 이내
 	MessageBetch msg;
-	std::string buf(buffer);
+	// std::string buf(buffer);  //JOIN #aaa
 	User user = server.findUser(clientSocket).getValue();
+	std::stringstream ss(buffer);
+	std::string join;
+	std::string channelName;
+	ss >> join >> channelName;
+	channelName.erase(0,1);
+	// std::string channelName = buf.substr(5, buf.size() - 2);
 	std::string nickname = user.getNickname();
-	std::string channelName = buf.substr(5, buf.size() - 2);
-	Channel *channel = server.findChannelOrNull(clientSocket);
+	Channel *channel = server.findChannelOrNull(channelName);
 	std::vector<std::string> nick = channel->getNicknames();//문제발생
-
 	std::vector<int> userSockets = channel->getFdSet();
 	std::string userlist;
-	for (size_t i = 0; i < nick.size(); i++)
+	for (size_t i = 0; i < nick.size(); ++i)
 	{
 		if (channel->isOperator(userSockets[i]))
 		{
@@ -46,10 +50,15 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 			userlist += ' ';
 		}
 	}
-
-	msg.addMessage(clientSocket, CommonCommand::getPrefixMessage(user, clientSocket) + " " + buf);
-	msg.addMessage(clientSocket, ":irc.local 353 " + nickname + " = " + channelName + " :" + userlist);
-	msg.addMessage(clientSocket, ":irc.local 366 " + nickname + " " + channelName + " :End of /NAMES list.");
+	std::string clientMsg;
+	clientMsg += CommonCommand::getPrefixMessage(user, clientSocket) + " " + join + " #" + channelName + "\r\n" + ":irc.local 353 " \
+		+ nickname + " = #" + channelName + " :" + userlist + "\r\n" + ":irc.local 366 " + nickname + " #" + \
+		channelName + " :End of /NAMES list.\r\n";
+	msg.addMessage(clientSocket, clientMsg);
+	for (size_t i = 0; i < nick.size(); ++i)
+	{
+		msg.addMessage(server.findUser(nick[i]).getValue().first, CommonCommand::getPrefixMessage(user, clientSocket) + " " + join + " #" + channelName + "\r\n");
+	}
 	return msg;
 }
 
@@ -65,7 +74,8 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 	{
 		server.addChannel(channelName);
 	}
-	server.findChannelOrNull(channelName)->enterUser(clientSocket, server.findUser(clientSocket).getValue());
+	channel = server.findChannelOrNull(channelName);
+	channel->enterUser(clientSocket, server.findUser(clientSocket).getValue());
 	server.findUser(clientSocket).getValue().addjoinedChannel(channelName);
 	server.exitUserInLobby(clientSocket);
 }

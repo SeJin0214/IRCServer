@@ -89,10 +89,11 @@ void InviteCommand::execute(Server& server, const int clientSocket, const char* 
 //  INVITE sejjeong #channel
 //	:irc.local 341 donkim3 sejjeong :#channel
 //  :donkim3!root@127.0.0.1 INVITE sejjeong :#channel
-// 채널에 있는 거에 넣기
-//sejjeong 으로 user 찾기 채널조인 제일 뒤에있는거 찾아서 채널 갖고오기 그 채널을 list 에 넣기
 	std::stringstream ss(buffer);
 	ss >> temp >> guest >> channelName;
-	User invitedUser = server.findUser(guest).getValue().second;
-	
+	User invitedUser = server.findUser(guest).getValue().second; // 초대받은 유저
+	std::string currentChannelName = server.findUser(clientSocket).getValue().getLastJoinedChannel();   //그 유저(소켓)의 마지막 채널
+	Channel *channel = server.findChannelOrNull(currentChannelName);
+	std::string nick(invitedUser.getNickname());
+	channel->enterInvitedList(nick);
 }

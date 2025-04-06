@@ -24,9 +24,8 @@ public:
     std::string getNickname() const;
     void setNickname(const std::string& nickname);
     void setUsername(const std::string& username);
-    bool addjoinedChannel(std::string& title);
-    bool removejoinedChannel(std::string& title);
-    std::string getLastJoinedChannel() const;
+    void addjoinedChannel(std::string& title);
+    std::string getLastJoinedChannel() const; // 추가
     ~User();
 
 private:
