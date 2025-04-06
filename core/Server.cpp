@@ -473,6 +473,7 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 			sendToClient(socketAndMessage.first, socketAndMessage.second.c_str());
 		}
 	}
+
 	delete outgoingMessageProvider;
 }
 

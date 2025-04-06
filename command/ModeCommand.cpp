@@ -16,6 +16,7 @@
  
 MessageBetch ModeCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
+	std::cout << buffer << std::endl;
 	assert(buffer != NULL);
 	MessageBetch msg;
 	// CommonCommand commoncommand;
@@ -30,7 +31,7 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 	channelName.erase(0, 1);
 	if (ss.eof()) //MODE #channel     /r/n
 	{
-		channelName.erase(channelName.size() - 2);
+		// channelName.erase(channelName.size() - 2);
 		// :irc.local 324 sejjeong #channel :+nt   //sejjeong     +knt :12345678
 		// :irc.local 329 sejjeong #channel :1743734234
 

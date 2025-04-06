@@ -53,7 +53,6 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 			userlist += ' ';
 		}
 	}
-
 	std::stringstream ret;
 	ret << CommonCommand::getPrefixMessage(user, clientSocket) << " " << join << " #" << channelName << "\r\n" 
 	<< ":irc.local 353 " << nickname << " = #" << channelName << " :" << userlist << "\r\n" 
@@ -62,7 +61,10 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 	msg.addMessage(clientSocket, ret.str());
 	for (size_t i = 0; i < nicknames.size(); ++i)
 	{
-		msg.addMessage(server.findUser(nicknames[i]).getValue().first, CommonCommand::getPrefixMessage(user, clientSocket) + " " + join + " #" + channelName + "\r\n");
+		if (nickname != nicknames[i])
+		{
+			msg.addMessage(server.findUser(nicknames[i]).getValue().first, CommonCommand::getPrefixMessage(user, clientSocket) + " " + join + " #" + channelName + "\r\n");
+		}
 	}
 	return msg;
 }
