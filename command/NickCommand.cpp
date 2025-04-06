@@ -13,13 +13,14 @@
 #include <cassert>
 #include "NickCommand.hpp"
 
-std::vector<std::pair<int, std::string> > NickCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+MessageBetch NickCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
+	MessageBetch msg;
 	// NICK이 중복되면 반환
 	(void) server;
 	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
+	return msg;
 }
 
 void NickCommand::execute(Server& server, const int clientSocket, const char* buffer)

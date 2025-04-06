@@ -28,8 +28,8 @@ public:
 	~Server();
 	bool run();
 
-	Result<User> findUser(const int clientSocket);
-	Result<std::pair<int, User> > findUser(const std::string nickname);
+	Result<User> findUser(const int clientSocket) const;
+	Result<std::pair<int, User> > findUser(const std::string nickname) const;
 	// private으로 옮길 수도 있음
 	Channel* findChannelOrNull(const std::string title) const;
 	Channel* findChannelOrNull(const int clientSocket) const;

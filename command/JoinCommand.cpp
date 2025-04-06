@@ -16,10 +16,10 @@
 #include <sstream>
 
  
-Message JoinCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
+MessageBetch JoinCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
-	Message msg;
+	MessageBetch msg;
 	CommonCommand commoncommand;
 
 	std::string buf(buffer);
@@ -46,14 +46,6 @@ Message JoinCommand::getSocketAndMessages(const Server& server, const int client
 		return msg;
 	}
 }
-
-  std::vector<std::pair<int, std::string> > JoinCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
-{
-	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
- }
 
 void JoinCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {

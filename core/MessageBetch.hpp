@@ -10,15 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma
+#pragma once
 #include <map>
 #include <vector>
 #include <iostream>
 
-class Message
+class MessageBetch
 {
 public :
-    std::vector<std::pair<int, std::string>> getMessage() const;
+    std::vector<std::pair<int, std::string> > getMessage() const;
     void addMessage(int socket, std::string msg);
 private :
     std::vector <std::pair<int, std::string> > mMsg;

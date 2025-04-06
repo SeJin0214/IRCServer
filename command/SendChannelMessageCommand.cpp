@@ -14,13 +14,13 @@
 #include "SendChannelMessageCommand.hpp"
 
  
-Message SendChannelMessageCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
+MessageBetch SendChannelMessageCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
 	assert(buffer != "");
 	std::map<int, std::string> socketAndMessage;
 	CommonCommand commoncommand;
-	Message retMsg;
+	MessageBetch retMsg;
 
 	// PRIVMSG #aaa :asdfasdf
 	// donkim!root@127.0.0.1 PRIVMSG #aaa :asdfasdf
@@ -37,10 +37,3 @@ Message SendChannelMessageCommand::getSocketAndMessages(const Server& server, co
 
 	return retMsg;
 }
-  std::vector<std::pair<int, std::string> > SendChannelMessageCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
-{
-	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
- }

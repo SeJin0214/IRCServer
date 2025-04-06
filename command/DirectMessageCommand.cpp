@@ -17,13 +17,13 @@
 #include <sstream>
 #include "User.hpp"
 
-Message DirectMessageCommand::getSocketAndMessages(Server& server, const int clientSocket, const char* buffer)
+MessageBetch DirectMessageCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
 	assert(buffer != "");
 	std::map<int, std::string> socketAndMessage;
 	CommonCommand commoncommand;
-	Message retMsg;
+	MessageBetch retMsg;
 
 	// 127.000.000.001.58178-127.000.000.001.06667: PRIVMSG #aaa :hello@######@@world
 	// 127.000.000.001.06667-127.000.000.001.58162: :sejjeong!root@127.0.0.1 PRIVMSG #aaa :hello@######@@world
@@ -53,11 +53,4 @@ Message DirectMessageCommand::getSocketAndMessages(Server& server, const int cli
 		}
 	}
 	return retMsg;
-}
-  std::vector<std::pair<int, std::string> > DirectMessageCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
-{
-	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
 }

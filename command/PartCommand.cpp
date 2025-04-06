@@ -13,16 +13,17 @@
 #include <cassert>
 #include "PartCommand.hpp"
 
-std::vector<std::pair<int, std::string> > PartCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+MessageBetch PartCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
+	MessageBetch msg;
 	// lobby에서 입력시 서버 반응 x
 	// 127.000.000.001.32790-127.000.000.001.06667: PART #channel
 	// 127.000.000.001.06667-127.000.000.001.32790: :donkim3!root@127.0.0.1 PART :#channel
 
 	(void) server;
 	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
+	return msg;
 }
 
 void PartCommand::execute(Server& server, const int clientSocket, const char* buffer)

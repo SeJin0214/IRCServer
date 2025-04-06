@@ -16,6 +16,5 @@
 class ChannelListCommand : public IOutgoingMessageProvider
 {
 public:
-    Message getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer);
-    std::vector<std::pair<int, std::string> > getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const;
+    MessageBetch getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const;
 };

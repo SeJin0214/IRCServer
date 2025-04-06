@@ -13,10 +13,10 @@
 #include <cassert>
 #include "ChannelListCommand.hpp"
 
-Message ChannelListCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
+MessageBetch ChannelListCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
-	Message msg;
+	MessageBetch msg;
 	// std::string nickName = server.find
 	return msg;
 }
@@ -41,10 +41,3 @@ Message ChannelListCommand::getSocketAndMessages(const Server& server, const int
 // list 기능 출력
 // kick 기능 출력
 // part 기능 출력
-std::vector<std::pair<int, std::string> > ChannelListCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
-{
-	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
-}

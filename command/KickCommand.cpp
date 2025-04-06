@@ -13,10 +13,10 @@
 #include <cassert>
 #include "KickCommand.hpp"
 
-std::vector<std::pair<int, std::string> > KickCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+MessageBetch KickCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
-
+	MessageBetch msg;
 	//  KICK #channel donjeong :     //donjeong 강퇴당한사람
 	//   :donkim!root@127.0.0.1  KICK #channel donjeong :
 	//       ->KICK 명령어 사용한 호스트
@@ -27,7 +27,7 @@ std::vector<std::pair<int, std::string> > KickCommand::getSocketAndMessages(cons
 
 	(void) server;
 	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
+	return msg;
 }
 
 void KickCommand::execute(Server& server, const int clientSocket, const char* buffer)

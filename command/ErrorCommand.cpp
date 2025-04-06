@@ -13,10 +13,11 @@
 #include <cassert>
 #include "ErrorCommand.hpp"
 
-std::vector<std::pair<int, std::string> > ErrorCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+MessageBetch ErrorCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
 	(void) server;
 	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
+	MessageBetch msg;
+	return msg;
 }

@@ -13,12 +13,13 @@
 #include <cassert>
 #include "UserCommand.hpp"
 
-std::vector<std::pair<int, std::string> > UserCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+MessageBetch UserCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
+	MessageBetch msg;
 	(void) server;
 	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
+	return msg;
 }
 
 void UserCommand::execute(Server& server, const int clientSocket, const char* buffer)

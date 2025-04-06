@@ -14,13 +14,20 @@
 #include "PassCommand.hpp"
 
 
-std::vector<std::pair<int, std::string> > PassCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+// clientSocket 
+
+// 패킷 두 개 보내야 해
+// 1, :ircfsdf  /r/n
+// 1 , :ircfasdf/r\n
+
+MessageBetch PassCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
+	MessageBetch msg;
 	// 하자..
 	(void) server;
 	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
+	return msg;
 }
 
 void PassCommand::execute(Server& server, const int clientSocket, const char* buffer)

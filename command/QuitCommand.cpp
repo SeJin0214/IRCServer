@@ -16,10 +16,10 @@
 #include "QuitCommand.hpp"
 #include "CommonCommand.hpp"
 
-std::vector<std::pair<int, std::string> > QuitCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
+MessageBetch QuitCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
-
+	MessageBetch msg;
 	std::vector<std::pair<int, std::string> > result;
 	
 	// 호스트 주소는 주어진 함수를 이용해서 제작  
@@ -34,7 +34,7 @@ std::vector<std::pair<int, std::string> > QuitCommand::getSocketAndMessages(cons
 	Channel* channel = server.findChannelOrNull(clientSocket);
 	if (channel == NULL)
 	{
-		return result;
+		return msg;
 	}
 	Result<User> temp = channel->findUser(clientSocket);
 	assert(temp.hasSucceeded());
@@ -51,7 +51,7 @@ std::vector<std::pair<int, std::string> > QuitCommand::getSocketAndMessages(cons
 		std::pair<int, std::string> socketAndMessage(clientSockets[i], message);
 		result.push_back(socketAndMessage);
 	}
-	return result;
+	return msg;
 }
 
 void QuitCommand::execute(Server& server, const int clientSocket, const char* buffer)

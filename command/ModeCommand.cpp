@@ -14,10 +14,10 @@
 #include "ModeCommand.hpp"
 
  
-Message ModeCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
+MessageBetch ModeCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
-	Message msg;
+	MessageBetch msg;
 	CommonCommand commoncommand;
 
 	std::string buf(buffer);
@@ -42,14 +42,6 @@ Message ModeCommand::getSocketAndMessages(const Server& server, const int client
 		return msg;
 	}
 }
-
-  std::vector<std::pair<int, std::string> > ModeCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
-{
-	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
- }
 
 void ModeCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {

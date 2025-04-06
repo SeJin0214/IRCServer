@@ -27,7 +27,6 @@
 #include "Util.hpp"
 #include "Result.hpp"
 #include "IOutgoingMessageProvider.hpp"
-#include "IIncomingMessageProvider.hpp"
 #define SYSCALL_FAIL (-1)
 
 Server::Server(const char* port, const char* password)
@@ -167,7 +166,7 @@ bool Server::addChannel(const std::string& title)
 	return true;
 }
 
-Result<User> Server::findUser(const int clientSocket)
+Result<User> Server::findUser(const int clientSocket) const
 {
 	std::map<std::string, Channel *>::iterator it = mChannels.begin();
 	while (it != mChannels.end())
@@ -189,7 +188,7 @@ Result<User> Server::findUser(const int clientSocket)
 }
 
 // return <socket, User>
-Result<std::pair<int, User> > Server::findUser(const std::string nickname)
+Result<std::pair<int, User> > Server::findUser(const std::string nickname) const
 {
 	for (size_t i = 0; i < mChannels.size(); ++i)
 	{

@@ -16,7 +16,7 @@
 #include <map>
 #include "Server.hpp"
 #include <iostream>
-#include "Message.hpp"
+#include "MessageBetch.hpp"
 #include "CommonCommand.hpp"
 #include <sstream>
 class IOutgoingMessageProvider
@@ -27,6 +27,5 @@ public:
 	// 여러 줄을 보내야 한다면
 	// message class를 하나 만들어야 한다.
 	
-	virtual Message getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) = 0;
-  	virtual std::vector<std::pair<int, std::string> > getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const = 0;
+	virtual MessageBetch getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) = 0;
  };

@@ -15,14 +15,14 @@
 #include "Server.hpp"
 #include <sstream>
 
-Message InviteCommand::getSocketAndMessages(Server& server, const int clientSocket, const char* buffer) const
+MessageBetch InviteCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
 
 	// INVITE donjeong #channel\r\n
 	std::string guestNick, guestNick2, channelName;
 	std::string buf = std::string(buffer);
-	Message msg;
+	MessageBetch msg;
 	CommonCommand commonCommand;
 
 	buf.erase(0, 7);

@@ -13,10 +13,10 @@
 #include <cassert>
 #include "WhoCommand.hpp"
 
-Message WhoCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer)
+MessageBetch WhoCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
-	Message msg;
+	MessageBetch msg;
 	CommonCommand commoncommand;
 
 	std::string buf(buffer);
@@ -45,11 +45,3 @@ Message WhoCommand::getSocketAndMessages(const Server& server, const int clientS
 	msg.addMessage (clientSocket,":irc.local 315 " + nickname + " " + channelName + " :End of /WHO list.");
 	return msg;
 }
-
-std::vector<std::pair<int, std::string> > WhoCommand::getSocketAndMessages(const Server& server, const int clientSocket, const char* buffer) const
-{
-	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
-	return std::vector<std::pair<int, std::string> >();
- }
