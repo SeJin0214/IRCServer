@@ -174,9 +174,9 @@ bool Channel::enterUser(const int clientSocket, const User& user)
 	{
 		mOperatorNicknames.push_back(user.getNickname());
 	}
-	assert(getUserCount() > 0);
 	bool bSucceed = Space::enterUser(clientSocket, user);
 	assert(bSucceed);
+	assert(getUserCount() > 0);
 	return bSucceed;
 }
 

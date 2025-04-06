@@ -27,8 +27,8 @@ MessageBetch WhoCommand::getMessageBetch(const Server& server, const int clientS
 	if (buf.find ("%tna,745"))
 	{
 		std::string guestNick = buf.substr(4, idxOfGuestNick);
-		msg.addMessage(clientSocket, ":irc.local 354 " + nickname + " 745 " + guestNick + " :0");
-		msg.addMessage(clientSocket, ":irc.local 315 " + nickname + " " + guestNick + " :End of /WHO list.");
+		msg.addMessage(clientSocket, ":" + server.getServerName() + " 354 " + nickname + " 745 " + guestNick + " :0");
+		msg.addMessage(clientSocket, ":" + server.getServerName() + " 315 " + nickname + " " + guestNick + " :End of /WHO list.");
 		return msg;
 	}
 	std::string channelName = buf.substr(4, idxOfGuestNick);
@@ -39,9 +39,9 @@ MessageBetch WhoCommand::getMessageBetch(const Server& server, const int clientS
 		Channel* channel = server.findChannelOrNull(clientSocket);
 		User user = channel->findUser(nick[i]).getValue().second;
 		int usersocket = channel->findUser(nick[i]).getValue().first;
-		msg.addMessage(clientSocket ,":irc.local 354 " + nickname + " 743 " + channelName + user.getUsername() \
+		msg.addMessage(clientSocket ,":" + server.getServerName() + " 354 " + nickname + " 743 " + channelName + user.getUsername() \
 		+ " " + commoncommand.getPrefixMessage(user, usersocket) + " " + nick[i] + " " + "H@" + " 0 0 :" + user.getUsername()); //// H@ 처리
 	}
-	msg.addMessage (clientSocket,":irc.local 315 " + nickname + " " + channelName + " :End of /WHO list.");
+	msg.addMessage (clientSocket,":" + server.getServerName() + " 315 " + nickname + " " + channelName + " :End of /WHO list.");
 	return msg;
 }

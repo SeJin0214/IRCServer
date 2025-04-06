@@ -19,30 +19,41 @@
  
 MessageBetch JoinCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
+	JoinCommand a;
+	a.execute(const_cast<Server&>(server), clientSocket, buffer);
 	assert(buffer != NULL);
 	assert(std::strncmp(buffer, "JOIN ", std::strlen("JOIN ")) == 0);
 
 	MessageBetch msg;
 	std::string buf(buffer);
-	User user = server.findChannelOrNull(clientSocket)->findUser(clientSocket).getValue();
+	User user = server.findUser(clientSocket).getValue();
 	std::string nickname = user.getNickname();
 	std::string channelName = buf.substr(5, buf.size() - 2);
 	Channel *channel = server.findChannelOrNull(clientSocket);
-	std::vector<std::string> nick = channel->getNicknames();
+	std::vector<std::string> nick = channel->getNicknames();//문제발생
+
 	std::vector<int> userSockets = channel->getFdSet();
+	std::cout << "@\n" << std::endl;
 	std::string userlist;
+	std::cout << "@\n" << std::endl;
 	for (size_t i = 0; i < nick.size(); i++)
 	{
+			std::cout << "@\n" << std::endl;
+
 		if (channel->isOperator(userSockets[i]))
 		{
+			std::cout << "@\n" << std::endl;
 			userlist += "@";
 		}
 		userlist += nick[i];
 		if (i != nick.size())
 		{
+			std::cout << "@\n" << std::endl;
+
 			userlist += ' ';
 		}
 	}
+
 	msg.addMessage(clientSocket, CommonCommand::getPrefixMessage(user, clientSocket) + " " + buf);
 	msg.addMessage(clientSocket, ":irc.local 353 " + nickname + " = " + channelName + " :" + userlist);
 	msg.addMessage(clientSocket, ":irc.local 366 " + nickname + " " + channelName + " :End of /NAMES list.");
@@ -55,11 +66,15 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 	// JOIN #channel
 	std::string buf(buffer);
 	std::string channelName;
-	buf.erase(buf.size() - 2);
 	channelName = buf.erase(0,6); // channel
 	Channel *channel = server.findChannelOrNull(channelName);
-	(void) channel;
-	(void) clientSocket;
+	if (!channel)
+	{
+		server.addChannel(channelName);
+	}
+	std::cout << "@\n" << std::endl;
+	server.findChannelOrNull(channelName)->enterUser(clientSocket, server.findUser(clientSocket).getValue());
+	std::cout << "@\n" << std::endl;
 	// join 하나 만듦
 	// channel->enterUser(clientSocket, );
 }

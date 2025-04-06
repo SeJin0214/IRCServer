@@ -23,34 +23,48 @@ MessageBetch DirectMessageCommand::getMessageBetch(const Server& server, const i
 	assert(buffer != NULL);
 	assert(std::strcmp(buffer, "") != 0);
 	std::map<int, std::string> socketAndMessage;
-	CommonCommand commoncommand;
 	MessageBetch retMsg;
 
 	// 127.000.000.001.58178-127.000.000.001.06667: PRIVMSG #aaa :hello@######@@world
 	// 127.000.000.001.06667-127.000.000.001.58162: :sejjeong!root@127.0.0.1 PRIVMSG #aaa :hello@######@@world
     //        aa,bb,cc,dd
 
-	std::string buf(buffer);
-	std::string pri, msg, usernames;
-	std::stringstream si(buf);
+	std::stringstream si(buffer);
+
+	std::string pri;
+	std::string usernames;
+	std::string msg;
+
 	si >> pri >> usernames >> msg;
 	
+	std::cout << pri << " " << usernames << " " << std::endl;	
 	std::stringstream ss(usernames);
-	std::string ret;
 	std::string temp;
-	for (int i = 0; getline(ss, temp, ','); i++)
+
+	while (true)
 	{
+		std::getline(ss, temp, ',');
+
+		std::cout <<  " temp: " << temp << std::endl;	
 		Result<std::pair<int, User> > user = server.findUser(temp);
 		if(user.hasSucceeded() == true)
 		{
-			User host = server.findChannelOrNull(clientSocket)->findUser(clientSocket).getValue();
-			ret = commoncommand.getPrefixMessage(host, clientSocket) + " PRIVMSG " + temp + msg;
-			retMsg.addMessage(clientSocket, ret);
+			std::cout <<  "has: " << std::endl;
+			
+			User host = server.findUser(clientSocket).getValue();
+			std::string result = CommonCommand::getPrefixMessage(host, clientSocket) + " PRIVMSG " + temp + msg;
+			std::cout << "result : " << result << std::endl;
+			retMsg.addMessage(user.getValue().first, result);
 		}
 		else
 		{
-			ret = ":server 401 " + temp + " :No such nick/channel";
-			retMsg.addMessage(clientSocket, ret);
+			std::string result = ":server 401 " + temp + " :No such nick/channel";
+			retMsg.addMessage(clientSocket, result);
+		}
+
+		if (ss.eof())
+		{
+			break;
 		}
 	}
 	return retMsg;

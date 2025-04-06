@@ -30,6 +30,7 @@
 #include "Result.hpp"
 #include "IOutgoingMessageProvider.hpp"
 #include "MessageBetch.hpp"
+#include "JoinCommand.hpp"
 #define SYSCALL_FAIL (-1)
 
 Server::Server(const char* port, const char* password)
@@ -200,7 +201,7 @@ const Space* Server::findSpace(const int clientSocket) const
 bool Server::addChannel(const std::string& title)
 {
 	Channel* existedChannel = findChannelOrNull(title);
-	if (existedChannel->getTitle() == title)
+	if (existedChannel && existedChannel->getTitle() == title)
 	{
 		return false;
 	}
@@ -426,6 +427,7 @@ void Server::handleClientMessage(const int clientSocket)
 void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer)
 {
 	const Space* space = findSpace(clientSocket);
+	std::cout << buffer << "|" << std::endl;
  
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
 	if (outgoingMessageProvider != NULL)
@@ -445,7 +447,6 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 		executor->execute(*this, clientSocket, buffer);
 	}
 	
-	std::cout << buffer << "|" << std::endl;
 
 	delete outgoingMessageProvider;
 	delete executor;

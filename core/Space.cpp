@@ -130,7 +130,6 @@ int Space::getUserCount() const
 
 bool Space::enterUser(const int clientSocket, const User &user)
 {
-	assert(mUsers.find(clientSocket) == mUsers.end());
 	mUsers.insert(std::pair<int, User>(clientSocket, user));
 	return true;
 }
