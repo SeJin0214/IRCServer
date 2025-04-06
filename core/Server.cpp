@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/06 22:01:04 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 00:04:15 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -520,9 +520,8 @@ bool Server::isDuplicatedNickname(const char* buffer) const
 // TODO: 에러처리 구현
 bool Server::sendToClient(const int clientSocket, const char* message) const
 {
-	(void) message;
 	char buffer[MAX_BUFFER] = { 0, };
-	sprintf(buffer, "%s\r\n", buffer);
+	sprintf(buffer, "%s\r\n", message);
     send(clientSocket, buffer, std::strlen(buffer), 0);
 	// 에러 처리
 	return (true);
