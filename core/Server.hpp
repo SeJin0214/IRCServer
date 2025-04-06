@@ -64,7 +64,7 @@ private:
 	std::vector<const Space*> getSpaces() const;
 	std::vector<Space*> getSpaces();
 	const Space* findSpace(const int clientSocket) const;
-	Channel* Server::createChannel(const std::string& title);
+	Channel* createChannel(const std::string& title);
 	void acceptClient();
 	bool sendToClient(const int clientSocket, const char* message) const;
 	void handleClientMessage(const int clientSocket);

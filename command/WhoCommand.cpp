@@ -17,7 +17,6 @@ MessageBetch WhoCommand::getMessageBetch(const Server& server, const int clientS
 {
 	assert(buffer != NULL);
 	MessageBetch msg;
-	CommonCommand commoncommand;
 
 	std::string buf(buffer);
 	User user = server.findChannelOrNull(clientSocket)->findUser(clientSocket).getValue();
@@ -40,7 +39,7 @@ MessageBetch WhoCommand::getMessageBetch(const Server& server, const int clientS
 		User user = channel->findUser(nick[i]).getValue().second;
 		int usersocket = channel->findUser(nick[i]).getValue().first;
 		msg.addMessage(clientSocket ,":" + server.getServerName() + " 354 " + nickname + " 743 " + channelName + user.getUsername() \
-		+ " " + commoncommand.getPrefixMessage(user, usersocket) + " " + nick[i] + " " + "H@" + " 0 0 :" + user.getUsername()); //// H@ 처리
+		+ " " + CommonCommand::getPrefixMessage(user, usersocket) + " " + nick[i] + " " + "H@" + " 0 0 :" + user.getUsername()); //// H@ 처리
 	}
 	msg.addMessage (clientSocket,":" + server.getServerName() + " 315 " + nickname + " " + channelName + " :End of /WHO list.");
 	return msg;

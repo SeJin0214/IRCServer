@@ -49,16 +49,13 @@ MessageBetch DirectMessageCommand::getMessageBetch(const Server& server, const i
 		Result<std::pair<int, User> > user = server.findUser(temp);
 		if(user.hasSucceeded() == true)
 		{
-			std::cout <<  "has: " << std::endl;
-			
 			User host = server.findUser(clientSocket).getValue();
-			std::string result = CommonCommand::getPrefixMessage(host, clientSocket) + " PRIVMSG " + temp + msg;
-			std::cout << "result : " << result << std::endl;
+			std::string result = CommonCommand::getPrefixMessage(host, clientSocket) + " PRIVMSG " + temp + msg + "\r\n";
 			retMsg.addMessage(user.getValue().first, result);
 		}
 		else
 		{
-			std::string result = ":server 401 " + temp + " :No such nick/channel";
+			std::string result = ":server 401 " + temp + " :No such nick/channel\r\n";
 			retMsg.addMessage(clientSocket, result);
 		}
 

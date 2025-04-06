@@ -21,14 +21,14 @@ MessageBetch InviteCommand::getMessageBetch(const Server& server, const int clie
 
 	// INVITE donjeong #channel\r\n
 	std::string guestNick, guestNick2, channelName;
-	std::string buf = std::string(buffer);
 	MessageBetch msg;
 	CommonCommand commonCommand;
 
-	buf.erase(0, 7);
-	buf.erase(buf.size() - 2); // donjeong #channel
-	std::stringstream ss(buf);
-	ss >> guestNick >> channelName;
+	// buf.erase(0, 7);
+	// buf.erase(buf.size() - 2); // donjeong #channel
+	std::stringstream ss(buffer);
+	std::string temp;
+	ss >> temp >> guestNick >> channelName;
 	Result<std::pair<int, User> > guestInChannelPack = server.findChannelOrNull(clientSocket)->findUser(guestNick);
 	const User hostUser = server.findUser(clientSocket).getValue();
 	if (!ss.eof()) // 2개 이상
@@ -38,7 +38,7 @@ MessageBetch InviteCommand::getMessageBetch(const Server& server, const int clie
 		// server -> donkim3
 		guestNick2 = channelName;
 		ss >> channelName;
-		msg.addMessage(clientSocket, ":irc.local 403 " + hostUser.getNickname() + " " + guestNick2 + " :No such channel");
+		msg.addMessage(clientSocket, ":irc.local 403 " + hostUser.getNickname() + " " + guestNick2 + " :No such channel\r\n");
 		return msg;
 	}
 	else if (server.findChannelOrNull(clientSocket)->isOperator(clientSocket) == false)
@@ -46,33 +46,34 @@ MessageBetch InviteCommand::getMessageBetch(const Server& server, const int clie
 		// 권한 없음
 	// INVITE sejjeong #channel
 		// :irc.local 482 donjeong #channel :You must be a channel op or higher to send an invite.
-		msg.addMessage(clientSocket, ":irc.local 482 " + hostUser.getNickname() + " " + channelName + "  :You must be a channel op or higher to send an invite.");
+		msg.addMessage(clientSocket, ":irc.local 482 " + hostUser.getNickname() + " " + channelName + "  :You must be a channel op or higher to send an invite.\r\n");
 		return msg;
 	}
 	else if (server.findUser(guestNick).hasSucceeded() == false)// Nickname이 없음;
 	{
 		// 127.000.000.001.58398-127.000.000.001.06667: INVITE asdf #channel
 		// 127.000.000.001.06667-127.000.000.001.58398: :irc.local 401 donkim3 asdf :No such nick
-		msg.addMessage (clientSocket, ":irc.local 401 " + hostUser.getNickname() + " " + guestNick + " :No such nick");
+		msg.addMessage (clientSocket, ":irc.local 401 " + hostUser.getNickname() + " " + guestNick + " :No such nick\r\n");
 		return msg;
 	}
-	else if (guestInChannelPack.hasSucceeded() == true)
+	else if (guestInChannelPack.hasSucceeded() == true) // 채널가입자에 있으면    -> 채널안에 들어가있으면
 	{
 		//  채널에 있는 donkim3 초대
 	// INVITE donkim3 #channel
 	// :irc.local 443 donkim3 donkim3 #channel :is already on channel
-		msg.addMessage(clientSocket, ":irc.local 443 " + guestNick + " " + guestNick + " " + channelName + "  :is already on channel");
+		msg.addMessage(clientSocket, ":irc.local 443 " + guestNick + " " + guestNick + " " + channelName + "  :is already on channel\r\n");
 		return msg;
 	}
 	else
 	{
  		// INVITE sejjeong #channel
-		// :irc.local 341 donkim3 sejjeong :#channel
-		// :donkim3!root@127.0.0.1 INVITE sejjeong :#channel
-
+		// :irc.local 341 donkim3 sejjeong :#channel   나 
+		// :donkim3!root@127.0.0.1 INVITE sejjeong :#channel   게스트
+ 
 		//성공
-		msg.addMessage(clientSocket, ":irc.local 341 " + hostUser.getNickname() + " " + guestNick + " :" + channelName);
-		msg.addMessage(clientSocket, commonCommand.getPrefixMessage(hostUser, clientSocket) + " INVITE " + guestNick + " :" + channelName);
+		int userSocket = server.findUser(guestNick).getValue().first;
+		msg.addMessage(clientSocket, ":irc.local 341 " + hostUser.getNickname() + " " + guestNick + " :" + channelName + "\r\n");
+		msg.addMessage(userSocket, commonCommand.getPrefixMessage(hostUser, clientSocket) + " INVITE " + guestNick + " :" + channelName + "\r\n");
 		return msg;
 	}
 	return msg;
@@ -81,24 +82,18 @@ MessageBetch InviteCommand::getMessageBetch(const Server& server, const int clie
 void InviteCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
-	std::string guest, channelName;
-	std::string buf(buffer);
+	std::string guest;
+	std::string channelName;
+	std::string temp;
 
 //  INVITE sejjeong #channel
 //	:irc.local 341 donkim3 sejjeong :#channel
 //  :donkim3!root@127.0.0.1 INVITE sejjeong :#channel
-
-	buf.erase(0, 7);
-	buf.erase(buf.size() - 2); // donjeong #channel
-	std::stringstream ss(buf);
-	ss >> guest >> channelName;
-
-	Result<std::pair<int, User> > guestPack = server.findUser(guest);
-	int guestSocket = guestPack.getValue().first;
-	User guestUser = guestPack.getValue().second;
-	Channel* clientChannel = server.findChannelOrNull(clientSocket); 
-	clientChannel->enterUser(guestSocket, guestUser);
-	channelName.erase(0, 1); // delete # 
-	server.exitUserInLobby(guestSocket);
-	guestUser.addjoinedChannel(channelName);
+	std::stringstream ss(buffer);
+	ss >> temp >> guest >> channelName;
+	User invitedUser = server.findUser(guest).getValue().second; // 초대받은 유저
+	std::string currentChannelName = server.findUser(clientSocket).getValue().getLastJoinedChannel();   //그 유저(소켓)의 마지막 채널
+	Channel *channel = server.findChannelOrNull(currentChannelName);
+	std::string nick(invitedUser.getNickname());
+	channel->enterInvitedList(nick);
 }

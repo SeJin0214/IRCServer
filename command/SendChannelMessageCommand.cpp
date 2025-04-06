@@ -28,15 +28,21 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 	std::stringstream ss(str);
 	std::string temp;
 	std::string channelName;
-	ss >> temp >> channelName;
+	std::string msg;
+	ss >> temp >> channelName >> msg;
 	channelName.erase(0, 1);
-	//채널에 있는 유저들의 소켓 필요
-	//user -> 채널네임 findchannel(channelName)  채널 나옴
-	// 채널 돌면서 getClientSockets() 로 소켓벡터 얻음
-	// clientSocket 과 다르면 하나씩 보냄
-
-	(void) clientSocket;
-	(void) server;
-
+	Channel  *channel = server.findChannelOrNull(channelName);
+	std::vector<int> userSockets = channel->getFdSet();
+	for (size_t i = 0; i < userSockets.size(); ++i)
+	{
+		if (userSockets[i] == clientSocket)
+		{
+			continue;
+		}
+		User user = server.findUser(clientSocket).getValue();
+		std::cout << "in : " << server.findUser(userSockets[i]).getValue().getNickname() << std::endl;
+		std::string who = CommonCommand::getPrefixMessage(user, clientSocket);
+		retMsg.addMessage(userSockets[i], who + " PRIVMSG #" + channelName + " " + msg + "\r\n");
+	}
 	return retMsg;
 }

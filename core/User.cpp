@@ -56,21 +56,20 @@ void User::setUsername(const std::string& username)
 	mUsername = username;
 }
 
-bool User::addjoinedChannel(std::string& title)
-{
-	mJoinedChannels.push_back(title);
-	return true;
-}
-
-bool User::removejoinedChannel(std::string& title)
+void User::addjoinedChannel(std::string& title)
 {
 	for (std::vector<std::string> :: iterator it = mJoinedChannels.begin(); it != mJoinedChannels.end(); ++it)
 	{
 		if (*it == title)
 		{
 			mJoinedChannels.erase(it);
-			return true;
+			break ;
 		}				
 	}
-	return false;
+	mJoinedChannels.push_back (title);
+}
+
+std::string User::getLastJoinedChannel() const
+{
+	return (mJoinedChannels[mJoinedChannels.size() - 1]);
 }

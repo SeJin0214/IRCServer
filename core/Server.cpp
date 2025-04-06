@@ -320,6 +320,11 @@ bool Server::enterUserInChannel(const int clientSocket, const User& user, const 
 		channel = createChannel(title);
 		assert(channel != NULL);
 	}
+	Result<User> resultUser = mLobby.findUser(clientSocket);
+	if (resultUser.hasSucceeded())
+	{
+		mLobby.exitUser(clientSocket);
+	}
 	return channel->enterUser(clientSocket, user);
 }
 
@@ -457,6 +462,7 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 		for (size_t i = 0; i < socketAndMessages.size(); ++i)
 		{
 			std::pair<int, std::string> socketAndMessage = socketAndMessages[i];
+			std::cout << socketAndMessage.second << std::endl;
 			sendToClient(socketAndMessage.first, socketAndMessage.second.c_str());
 		}
 	}
@@ -514,6 +520,7 @@ bool Server::isDuplicatedNickname(const char* buffer) const
 // TODO: 에러처리 구현
 bool Server::sendToClient(const int clientSocket, const char* message) const
 {
+	(void) message;
 	char buffer[MAX_BUFFER] = { 0, };
 	sprintf(buffer, "%s\r\n", buffer);
     send(clientSocket, buffer, std::strlen(buffer), 0);
