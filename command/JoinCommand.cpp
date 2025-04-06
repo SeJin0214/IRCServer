@@ -33,23 +33,16 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 	std::vector<std::string> nick = channel->getNicknames();//문제발생
 
 	std::vector<int> userSockets = channel->getFdSet();
-	std::cout << "@\n" << std::endl;
 	std::string userlist;
-	std::cout << "@\n" << std::endl;
 	for (size_t i = 0; i < nick.size(); i++)
 	{
-			std::cout << "@\n" << std::endl;
-
 		if (channel->isOperator(userSockets[i]))
 		{
-			std::cout << "@\n" << std::endl;
 			userlist += "@";
 		}
 		userlist += nick[i];
 		if (i != nick.size())
 		{
-			std::cout << "@\n" << std::endl;
-
 			userlist += ' ';
 		}
 	}
@@ -72,9 +65,7 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 	{
 		server.addChannel(channelName);
 	}
-	std::cout << "@\n" << std::endl;
 	server.findChannelOrNull(channelName)->enterUser(clientSocket, server.findUser(clientSocket).getValue());
-	std::cout << "@\n" << std::endl;
-	// join 하나 만듦
-	// channel->enterUser(clientSocket, );
+	server.findUser(clientSocket).getValue().addjoinedChannel(channelName);
+	server.exitUserInLobby(clientSocket);
 }

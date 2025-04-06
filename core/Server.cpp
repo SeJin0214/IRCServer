@@ -437,6 +437,7 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 		for (size_t i = 0; i < socketAndMessages.size(); ++i)
 		{
 			std::pair<int, std::string> socketAndMessage = socketAndMessages[i];
+			std::cout << socketAndMessage.second << std::endl;
 			sendToClient(socketAndMessage.first, socketAndMessage.second.c_str());
 		}
 	}

@@ -35,11 +35,13 @@ IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer) 
 	std::string command = getCommandSection(buffer);
 	if (std::strncmp("PRIVMSG", command.c_str(), command.size()) == 0)
 	{
+		std::cout << buffer << std::endl;
 		std::stringstream ss(buffer);
-		std::string command;
-		std::getline(ss, command, ' ');
-		std::getline(ss, command, ' ');
-		if (command[0] == '#')
+		std::string channel;
+		std::getline(ss, channel, ' ');
+		std::getline(ss, channel, ' ');
+		std::cout << channel << std::endl;
+		if (channel[0] == '#')
 		{
 			return new SendChannelMessageCommand();
 		}

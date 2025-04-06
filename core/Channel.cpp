@@ -75,10 +75,15 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 {
 	assert(buffer != NULL);
 
+	IOutgoingMessageProvider* provider = Space::getOutgoingMessageProvider(buffer);
+	if (provider != NULL)
+	{
+		return provider;
+	}
+
 	std::stringstream ss(buffer);
 	std::string command;
 	std::getline(ss, command, ' ');
-	command = Util::getLowercaseString(command);
 	if (std::strncmp("MODE", command.c_str(), command.size()) == 0)
 	{
 		std::stringstream ss(buffer);

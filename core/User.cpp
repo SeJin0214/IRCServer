@@ -69,3 +69,8 @@ bool User::removejoinedChannel(std::string& title)
 	}
 	return false;
 }
+
+std::string User::getLastJoinedChannel() const
+{
+	return (joinedChannels[joinedChannels.size() - 1]);
+}

@@ -26,6 +26,7 @@ public:
     void setUsername(const std::string& username);
     bool addjoinedChannel(std::string& title);
     bool removejoinedChannel(std::string& title);
+    std::string getLastJoinedChannel() const;
     ~User();
 
 private:
