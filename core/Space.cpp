@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 20:09:34 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 20:15:25 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <sstream>
 #include <cstring>
 #include "DirectMessageCommand.hpp"
-#include "ChannelListCommand.hpp"
 #include "IOutgoingMessageProvider.hpp"
 #include "JoinCommand.hpp"
 #include "QuitCommand.hpp"
@@ -47,10 +46,6 @@ IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer) 
 		{
 			return new DirectMessageCommand();
 		}
-	}
-	else if (std::strncmp("LIST", command.c_str(), command.size()) == 0)
-	{
-		return new ChannelListCommand();
 	}
 	else if (std::strncmp("QUIT", command.c_str(), command.size()) == 0)
 	{

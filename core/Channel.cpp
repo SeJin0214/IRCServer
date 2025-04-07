@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 20:09:08 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 20:15:38 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <cassert>
 #include <cstring>
 #include <sstream>
-#include "ChannelListCommand.hpp"
 #include "DirectMessageCommand.hpp"
 #include "ErrorCommand.hpp"
 #include "InviteCommand.hpp"

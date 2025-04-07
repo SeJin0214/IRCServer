@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+         #
+#    By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/19 16:33:48 by sejjeong          #+#    #+#              #
-#    Updated: 2025/04/07 20:07:28 by sejjeong         ###   ########.fr        #
+#    Updated: 2025/04/07 20:15:41 by sejjeong         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,6 @@ SRCS = $(SRCS_DIR)/main.cpp \
 		$(CORE_DIR)/User.cpp \
 		$(CORE_DIR)/Util.cpp \
 		$(CORE_DIR)/MessageBetch.cpp \
-		$(COMMAND_DIR)/ChannelListCommand.cpp \
 		$(COMMAND_DIR)/CommonCommand.cpp \
 		$(COMMAND_DIR)/DirectMessageCommand.cpp \
 		$(COMMAND_DIR)/ErrorCommand.cpp \
