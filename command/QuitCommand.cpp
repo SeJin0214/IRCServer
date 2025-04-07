@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:05:45 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 17:58:55 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:21:41 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,17 @@ MessageBetch QuitCommand::getMessageBetch(const Server& server, const int client
 {
 	assert(buffer != NULL);
 	
-	std::string message = "ERROR :Closing link: (" + CommonCommand::getHostIP(clientSocket) + ") [" + buffer + "]";
 	MessageBetch messageBetch;
+
+	std::stringstream message("ERROR :Closing link: (");
+	message << CommonCommand::getHostIP(clientSocket) << ") [" << buffer << "]";
+
+	messageBetch.addMessage(clientSocket, message.str());
 	
-	messageBetch.addMessage(clientSocket, message);
-	
-	// User current 함수 받으면 변경하기
 	Result<User> resultUser = server.findUser(clientSocket);
 	User user = resultUser.getValue();
-	std::string leaveMessage = CommonCommand::getPrefixMessage(user, clientSocket) + " QUIT :" + buffer + "\r\n";
+	std::stringstream leaveMessage(CommonCommand::getPrefixMessage(user, clientSocket));
+	leaveMessage << " QUIT :" << buffer;
 
 	std::set<int> socketsToSend;
 	std::vector<std::string> joinedChannels = user.getJoinedChannels();
@@ -44,7 +46,7 @@ MessageBetch QuitCommand::getMessageBetch(const Server& server, const int client
 	}
 	for (std::set<int>::iterator it = socketsToSend.begin(); it != socketsToSend.end(); ++it)
 	{
-		messageBetch.addMessage(*it, leaveMessage);
+		messageBetch.addMessage(*it, leaveMessage.str());
 	}
 	return messageBetch;
 }

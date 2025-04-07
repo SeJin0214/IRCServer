@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ErrorCommand.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:53:02 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 13:37:51 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:25:09 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,6 @@ MessageBetch ErrorCommand::getMessageBetch(const Server& server, const int clien
 	(void) server;
 	(void) clientSocket;
 	MessageBetch msg;
+	// 유효하지 않은 인자
 	return msg;
 }

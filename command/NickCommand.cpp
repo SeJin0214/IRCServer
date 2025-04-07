@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   NickCommand.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 17:36:00 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 00:03:35 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:27:37 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,30 +20,29 @@ MessageBetch NickCommand::getMessageBetch(const Server& server, const int client
 	assert(buffer != NULL);
 	assert(std::strncmp(buffer, "NICK ", std::strlen("NICK ")) == 0);
 	
-	MessageBetch msg;
+	MessageBetch messageBetch;
 	size_t startIndex = std::strlen("NICK ");
 	char nickname[MAX_BUFFER] = { 0, };
 	strcpy(nickname, buffer + startIndex);
 
 	size_t nicknameLength = std::strlen(nickname);
-	std::string message = ":";
+	std::stringstream message;
 	if (nicknameLength == 0)
 	{
-		message += server.getServerName() + " 431 * " + nickname + " :No nickname given";
-		msg.addMessage(clientSocket, message);
+		message << ":" << server.getServerName() << " 431 * " << nickname << " :No nickname given";
+		messageBetch.addMessage(clientSocket, message.str());
 	}
 	else if (nicknameLength > 30)
 	{
-		message += server.getServerName() + " 432 * " + nickname + " :Erroneous nickname";
-		msg.addMessage(clientSocket, message);
+		message << ":" << server.getServerName() << " 432 * " << nickname << " :Erroneous nickname";
+		messageBetch.addMessage(clientSocket, message.str());
 	}
 	else if (server.isDuplicatedNickname(nickname))
 	{
-		message += server.getServerName() + " 433 * " + nickname + " :Nickname is already in use.";
-		msg.addMessage(clientSocket, message);
+		message << ":" << server.getServerName() << " 433 * " << nickname << " :Nickname is already in use.";
+		messageBetch.addMessage(clientSocket, message.str());
 	}
-	
-	return msg;
+	return messageBetch;
 }
 
 void NickCommand::execute(Server& server, const int clientSocket, const char* buffer)
