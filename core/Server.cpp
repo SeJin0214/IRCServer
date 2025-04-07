@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 20:06:14 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 20:09:21 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -472,11 +472,13 @@ void Server::handleClientMessage(const int clientSocket)
 	}
 }
 
+// TODO: remove log
 void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer)
 {
 	const Space* space = findSpace(clientSocket);
 
 	std::cout << buffer << std::endl;
+	
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
 	if (outgoingMessageProvider != NULL)
 	{

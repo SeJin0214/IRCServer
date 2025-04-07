@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 16:28:13 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 20:09:34 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer) 
 		std::string channel;
 		std::getline(ss, channel, ' ');
 		std::getline(ss, channel, ' ');
-		std::cout << channel << std::endl;
 		if (channel[0] == '#')
 		{
 			return new SendChannelMessageCommand();

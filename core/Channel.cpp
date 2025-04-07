@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 18:09:07 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 20:09:08 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,7 +237,6 @@ User* Channel::exitUserOrNull(const int clientSocket)
 	std::map<int, User*>::iterator userIt = mUsers.find(clientSocket);
 	if (userIt != mUsers.end())
 	{
-		std::cout << "inner" << std::endl;
 		std::vector<std::string>::iterator it = mOperatorNicknames.begin();
 		while (it != mOperatorNicknames.end())
 		{
@@ -249,11 +248,6 @@ User* Channel::exitUserOrNull(const int clientSocket)
 			++it;
 		}
 		User* user = userIt->second;
-		std::vector<std::string> channels = user->getJoinedChannels();
-		for (size_t i = 0; i < channels.size(); ++i)
-		{
-			std::cout << channels[i] << std::endl;
-		}
 		user->removeLastJoinedChannel();
 	}
 	return Space::exitUserOrNull(clientSocket);
