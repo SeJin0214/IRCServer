@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:43:26 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 17:38:59 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:00:58 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,5 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 	channelName = buf.erase(0,6); // channel
 
 	server.enterUserInChannel(clientSocket, channelName);
+
 }

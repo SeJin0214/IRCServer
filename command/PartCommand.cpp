@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:41:48 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 17:41:37 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:59:34 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ MessageBetch PartCommand::getMessageBetch(const Server& server, const int client
 
 	Channel* channel = server.findChannelOrNull(currentJoinedChannelName);
 	std::cout << "part" << std::endl;
+
 	assert(channel != NULL);
 
 	std::vector<int> clientSockets = channel->getFdSet();
@@ -42,6 +43,7 @@ MessageBetch PartCommand::getMessageBetch(const Server& server, const int client
 		assert(userToFind != NULL);
 		std::string currentChannel = userToFind->getLastJoinedChannel().getValue();
 		assert(userToFind->getLastJoinedChannel().hasSucceeded());
+
 		if (currentChannel == channel->getTitle())
 		{
 			messageBetch.addMessage(clientSockets[i], leaveMessage);
@@ -58,6 +60,5 @@ void PartCommand::execute(Server& server, const int clientSocket, const char* bu
 	assert(startPointer != NULL);
 	
 	std::string channelName(startPointer + 1);
-	std::cout << channelName << "|" << std::endl;
 	server.exitUserInChannel(clientSocket, channelName);
 }

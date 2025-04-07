@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:47 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 16:29:24 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:53:47 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ public:
 	bool trySetUsernameInLoggedSpace(const int clientSocket, const std::string& username);
 
 	void loginToServer(const int clientSocket, User* user);
+
 	void leaveServer(const int clientSocket);
 	bool enterUserInLobby(const int clientSocket, User* user);
 	User* exitUserInLobbyOrNull(const int clientSocket);
@@ -47,6 +48,7 @@ public:
 	bool isDuplicatedNickname(const char* buffer) const;
 	void exitAllSpaces(const int clientSocket);
 	Channel* findChannelOrNull(const std::string& title) const;
+
 	
 private:
 	Lobby mLobby;

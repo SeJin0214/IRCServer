@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 13:01:53 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 17:25:03 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:07:18 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,14 @@
 MessageBetch WhoCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
 	assert(buffer != NULL);
+
 	MessageBetch msg;
 
 	std::string buf(buffer);
 	User user = server.findUser(clientSocket).getValue();
 	std::string nickname = user.getNickname();
 	int idxOfGuestNick = buf.find_first_of(" ", 4);
-
+      // who 닉네임 %tna,745 / who 채널 %tcuhnfdar,743
 	if (buf.find ("%tna,745"))
 	{
 		std::string guestNick = buf.substr(4, idxOfGuestNick);
@@ -30,21 +31,32 @@ MessageBetch WhoCommand::getMessageBetch(const Server& server, const int clientS
 		msg.addMessage(clientSocket, ":" + server.getServerName() + " 315 " + nickname + " " + guestNick + " :End of /WHO list.");
 		return msg;
 	}
-	std::string channelName = buf.substr(4, idxOfGuestNick);
-	Result<std::string> lastJoinedChannel = user.getLastJoinedChannel();
-	assert(lastJoinedChannel.hasSucceeded());
-	std::vector<std::string> nick = (server.findChannelOrNull(lastJoinedChannel.getValue()))->getNicknames();
-	for (size_t i = 0; i < nick.size(); i++)
+	else if (buf.find("%tcuhnfdar"))
 	{
-		// @ hostname
-		std::pair<int, User> socketAndUser = server.findUser(nick[i]).getValue();
-		User user = socketAndUser.second;
-		int usersocket = socketAndUser.first;
-		msg.addMessage(clientSocket ,":" + server.getServerName() + " 354 " + nickname + " 743 " + channelName + user.getUsername() \
-		+ " " + CommonCommand::getPrefixMessage(user, usersocket) + " " + nick[i] + " " + "H@" + " 0 0 :" + user.getUsername()); //// H@ 처리
+		std::string channelName = buf.substr(4, idxOfGuestNick);
+		Channel* currentChannel = server.findChannelOrNull(user.getLastJoinedChannel().getValue());
+		std::vector<std::string> nick = currentChannel->getNicknames();
+		std::stringstream ret;
+		for (size_t i = 0; i < nick.size(); ++i)
+		{
+			const std::pair<int, User*> pair = currentChannel->findUser(nick[i]).getValue();
+			User user = *(pair.second);
+			int usersocket = pair.first;
+
+			ret << ":" << server.getServerName() << " 354 " << nickname << " 743 " << channelName << user.getUsername() \
+			<< " " << CommonCommand::getPrefixMessage(user, usersocket) << " " << nick[i] << " " << "H";
+			if (currentChannel->isOperator(server.findUser(nick[i]).getValue().first))
+			{
+				ret << "@";
+			}
+			ret << " 0 0 :" << user.getUsername();
+			if (nick.size() - 1 != i)
+			{
+				ret << "\r\n";
+			}
+		}
+		ret << ":" << server.getServerName() << " 315 " << nickname << " " << channelName << " :End of /WHO list.";
+		msg.addMessage (clientSocket, ret.str());
 	}
-
-
-	msg.addMessage (clientSocket,":" + server.getServerName() + " 315 " + nickname + " " + channelName + " :End of /WHO list.");
 	return msg;
 }

@@ -40,7 +40,7 @@ MessageBetch DirectMessageCommand::getMessageBetch(const Server& server, const i
 	std::cout << pri << " " << usernames << " " << std::endl;	
 	std::stringstream ss(usernames);
 	std::string temp;
-
+	std::stringstream result;
 	while (true)
 	{
 		std::getline(ss, temp, ',');
@@ -50,15 +50,14 @@ MessageBetch DirectMessageCommand::getMessageBetch(const Server& server, const i
 		if(user.hasSucceeded() == true)
 		{
 			User host = server.findUser(clientSocket).getValue();
-			std::string result = CommonCommand::getPrefixMessage(host, clientSocket) + " PRIVMSG " + temp + msg + "\r\n";
-			retMsg.addMessage(user.getValue().first, result);
+			result << CommonCommand::getPrefixMessage(host, clientSocket) << " PRIVMSG " << temp << msg << "\r\n";
+			retMsg.addMessage(user.getValue().first, result.str());
 		}
 		else
 		{
-			std::string result = ":server 401 " + temp + " :No such nick/channel\r\n";
-			retMsg.addMessage(clientSocket, result);
+			result << ":server 401 " << temp << " :No such nick/channel\r\n";
+			retMsg.addMessage(clientSocket, result.str());
 		}
-
 		if (ss.eof())
 		{
 			break;

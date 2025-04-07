@@ -6,10 +6,8 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 17:43:29 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:57:45 by sejjeong         ###   ########.fr       */
 /*                                                                            */
-/* ************************************************************************** */
-
 /* ************************************************************************** */
 
 #include <algorithm>
@@ -484,7 +482,7 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 		for (size_t i = 0; i < socketAndMessages.size(); ++i)
 		{
 			std::pair<int, std::string> socketAndMessage = socketAndMessages[i];
-			std::cout << socketAndMessage.second << std::endl;
+			std::cout << "\n서버 ->클라 : " << socketAndMessage.second << std::endl;
 			sendToClient(socketAndMessage.first, socketAndMessage.second.c_str());
 		}
 	}
@@ -497,6 +495,7 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 		executor->execute(*this, clientSocket, buffer);
 	}
 	delete executor;
+
 }
 
 bool Server::isDuplicatedNickname(const char* buffer) const
