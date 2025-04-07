@@ -28,7 +28,7 @@ public:
 	std::string getTopic() const;
 	bool setTopic(int clientSocket, std::string& topic);
 	unsigned int getPassword() const;
-	unsigned int setPassword(std::string& password);
+	void setPassword(std::string& password);
 	bool isPassword(std::string& password);
 	bool isInvited (std::string& invitedUser);
 	void enterInvitedList (std::string& invitedUser);
@@ -42,13 +42,15 @@ public:
 	void exitUser(const int clientSocket);
 	bool isOperator(const User& user) const;
 	bool isOperator(const int userSocket) const;
+	void setMemberCount(unsigned int num);
+	unsigned int getMemberCount() const;
  
 private:
 	std::vector<std::string> mOperatorNicknames;
 	std::vector<std::string> mInvitedList;
+	unsigned int mMemberCount;
 	unsigned char mModeFlag;
 	std::string mTitle;
 	std::string mTopic;
 	unsigned int mPassword;
 };
-

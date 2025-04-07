@@ -12,6 +12,7 @@
 
 #include <cassert>
 #include "ModeCommand.hpp"
+#include <stdlib.h>
 
  
 MessageBetch ModeCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
@@ -29,12 +30,12 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 	std::stringstream ss (buf);
 	std::string temp, channelName;
 	ss >> temp >> channelName;
-	
+	channelName.erase(0, 1);
 	if (ss.eof())    //MODE #channel        n/t/k/l/i/o
 	{
 		std::stringstream ret;
-		ret << ":irc.local 324 " << nickname << " " << channelName << " :" << server.findChannelOrNull(channelName)->getActiveMode() << "\r\n";//모드 검사
-		ret << ":irc.local 329 " << nickname << " " << channelName << " :1743734234";//시간체크
+		ret << ":irc.local 324 " << nickname << " #" << channelName << " :" << server.findChannelOrNull(channelName)->getActiveMode() << "\r\n";//모드 검사
+		ret << ":irc.local 329 " << nickname << " #" << channelName << " :1743734234";//시간체크
 		msg.addMessage(clientSocket, ret.str());
 		return (msg);
 	} 
@@ -50,19 +51,20 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 	char sign;
 
 	std::stringstream clientMsg;
-	std::stringstream changeMode;
-	channelName.erase(0, 1);
+	std::stringstream changeMode; /// +i-k 정보 들어감
 	Channel *channel = server.findChannelOrNull(channelName);
 	std::vector<int> userSockets = channel->getFdSet();
+	std::vector<std::string> optionValue;
 	for (size_t i = 0; i < bMode.size(); ++i)
 	{
+		char currentSign = bMode[i];
 		if ((bMode[i] == '+') || (bMode[i] == '-'))
 		{
 			sign = bMode[i];
 			continue;
 		}
 
-		switch (bMode[i])// +i+k+l
+		switch (bMode[i])// +i+k+l   //자신한테 오류메시지 출력 후 바뀐 메시지 출력    //비밀번호 운영자 채널 수
 		{
 			case 'i':
 			{
@@ -71,13 +73,21 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 					if (sign == '+' && !channel->isModeActive(MODE_INVITE_ONLY))
 					{
 						channel->onMode(clientSocket, MODE_INVITE_ONLY);
-						changeMode << sign + 'i';
+						if (currentSign == sign)
+						{
+							changeMode << sign;
+						}
+						changeMode << + 'i';
 						//성공메시지 돌면서 보내기
 					}
 					else if (sign == '-' && channel->isModeActive(MODE_INVITE_ONLY))
 					{
 						channel->offMode(clientSocket, MODE_INVITE_ONLY);
-						changeMode << sign + 'i';
+						if (currentSign == sign)
+						{
+							changeMode << sign;
+						}
+						changeMode << + 'i';
 						//성공메시지 돌면서 보내기
 					}
 				}
@@ -96,9 +106,15 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 					{
 						if (sign == '+' && !channel->isModeActive(MODE_KEY_LIMIT))//다음인자 확인
 						{
+							
 							channel->onMode(clientSocket, MODE_KEY_LIMIT);
 							channel->setPassword(password);
-							changeMode << sign + 'k';
+							if (currentSign == sign)
+							{
+								changeMode << sign;
+							}
+							changeMode << + 'k';
+							optionValue.push_back(password);
 							//성공메시지 돌면서 보내기
 						}
 						else if (sign == '-' && channel->isModeActive(MODE_KEY_LIMIT))//다음인자 있으면 확인
@@ -106,7 +122,11 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 							if (channel->isPassword(password))
 							{
 								channel->offMode(clientSocket, MODE_KEY_LIMIT);
-								changeMode << sign + 'k';
+								if (currentSign == sign)
+								{
+									changeMode << sign;
+								}
+								changeMode << + 'k';
 								//성공메시지 돌면서 보내기
 							}
 							else
@@ -140,13 +160,28 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 						if (sign == '+' && !channel->isModeActive(MODE_LIMIT_USER))// 다음인자 확인
 						{
 							channel->onMode(clientSocket, MODE_LIMIT_USER);
-							changeMode << sign + 'l';
+
+							unsigned int num = atoi(password.c_str());
+							//제한 바꿔주기
+							channel->setMemberCount(num);
+							if (currentSign == sign)
+							{
+								changeMode << sign;
+							}
+							changeMode << + 'l';
+							std::stringstream n;
+							n << num;
+							optionValue.push_back(n.str());
 							//성공메시지 돌면서 보내기
 						}
 						else if (sign == '-' && channel->isModeActive(MODE_LIMIT_USER))
 						{
 							channel->offMode(clientSocket, MODE_LIMIT_USER);
-							changeMode << sign + 'l';
+							if (currentSign == sign)
+							{
+								changeMode << sign;
+							}
+							changeMode << + 'l';
 							//성공메시지 돌면서 보내기
 						}
 					}
@@ -173,6 +208,7 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 					{
 						if (channel->isAddUserAsAdmin(userName) == true) //닉네임이 맞는경우 
 						{
+							optionValue.push_back(userName);
 							//성공메시지 돌면서 보내기
 						}
 						else
@@ -201,13 +237,21 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 					if (sign == '+' && !channel->isModeActive(MODE_TOPIC_LOCK))
 					{
 						channel->onMode(clientSocket, MODE_TOPIC_LOCK);
-						changeMode << sign + 't';
+						if (currentSign == sign)
+						{
+							changeMode << sign;
+						}
+						changeMode << + 't';
 						//성공메시지 돌면서 보내기
 					}
 					else if (sign == '-' && channel->isModeActive(MODE_TOPIC_LOCK))
 					{
 						channel->offMode(clientSocket, MODE_TOPIC_LOCK);
-						changeMode << sign + 't';
+						if (currentSign == sign)
+						{
+							changeMode << sign;
+						}
+						changeMode << + 't';
 						//성공메시지 돌면서 보내기
 					}
 				}
@@ -223,18 +267,40 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 				clientMsg << ":irc.local 472 " << nickname << " " << bMode[i] << " :is not a recognised channel mode.";
 				break ;
 			}//:nickname1!root@127.0.0.1 MODE #a +klo(isgetmode) 12345678(저장) 4(저장) :nickname3(저장)
-			//에러메시지 add
-			//changeMode 를 돌리기 add
-			for (int i = 0; i < userSockets.size(); ++i)
+
+			std::stringstream optionMsg;
+			for (size_t i = 0; i < optionValue.size(); ++i)
 			{
-				std::stringstream succeseMsg;
-				succeseMsg << server.getServerName() << " MODE #" << channelName << channel->getActiveMode() << " " << "<password>" << " " << "숫자" << " ";
-				std::vector< std::pair <int, std::string> >
+				if (i == optionValue.size() - 1)
+				{
+					optionMsg << " :" << optionValue[i];
+				}
+				else
+				{
+					optionMsg << " " << optionValue[i];
+				}
+			}
+			//changeMode 를 돌리기 add
+			std::stringstream succeseMsg;
+			if (changeMode)
+			{
+				clientMsg << server.getServerName() << " MODE #" << channelName << channel->getActiveMode() << optionMsg;
+				succeseMsg << server.getServerName() << " MODE #" << channelName << channel->getActiveMode() << optionMsg;
+			}
+			msg.addMessage(clientSocket, clientMsg.str());
+
+			if (succeseMsg)
+			{
+				for (size_t i = 0; i < userSockets.size(); ++i)
+				{
+					msg.addMessage(userSockets[i], succeseMsg.str());
+				}
 			}
 		}
 	}
 	return msg;
 }
+
 void ModeCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);

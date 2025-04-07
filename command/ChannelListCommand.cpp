@@ -22,7 +22,7 @@ MessageBetch ChannelListCommand::getMessageBetch(const Server& server, const int
 	// std::string nickName = server.find
 	return msg;
 }
-// 127.000.000.001.06667-127.000.000.001.58162: :irc.local 321 donkim3 Channel :Users Name
+// :irc.local 321 donkim3 Channel :Users Name
 // :irc.local 322 donkim3 #ccc 1 :[+nt] 
 // :irc.local 322 donkim3 #bbb 2 :[+nt] 
 // :irc.local 322 donkim3 #aaa 2 :[+nt] 
@@ -39,7 +39,8 @@ MessageBetch ChannelListCommand::getMessageBetch(const Server& server, const int
 // donkim3
 // invite 기능 출력 <------ ok
 // quit  기능
-// topic 기능 출력
-// list 기능 출력
-// kick 기능 출력
 // part 기능 출력
+
+
+// kick 기능 출력
+// topic 기능 출력

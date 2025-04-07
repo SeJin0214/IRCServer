@@ -25,14 +25,12 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 	assert(std::strncmp(buffer, "JOIN ", std::strlen("JOIN ")) == 0);
 		//채널 30자 이내
 	MessageBetch msg;
-	// std::string buf(buffer);  //JOIN #aaa
 	User user = server.findUser(clientSocket).getValue();
 	std::stringstream ss(buffer);
 	std::string join;
 	std::string channelName;
 	ss >> join >> channelName;
 	channelName.erase(0,1);
-	// std::string channelName = buf.substr(5, buf.size() - 2);
 	std::string nickname = user.getNickname();
 
 	Channel *channel = server.findChannelOrNull(channelName);
