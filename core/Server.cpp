@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 00:12:15 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:43:29 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,8 +188,8 @@ const Space* Server::findSpace(const int clientSocket) const
 	std::vector<const Space *> spaces = getSpaces();
 	for (size_t i = 0; i < spaces.size(); ++i)
 	{
-		Result<User> result = spaces[i]->findUser(clientSocket);
-		if (result.hasSucceeded())
+		const User* user = spaces[i]->findUserOrNull(clientSocket);
+		if (user != NULL)
 		{
 			return spaces[i];
 		}
@@ -198,13 +198,25 @@ const Space* Server::findSpace(const int clientSocket) const
 	return NULL;
 }
 
+User* Server::findUserInAllSpace(const int clientSocket) const
+{
+	std::vector<const Space *> spaces = getSpaces();
+	for (size_t i = 0; i < spaces.size(); ++i)
+	{
+		User* user = spaces[i]->findUserOrNull(clientSocket);
+		if (user != NULL)
+		{
+			return user;
+		}
+	}
+	assert(false);
+	return NULL;
+}
+
 Channel* Server::createChannel(const std::string& title)
 {
-	Channel* existedChannel = findChannelOrNull(title);
-	if (existedChannel && existedChannel->getTitle() == title)
-	{
-		return NULL;
-	}
+	assert(findChannelOrNull(title) == NULL 
+	|| findChannelOrNull(title)->getTitle() != title);
 	Channel* newChannel = new Channel(title, "");
 	mChannels.push_back(newChannel);
 	return newChannel;
@@ -214,15 +226,17 @@ Result<User> Server::findUser(const int clientSocket) const
 {
 	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
-		Result<User> result = mChannels[i]->findUser(clientSocket);
-		if (result.hasSucceeded())
+		User* user = mChannels[i]->findUserOrNull(clientSocket);
+		if (user != NULL)
 		{
+			Result<User> result(*user, true);
 			return result;
 		}
 	}
-	Result<User> result = mLobby.findUser(clientSocket);
-	if (result.hasSucceeded())
+	User* user = mLobby.findUserOrNull(clientSocket);
+	if (user != NULL)
 	{
+		Result<User> result(*user, true);
 		return result;
 	}
 	Result<User> emptyUser(User(), false);
@@ -234,19 +248,25 @@ Result<std::pair<int, User> > Server::findUser(const std::string& nickname) cons
 {
 	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
-		Result<std::pair<int, User> > result = mChannels[i]->findUser(nickname);
-		if (result.hasSucceeded())
+		Result<std::pair<int, User*> > userToFind = mChannels[i]->findUser(nickname);
+		if (userToFind.hasSucceeded())
 		{
+			std::pair<int, User*> pointerPair(userToFind.getValue());
+			std::pair<int, User> objPair(pointerPair.first, *pointerPair.second);
+			Result<std::pair<int, User> > result(objPair, true);
 			return result;
 		}
 	}
-	Result<std::pair<int, User> > result = mLobby.findUser(nickname);
-	if (result.hasSucceeded())
+	Result<std::pair<int, User*> > userToFind = mLobby.findUser(nickname);
+	if (userToFind.hasSucceeded())
 	{
+		std::pair<int, User *> pointerPair(userToFind.getValue());
+		std::pair<int, User> objPair(pointerPair.first, *pointerPair.second);
+		Result<std::pair<int, User> > result(objPair, true);
 		return result;
 	}
-	std::pair<int, User> socketAndUser(-1, User());
-	Result<std::pair<int, User> > emptyUser(socketAndUser, false);
+	std::pair<int, User> invalidPair(-1, User());
+	Result<std::pair<int, User> > emptyUser(invalidPair, false);
 	return emptyUser;
 }
 
@@ -268,8 +288,8 @@ Channel* Server::findChannelOrNull(const int clientSocket) const
 	for (size_t i = 0; i < mChannels.size(); ++i)
 	{
 		Channel* channel = mChannels[i];
-		Result<User> result = channel->findUser(clientSocket);
-		if (result.hasSucceeded())
+		User* result = channel->findUserOrNull(clientSocket);
+		if (result != NULL)
 		{
 			return channel;
 		}
@@ -293,26 +313,27 @@ bool Server::trySetUsernameInLoggedSpace(const int clientSocket, const std::stri
 	return mLoggedInSpace.trySetUsername(clientSocket, username);
 }
 
-void Server::enterServer(const int clientSocket, const User& user)
+void Server::loginToServer(const int clientSocket, User* user)
 {
+	assert(user != NULL);
 	std::string message = ":";
-	message += mName + " 001 " + user.getNickname() + " :Welcome to the Internet Relay Chat Network!\r\n";
+	message += mName + " 001 " + user->getNickname() + " :Welcome to the Internet Relay Chat Network!\r\n";
 	sendToClient(clientSocket, message.c_str());
 	enterUserInLobby(clientSocket, user);
 }
 
-bool Server::enterUserInLobby(const int clientSocket, const User& user)
+bool Server::enterUserInLobby(const int clientSocket, User* user)
 {
+	assert(user != NULL);
 	return mLobby.enterUser(clientSocket, user);
 }
 
-bool Server::exitUserInLobby(const int clientSocket)
+User* Server::exitUserInLobbyOrNull(const int clientSocket)
 {
-	mLobby.exitUser(clientSocket);
-	return true;
+	return mLobby.exitUserOrNull(clientSocket);
 }
 
-bool Server::enterUserInChannel(const int clientSocket, const User& user, const std::string& title)
+bool Server::enterUserInChannel(const int clientSocket, const std::string& title)
 {
 	Channel* channel = findChannelOrNull(title);
 	if (channel == NULL)
@@ -320,22 +341,19 @@ bool Server::enterUserInChannel(const int clientSocket, const User& user, const 
 		channel = createChannel(title);
 		assert(channel != NULL);
 	}
-	Result<User> resultUser = mLobby.findUser(clientSocket);
-	if (resultUser.hasSucceeded())
-	{
-		mLobby.exitUser(clientSocket);
-	}
+	User* user = findUserInAllSpace(clientSocket);
+	exitUserInLobbyOrNull(clientSocket);
 	return channel->enterUser(clientSocket, user);
 }
 
-bool Server::exitUserInChannel(const int clientSocket, const std::string& title)
+User* Server::exitUserInChannel(const int clientSocket, const std::string& title)
 {
 	Channel* channel = findChannelOrNull(title);
 	if (channel == NULL)
 	{
-		return false;
+		return NULL;
 	}
-	channel->exitUser(clientSocket);
+	User* user = channel->exitUserOrNull(clientSocket);
 	if (channel->getUserCount() == 0)
 	{
 		std::vector<Channel *>::iterator it = mChannels.begin();
@@ -350,7 +368,11 @@ bool Server::exitUserInChannel(const int clientSocket, const std::string& title)
 		}
 		delete channel;
 	}
-	return true;
+	if (user->getJoinedChannelCount() == 0)
+	{
+		mLobby.enterUser(clientSocket, user);
+	}
+	return user;
 }
 
 
@@ -417,7 +439,7 @@ void Server::acceptClient()
 		assert(false);
 		return;
 	}
-	mLoggedInSpace.enterUser(clientSocket, User());
+	mLoggedInSpace.enterUser(clientSocket, new User());
 }
 
 // TODO: ctrl + d 구현하기
@@ -454,13 +476,6 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 {
 	const Space* space = findSpace(clientSocket);
 
-	IExecutable *executor = space->getExecutor(buffer);
-	if (executor != NULL)
-	{
-		executor->execute(*this, clientSocket, buffer);
-	}
-	delete executor;
-
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
 	if (outgoingMessageProvider != NULL)
 	{
@@ -475,30 +490,13 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 	}
 
 	delete outgoingMessageProvider;
-}
 
-bool Server::isDuplicatedUsername(const char* buffer) const
-{
-	for (size_t i = 0; i < mChannels.size(); ++i)
+	IExecutable *executor = space->getExecutor(buffer);
+	if (executor != NULL)
 	{
-		std::vector<std::string> usernames = mChannels[i]->getUsernames();
-		for (size_t i = 0; i < usernames.size(); i++)
-		{
-			if (usernames[i] == buffer)
-			{
-				return true;
-			}
-		}
+		executor->execute(*this, clientSocket, buffer);
 	}
-	std::vector<std::string> usernames = mLobby.getUsernames();
-	for (size_t i = 0; i < usernames.size(); i++)
-	{
-		if (usernames[i] == buffer)
-		{
-			return true;
-		}
-	}
-	return false;
+	delete executor;
 }
 
 bool Server::isDuplicatedNickname(const char* buffer) const
@@ -588,19 +586,23 @@ bool Server::isInvalidNameFormatted(const char* password) const
     return false;
 }
 
-
 void Server::leaveServer(const int clientSocket)
 {
 	const char* quitProtocol = "QUIT :leaving";
 	ExecuteCommandByProtocol(clientSocket, quitProtocol);
 }
 
-void Server::executeOutgoing(const int clientSocket)
+void Server::exitAllSpaces(const int clientSocket)
 {
+	User* user;
 	std::vector<Space *> spaces = getSpaces();
 	for (size_t i = 0; i < spaces.size(); ++i)
 	{
-		spaces[i]->exitUser(clientSocket);
+		User* temp = spaces[i]->exitUserOrNull(clientSocket);
+		if (temp != NULL)
+		{
+			user = temp;
+		}
 	}
 
 	std::vector<Channel *>::iterator it = mChannels.begin();
@@ -618,4 +620,5 @@ void Server::executeOutgoing(const int clientSocket)
 		}
 	}
 	close(clientSocket);
+	delete user;
 }

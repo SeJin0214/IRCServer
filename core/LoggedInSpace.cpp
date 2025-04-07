@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   LoggedInSpace.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 17:13:46 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/06 15:23:52 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 16:15:58 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,12 @@ void LoggedInSpace::admitOrExile(Server& server)
 		LoginInfo info = it->second;
 		if (info.isValidInfo())
 		{
-			server.enterServer(it->first, User(info.getUsername(), info.getNickname()));
 			int clientSocket = it->first;
 			++it;
-			exitUser(clientSocket);
+			User* user = exitUserOrNull(clientSocket);
+			user->setNickname(info.getNickname());
+			user->setUsername(info.getUsername());
+			server.loginToServer(clientSocket, user);
 		}
 		else if (info.isTimeout())
 		{
@@ -85,7 +87,7 @@ void LoggedInSpace::admitOrExile(Server& server)
 	}
 }
 
-bool LoggedInSpace::enterUser(const int clientSocket, const User& user)
+bool LoggedInSpace::enterUser(const int clientSocket, User* user)
 {
 	bool bSucceed = Space::enterUser(clientSocket, user);
 	assert(bSucceed);
@@ -95,20 +97,18 @@ bool LoggedInSpace::enterUser(const int clientSocket, const User& user)
 	return true;
 }
 
-void LoggedInSpace::exitUser(const int clientSocket)
+User* LoggedInSpace::exitUserOrNull(const int clientSocket)
 {
-	Space::exitUser(clientSocket);
 	mInfos.erase(clientSocket);
+	return Space::exitUserOrNull(clientSocket);
 }
 
 bool LoggedInSpace::trySetAuthenticated(const int clientSocket)
 {
-	std::map<int, User>::iterator it = mUsers.find(clientSocket);
-	if (it != mUsers.end())
+	std::map<int, LoginInfo>::iterator it = mInfos.find(clientSocket);
+	if (it != mInfos.end())
 	{
-		std::map<int, LoginInfo>::iterator info = mInfos.find(clientSocket);
-		assert(info != mInfos.end());
-		info->second.setAthenticated();
+		it->second.setAthenticated();
 		return true;
 	}
 	return false;
@@ -116,12 +116,10 @@ bool LoggedInSpace::trySetAuthenticated(const int clientSocket)
 
 bool LoggedInSpace::trySetNickname(const int clientSocket, const std::string& nickname)
 {
-	std::map<int, User>::iterator it = mUsers.find(clientSocket);
-	if (it != mUsers.end())
+	std::map<int, LoginInfo>::iterator it = mInfos.find(clientSocket);
+	if (it != mInfos.end())
 	{
-		std::map<int, LoginInfo>::iterator info = mInfos.find(clientSocket);
-		assert(info != mInfos.end());
-		info->second.setNickname(nickname);
+		it->second.setNickname(nickname);
 		return true;
 	}
 	return false;
@@ -129,12 +127,10 @@ bool LoggedInSpace::trySetNickname(const int clientSocket, const std::string& ni
 
 bool LoggedInSpace::trySetUsername(const int clientSocket, const std::string& username)
 {
-	std::map<int, User>::iterator it = mUsers.find(clientSocket);
-	if (it != mUsers.end())
+	std::map<int, LoginInfo>::iterator it = mInfos.find(clientSocket);
+	if (it != mInfos.end())
 	{
-		std::map<int, LoginInfo>::iterator info = mInfos.find(clientSocket);
-		assert(info != mInfos.end());
-		info->second.setUsername(username);
+		it->second.setUsername(username);
 		return true;
 	}
 	return false;

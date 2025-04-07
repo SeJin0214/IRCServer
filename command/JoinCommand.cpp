@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   JoinCommand.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:43:26 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 00:20:28 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:38:59 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,36 +36,43 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 	std::string nickname = user.getNickname();
 
 	Channel *channel = server.findChannelOrNull(channelName);
-	assert(channel != NULL);
-
-	std::vector<std::string> nicknames = channel->getNicknames();
-	std::vector<int> userSockets = channel->getFdSet();
-	std::string userlist;
-	for (size_t i = 0; i < nicknames.size(); ++i)
+	std::stringstream userlist;
+	if (channel != NULL)
 	{
-		if (channel->isOperator(userSockets[i]))
+		std::vector<std::string> nicknames = channel->getNicknames();
+		std::vector<int> userSockets = channel->getFdSet();
+		for (size_t i = 0; i < nicknames.size(); ++i)
 		{
-			userlist += "@";
+			if (channel->isOperator(userSockets[i]))
+			{
+				userlist << "@";
+			}
+			userlist << nicknames[i];
+			if (i != nicknames.size())
+			{
+				userlist << ' ';
+			}
 		}
-		userlist += nicknames[i];
-		if (i != nicknames.size())
+		for (size_t i = 0; i < nicknames.size(); ++i)
 		{
-			userlist += ' ';
+			if (nickname != nicknames[i])
+			{
+				msg.addMessage(server.findUser(nicknames[i]).getValue().first, CommonCommand::getPrefixMessage(user, clientSocket) + " " + join + " #" + channelName + "\r\n");
+			}
 		}
 	}
+	else
+	{
+		userlist << nickname;
+	}
+
 	std::stringstream ret;
 	ret << CommonCommand::getPrefixMessage(user, clientSocket) << " " << join << " #" << channelName << "\r\n" 
-	<< ":irc.local 353 " << nickname << " = #" << channelName << " :" << userlist << "\r\n" 
+	<< ":irc.local 353 " << nickname << " = #" << channelName << " :" << userlist.str() << "\r\n" 
 	<< ":irc.local 366 " << nickname << " #" << channelName << " :End of /NAMES list.\r\n";
 	
 	msg.addMessage(clientSocket, ret.str());
-	for (size_t i = 0; i < nicknames.size(); ++i)
-	{
-		if (nickname != nicknames[i])
-		{
-			msg.addMessage(server.findUser(nicknames[i]).getValue().first, CommonCommand::getPrefixMessage(user, clientSocket) + " " + join + " #" + channelName + "\r\n");
-		}
-	}
+
 	return msg;
 }
 
@@ -77,6 +84,5 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 	std::string channelName;
 	channelName = buf.erase(0,6); // channel
 
-	Result<User> user = server.findUser(clientSocket);
-	server.enterUserInChannel(clientSocket, user.getValue(), channelName);
+	server.enterUserInChannel(clientSocket, channelName);
 }

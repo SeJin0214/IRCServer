@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   QuitCommand.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:05:45 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/06 21:23:08 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 15:43:24 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,6 @@ MessageBetch QuitCommand::getMessageBetch(const Server& server, const int client
 	MessageBetch messageBetch;
 	
 	messageBetch.addMessage(clientSocket, message);
-	Channel* channel = server.findChannelOrNull(clientSocket);
-	if (channel == NULL)
-	{
-		return messageBetch;
-	}
 	
 	// User current 함수 받으면 변경하기
 	Result<User> resultUser = server.findUser(clientSocket);
@@ -57,5 +52,5 @@ MessageBetch QuitCommand::getMessageBetch(const Server& server, const int client
 void QuitCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
-	server.executeOutgoing(clientSocket);
+	server.exitAllSpaces(clientSocket);
 }

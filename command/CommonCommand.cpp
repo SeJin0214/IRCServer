@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   CommonCommand.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 17:09:53 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 13:37:49 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 16:46:33 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

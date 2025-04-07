@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Space.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/06 12:20:24 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 16:28:13 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ std::string Space::getCommandSection(const char* buffer) const
 std::vector<int> Space::getFdSet() const
 {
 	std::vector<int> result;
-	std::map<int, User>::const_iterator it = mUsers.begin();
+	std::map<int, User*>::const_iterator it = mUsers.begin();
 	while (it != mUsers.end())
 	{
 		result.push_back(it->first);
@@ -104,10 +104,10 @@ std::vector<int> Space::getFdSet() const
 std::vector<std::string> Space::getNicknames() const
 {
 	std::vector<std::string> result;
-	std::map<int, User>::const_iterator it = mUsers.begin();
+	std::map<int, User*>::const_iterator it = mUsers.begin();
 	while (it != mUsers.end())
 	{
-		result.push_back(it->second.getNickname());
+		result.push_back(it->second->getNickname());
 		++it;
 	}
 	return result;
@@ -116,10 +116,10 @@ std::vector<std::string> Space::getNicknames() const
 std::vector<std::string> Space::getUsernames() const
 {
 	std::vector<std::string> result;
-	std::map<int, User>::const_iterator it = mUsers.begin();
+	std::map<int, User*>::const_iterator it = mUsers.begin();
 	while (it != mUsers.end())
 	{
-		result.push_back(it->second.getUsername());
+		result.push_back(it->second->getUsername());
 		++it;
 	}
 	return result;
@@ -130,46 +130,48 @@ int Space::getUserCount() const
 	return static_cast<int>(mUsers.size());
 }
 
-bool Space::enterUser(const int clientSocket, const User &user)
+bool Space::enterUser(const int clientSocket, User* user)
 {
-	mUsers.insert(std::pair<int, User>(clientSocket, user));
+	mUsers.insert(std::pair<int, User*>(clientSocket, user));
 	return true;
 }
 
-void Space::exitUser(const int clientSocket)
+User* Space::exitUserOrNull(const int clientSocket)
 {
-	mUsers.erase(clientSocket);
-}
-
-Result<User> Space::findUser(const int clientSocket) const
-{
-	std::map<int, User>::const_iterator it = mUsers.find(clientSocket);
+	std::map<int, User*>::iterator it = mUsers.find(clientSocket);
+	User* user = NULL;
 	if (it != mUsers.end())
 	{
-		Result<User> result(it->second, true);
-		return result;
+		user = it->second;
+		mUsers.erase(clientSocket);
 	}
-	else
-	{
-		Result<User> result(User(), false);
-		return result;	
-	}
+	return user;
 }
 
-Result<std::pair<int, User> > Space::findUser(const std::string& nickname) const
+User* Space::findUserOrNull(const int clientSocket) const
 {
-	for (std::map<int, User>::const_iterator it = mUsers.begin(); it != mUsers.end(); ++it)
+	std::map<int, User*>::const_iterator it = mUsers.find(clientSocket);
+	if (it != mUsers.end())
 	{
-		User user = it->second;
-		if (user.getNickname() == nickname)
+		return it->second;
+	}
+	return NULL;
+}
+
+Result<std::pair<int, User*> > Space::findUser(const std::string& nickname) const
+{
+	for (std::map<int, User*>::const_iterator it = mUsers.begin(); it != mUsers.end(); ++it)
+	{
+		User* user = it->second;
+		if (user->getNickname() == nickname)
 		{
-			std::pair<int, User> socketAndUser(*it);
-			Result<std::pair<int, User> > result(socketAndUser, true);
+			std::pair<int, User*> socketAndUser(*it);
+			Result<std::pair<int, User*> > result(socketAndUser, true);
 			return result;
 		}
 	}
-	std::pair<int, User> socketAndUser(-1, User());
-	Result<std::pair<int, User> > result(socketAndUser, false);
+	std::pair<int, User*> socketAndUser(-1, NULL);
+	Result<std::pair<int, User*> > result(socketAndUser, false);
 	return result;
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/06 12:42:11 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:17:37 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,31 +173,44 @@ bool Channel::offMode(const int userSocket, const eMode mode)
 	return true;
 }
 
-bool Channel::enterUser(const int clientSocket, const User& user)
+bool Channel::enterUser(const int clientSocket, User* user)
 {
 	if (getUserCount() == 0)
 	{
-		mOperatorNicknames.push_back(user.getNickname());
+		mOperatorNicknames.push_back(user->getNickname());
 	}
 	bool bSucceed = Space::enterUser(clientSocket, user);
 	assert(bSucceed);
+	user->addJoinedChannel(mTitle);
 	assert(getUserCount() > 0);
 	return bSucceed;
 }
 
-void Channel::exitUser(const int clientSocket)
+User* Channel::exitUserOrNull(const int clientSocket)
 {
-	std::vector<std::string>::iterator it = mOperatorNicknames.begin();
-	std::map<int, User>::iterator mit = mUsers.find(clientSocket);
-	while (it != mOperatorNicknames.end())
+	std::map<int, User*>::iterator userIt = mUsers.find(clientSocket);
+	if (userIt != mUsers.end())
 	{
-		if (*it == mit->second.getNickname())
+		std::cout << "inner" << std::endl;
+		std::vector<std::string>::iterator it = mOperatorNicknames.begin();
+		while (it != mOperatorNicknames.end())
 		{
-			mOperatorNicknames.erase(it);
-			break;
+			if (*it == userIt->second->getNickname())
+			{
+				mOperatorNicknames.erase(it);
+				break;
+			}
+			++it;
 		}
-		++it;
+		User* user = userIt->second;
+		std::vector<std::string> channels = user->getJoinedChannels();
+		for (size_t i = 0; i < channels.size(); ++i)
+		{
+			std::cout << channels[i] << std::endl;
+		}
+		user->removeLastJoinedChannel();
 	}
+	return Space::exitUserOrNull(clientSocket);
 }
 
 bool Channel::isOperator(const User& user) const
@@ -214,10 +227,10 @@ bool Channel::isOperator(const User& user) const
 
 bool Channel::isOperator(const int userSocket) const
 {
-	Result<User> user = findUser(userSocket);
+	User* user = findUserOrNull(userSocket);
 	for (size_t i = 0; i < mOperatorNicknames.size(); ++i)
 	{
-		if (mOperatorNicknames[i] == user.getValue().getNickname())
+		if (mOperatorNicknames[i] == user->getNickname())
 		{
 			return true;
 		}

@@ -29,7 +29,8 @@ MessageBetch InviteCommand::getMessageBetch(const Server& server, const int clie
 	std::stringstream ss(buffer);
 	std::string temp;
 	ss >> temp >> guestNick >> channelName;
-	Result<std::pair<int, User> > guestInChannelPack = server.findChannelOrNull(clientSocket)->findUser(guestNick);
+	User user = server.findUser(clientSocket).getValue();
+	Result<std::pair<int, User *> > guestInChannelPack = server.findChannelOrNull(user.getLastJoinedChannel().getValue())->findUser(guestNick);
 	const User hostUser = server.findUser(clientSocket).getValue();
 	if (!ss.eof()) // 2개 이상
 	{
@@ -41,7 +42,7 @@ MessageBetch InviteCommand::getMessageBetch(const Server& server, const int clie
 		msg.addMessage(clientSocket, ":irc.local 403 " + hostUser.getNickname() + " " + guestNick2 + " :No such channel\r\n");
 		return msg;
 	}
-	else if (server.findChannelOrNull(clientSocket)->isOperator(clientSocket) == false)
+	else if (server.findChannelOrNull(user.getLastJoinedChannel().getValue())->isOperator(clientSocket) == false)
 	{
 		// 권한 없음
 	// INVITE sejjeong #channel
@@ -92,7 +93,7 @@ void InviteCommand::execute(Server& server, const int clientSocket, const char* 
 	std::stringstream ss(buffer);
 	ss >> temp >> guest >> channelName;
 	User invitedUser = server.findUser(guest).getValue().second; // 초대받은 유저
-	std::string currentChannelName = server.findUser(clientSocket).getValue().getLastJoinedChannel();   //그 유저(소켓)의 마지막 채널
+	std::string currentChannelName = server.findUser(clientSocket).getValue().getLastJoinedChannel().getValue();   //그 유저(소켓)의 마지막 채널
 	Channel *channel = server.findChannelOrNull(currentChannelName);
 	std::string nick(invitedUser.getNickname());
 	channel->enterInvitedList(nick);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 19:13:06 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/06 21:56:21 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 17:44:06 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,11 @@ std::vector<std::string> User::getJoinedChannels() const
 	return mJoinedChannels;
 }
 
+size_t User::getJoinedChannelCount() const
+{
+	return mJoinedChannels.size();
+}
+
 void User::setNickname(const std::string& nickname)
 {
 	mNickname = nickname;
@@ -56,7 +61,7 @@ void User::setUsername(const std::string& username)
 	mUsername = username;
 }
 
-void User::addjoinedChannel(std::string& title)
+void User::addJoinedChannel(std::string& title)
 {
 	for (std::vector<std::string> :: iterator it = mJoinedChannels.begin(); it != mJoinedChannels.end(); ++it)
 	{
@@ -66,10 +71,23 @@ void User::addjoinedChannel(std::string& title)
 			break ;
 		}				
 	}
-	mJoinedChannels.push_back (title);
+	mJoinedChannels.push_back(title);
 }
 
-std::string User::getLastJoinedChannel() const
+void User::removeLastJoinedChannel()
 {
-	return (mJoinedChannels[mJoinedChannels.size() - 1]);
+	if (mJoinedChannels.empty())
+	{
+		return;
+	}
+	mJoinedChannels.erase(mJoinedChannels.end()- 1);
+}
+
+Result<std::string> User::getLastJoinedChannel() const
+{
+	if (mJoinedChannels.empty())
+	{
+		return Result<std::string>("", false);
+	}
+	return Result<std::string>(mJoinedChannels.back(), true);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:19:57 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/06 21:56:10 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 15:17:45 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ public:
 	bool isModeActive(const eMode mode);
 	bool onMode(const int userSocket, const eMode mode);
 	bool offMode(const int userSocket, const eMode mode);
-	bool enterUser(const int clientSocket, const User& user);
-	void exitUser(const int clientSocket);
+	bool enterUser(const int clientSocket, User* user);
+	User* exitUserOrNull(const int clientSocket);
 	bool isOperator(const User& user) const;
 	bool isOperator(const int userSocket) const;
  

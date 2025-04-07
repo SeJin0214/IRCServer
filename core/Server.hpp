@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:47 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/06 21:53:38 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 16:29:24 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,17 @@ public:
 	bool trySetAuthenticatedInLoggedSpace(const int clientSocket);
 	bool trySetNicknameInLoggedSpace(const int clientSocket, const std::string& nickname);
 	bool trySetUsernameInLoggedSpace(const int clientSocket, const std::string& username);
-	void enterServer(const int clientSocket, const User& user);
-	bool enterUserInLobby(const int clientSocket, const User& user);
-	bool exitUserInLobby(const int clientSocket);
-	bool enterUserInChannel(const int clientSocket, const User& user, const std::string& title);
-	bool exitUserInChannel(const int clientSocket, const std::string& title);
+
+	void loginToServer(const int clientSocket, User* user);
 	void leaveServer(const int clientSocket);
+	bool enterUserInLobby(const int clientSocket, User* user);
+	User* exitUserInLobbyOrNull(const int clientSocket);
+	bool enterUserInChannel(const int clientSocket, const std::string& title);
+	User* exitUserInChannel(const int clientSocket, const std::string& title);
+	
 	bool isDuplicatedNickname(const char* buffer) const;
-	void executeOutgoing(const int clientSocket);
-	// private으로 옮길 수도 있음
+	void exitAllSpaces(const int clientSocket);
 	Channel* findChannelOrNull(const std::string& title) const;
-	Channel* findChannelOrNull(const int clientSocket) const;
 	
 private:
 	Lobby mLobby;
@@ -63,13 +63,14 @@ private:
 	int getMaxFd() const;
 	std::vector<const Space*> getSpaces() const;
 	std::vector<Space*> getSpaces();
+	User* findUserInAllSpace(const int clientSocket) const;
+	Channel* findChannelOrNull(const int clientSocket) const;
 	const Space* findSpace(const int clientSocket) const;
 	Channel* createChannel(const std::string& title);
 	void acceptClient();
 	bool sendToClient(const int clientSocket, const char* message) const;
 	void handleClientMessage(const int clientSocket);
 	void ExecuteCommandByProtocol(const int clientSocket, const char* buffer);
-	bool isDuplicatedUsername(const char* buffer) const;
 	bool isInvalidPortNumber(const char* port) const;
 	bool isInvalidPasswordFormatted(const char* password) const;
 	bool isInvalidPassword(const char* password) const;

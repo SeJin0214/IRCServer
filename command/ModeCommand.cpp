@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ModeCommand.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:37:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 13:37:56 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 16:29:57 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 	// CommonCommand commoncommand;
 
 	std::string buf(buffer);
-	User user = server.findChannelOrNull(clientSocket)->findUser(clientSocket).getValue();
+	User user = server.findUser(clientSocket).getValue();
 	std::string nickname = user.getNickname();
 
 	std::stringstream ss (buf);
