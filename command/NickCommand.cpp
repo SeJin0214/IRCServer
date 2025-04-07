@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 17:36:00 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 18:27:37 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:45:49 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,14 @@ MessageBetch NickCommand::getMessageBetch(const Server& server, const int client
 	assert(buffer != NULL);
 	assert(std::strncmp(buffer, "NICK ", std::strlen("NICK ")) == 0);
 	
-	MessageBetch messageBetch;
 	size_t startIndex = std::strlen("NICK ");
 	char nickname[MAX_BUFFER] = { 0, };
 	strcpy(nickname, buffer + startIndex);
 
-	size_t nicknameLength = std::strlen(nickname);
 	std::stringstream message;
+	MessageBetch messageBetch;
+	
+	size_t nicknameLength = std::strlen(nickname);
 	if (nicknameLength == 0)
 	{
 		message << ":" << server.getServerName() << " 431 * " << nickname << " :No nickname given";

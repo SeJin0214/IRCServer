@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SendChannelMessageCommand.cpp                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 11:25:10 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 13:37:43 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 20:02:49 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 			continue;
 		}
 		User user = server.findUser(clientSocket).getValue();
-		std::cout << "in : " << server.findUser(userSockets[i]).getValue().getNickname() << std::endl;
+		//std::cout << "in : " << server.findUser(userSockets[i]).getValue().getNickname() << std::endl;
 		std::string who = CommonCommand::getPrefixMessage(user, clientSocket);
 		retMsg.addMessage(userSockets[i], who + " PRIVMSG #" + channelName + " " + msg + "\r\n");
 	}

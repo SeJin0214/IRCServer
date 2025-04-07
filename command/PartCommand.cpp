@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:41:48 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 18:23:00 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:44:31 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +21,20 @@ MessageBetch PartCommand::getMessageBetch(const Server& server, const int client
 	
 	MessageBetch messageBetch;
 	
-	Result<User> resultUser = server.findUser(clientSocket);
-	User user = resultUser.getValue();
+	assert(server.findUser(clientSocket).hasSucceeded());
+	User user = server.findUser(clientSocket).getValue();
+
  	const char* channelName = std::strchr(buffer, '#');
 	assert(channelName != NULL);
+
 	std::string leaveMessage = CommonCommand::getPrefixMessage(user, clientSocket) + " PART :" + channelName;
 	
 	messageBetch.addMessage(clientSocket, leaveMessage);
+
 	assert(user.getLastJoinedChannel().hasSucceeded());
 	std::string currentJoinedChannelName = user.getLastJoinedChannel().getValue();
 
 	Channel* channel = server.findChannelOrNull(currentJoinedChannelName);
-	std::cout << "part" << std::endl;
-
 	assert(channel != NULL);
 
 	std::vector<int> clientSockets = channel->getFdSet();
@@ -41,6 +42,7 @@ MessageBetch PartCommand::getMessageBetch(const Server& server, const int client
 	{
 		User* userToFind = channel->findUserOrNull(clientSockets[i]);
 		assert(userToFind != NULL);
+		
 		std::string currentChannel = userToFind->getLastJoinedChannel().getValue();
 		assert(userToFind->getLastJoinedChannel().hasSucceeded());
 
@@ -56,6 +58,7 @@ void PartCommand::execute(Server& server, const int clientSocket, const char* bu
 {
 	assert(buffer != NULL);
 	assert(std::strncmp(buffer, "PART ", std::strlen("PART ")) == 0);
+	
 	const char* startPointer = strchr(buffer, '#');
 	assert(startPointer != NULL);
 	

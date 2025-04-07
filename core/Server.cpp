@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 17:57:45 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 20:06:14 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -385,7 +385,7 @@ bool Server::run()
 		
 		struct timeval tv;
 		tv.tv_sec = 0;
-    	tv.tv_usec = 10000;
+    	tv.tv_usec = 100000;
 		if (select(maxFd + 1, &temp_fds, NULL, NULL, &tv) == SYSCALL_FAIL)
 		{
 			assert(false);
@@ -464,8 +464,10 @@ void Server::handleClientMessage(const int clientSocket)
 		{
 			break;
 		}
-		assert(line[line.size() - 1] == '\r');
-		line[line.size() - 1] = '\0';
+		if (line[line.size() - 1] == '\r')
+		{
+			line[line.size() - 1] = '\0';
+		}
 		ExecuteCommandByProtocol(clientSocket, line.c_str());
 	}
 }
@@ -474,6 +476,7 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 {
 	const Space* space = findSpace(clientSocket);
 
+	std::cout << buffer << std::endl;
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
 	if (outgoingMessageProvider != NULL)
 	{
@@ -482,7 +485,6 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 		for (size_t i = 0; i < socketAndMessages.size(); ++i)
 		{
 			std::pair<int, std::string> socketAndMessage = socketAndMessages[i];
-			std::cout << "\n서버 ->클라 : " << socketAndMessage.second << std::endl;
 			sendToClient(socketAndMessage.first, socketAndMessage.second.c_str());
 		}
 	}
@@ -495,7 +497,6 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 		executor->execute(*this, clientSocket, buffer);
 	}
 	delete executor;
-
 }
 
 bool Server::isDuplicatedNickname(const char* buffer) const
