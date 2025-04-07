@@ -329,3 +329,13 @@ void Channel::exitInvitedList (std::string& invitedUser)
 		}
 	}
 }
+
+void Channel::setMemberCount(unsigned int num)
+{
+	mMemberCount = num;
+}
+
+unsigned int Channel::getMemberCount() const
+{
+	return mMemberCount;
+}

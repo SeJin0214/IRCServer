@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:19:57 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 18:09:03 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/07 18:13:10 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,15 @@ public:
 	User* exitUserOrNull(const int clientSocket);
 	bool isOperator(const User& user) const;
 	bool isOperator(const int userSocket) const;
+	void setMemberCount(unsigned int num);
+	unsigned int getMemberCount() const;
  
 private:
 	std::vector<std::string> mOperatorNicknames;
 	std::vector<std::string> mInvitedList;
+	unsigned int mMemberCount;
 	unsigned char mModeFlag;
 	std::string mTitle;
 	std::string mTopic;
 	unsigned int mPassword;
 };
-

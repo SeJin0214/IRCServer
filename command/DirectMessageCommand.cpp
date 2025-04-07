@@ -33,9 +33,8 @@ MessageBetch DirectMessageCommand::getMessageBetch(const Server& server, const i
 
 	std::string pri;
 	std::string usernames;
-	std::string msg;
-
-	si >> pri >> usernames >> msg;
+	si >> pri >> usernames;
+	std::string msg(si.str());
 	
 	std::cout << pri << " " << usernames << " " << std::endl;	
 	std::stringstream ss(usernames);
