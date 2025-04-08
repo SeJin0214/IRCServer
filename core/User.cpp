@@ -94,7 +94,7 @@ Result<std::string> User::getLastJoinedChannel() const
 
 Result<int> User::getIndexOfJoinedChannel (const std::string& channelName)
 {
-	for (int i = 0; i < mJoinedChannels.size(); ++i)
+	for (size_t i = 0; i < mJoinedChannels.size(); ++i)
 	{
 		if (mJoinedChannels[i] == channelName)
 			return Result<int>(i, true);

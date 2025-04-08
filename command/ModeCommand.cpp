@@ -14,7 +14,6 @@
 #include "ModeCommand.hpp"
 #include <stdlib.h>
 
- 
 MessageBetch ModeCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
 	std::cout << "mode : " << buffer << std::endl;
@@ -52,7 +51,7 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 
 	if (bMode.size() != 2)
 	{
-		for (size_t i; i < bMode.size(); ++i)
+		for (size_t i = 0; i < bMode.size(); ++i)
 		{
 			clientMsg << ":irc.local 472 " << nickname << " " << bMode[i] << " :is not a recognised channel mode.";
 			if (bMode.size() - 1 < i)
@@ -63,7 +62,7 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 		return (msg);
 	}
 
-	char sign = sign;
+	char sign = bMode[0];
 	Channel *channel = server.findChannelOrNull(channelName);
 	std::vector<int> userSockets = channel->getFdSet();
 	

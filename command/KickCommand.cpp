@@ -85,6 +85,7 @@ void KickCommand::execute(Server& server, const int clientSocket, const char* bu
 	//유저가 가지고 있는 채널 삭제;
 	//채널을 가지고 있지않으면 로비
 
+	(void)clientSocket;
 	std::string temp;
 	std::string channelName;
 	std::string kickedName;
@@ -97,7 +98,6 @@ void KickCommand::execute(Server& server, const int clientSocket, const char* bu
 	// User가 가지고있는 채널들에 추방 당한 channelName 인덱스 확인
 	// a b c d e
 	// c ->  2반환
-	Channel* channel;
 	for (int i = 0; i <= channelIndexInKickedUser; ++i)
 	{
 		std::string exitChannelName = kickedUserPack.second->getJoinedChannelName(i);
