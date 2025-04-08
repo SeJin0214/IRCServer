@@ -81,6 +81,37 @@ MessageBetch KickCommand::getMessageBetch(const Server& server, const int client
 void KickCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
+	//채널 멤버에서 나감.
+	//유저가 가지고 있는 채널 삭제;
+	//채널을 가지고 있지않으면 로비
+
+	std::string temp;
+	std::string channelName;
+	std::string kickedName;
+	std::stringstream ss(buffer);
+	channelName.erase(0, 1);
+	ss >> temp >> channelName >> kickedName;
+	Channel* channel = server.findChannelOrNull(channelName);
+	std::pair<int, User *> kickedUserPack = channel->findUser(kickedName).getValue();	
+	int channelIndexInKickedUser = kickedUserPack.second->getIndexOfJoinedChannel(channelName).getValue();
+	// User가 가지고있는 채널들에 추방 당한 channelName 인덱스 확인
+	// a b c d e
+	// c ->  2반환
+	Channel* channel;
+	for (int i = 0; i <= channelIndexInKickedUser; ++i)
+	{
+		std::string exitChannelName = kickedUserPack.second->getJoinedChannelName(i);
+		Channel* exitChannel = server.findChannelOrNull(exitChannelName);
+		exitChannel->exitUserOrNull(kickedUserPack.first);
+		kickedUserPack.second->removeJoinedChannel(exitChannelName);
+	}
+	if (kickedUserPack.second->getJoinedChannelCount() == 0)
+		server.enterUserInLobby(kickedUserPack.first, kickedUserPack.second);
+
+	// kickedUser->
+
+	// a b c d e
+	// c 에서 추방당한 경우 -> 그 채널 유저는 e 만 가지고 있음
+	// 즉 e에서 part -> 로비
+
 }

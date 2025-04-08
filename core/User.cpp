@@ -91,3 +91,27 @@ Result<std::string> User::getLastJoinedChannel() const
 	}
 	return Result<std::string>(mJoinedChannels.back(), true);
 }
+
+Result<int> User::getIndexOfJoinedChannel (const std::string& channelName)
+{
+	for (int i = 0; i < mJoinedChannels.size(); ++i)
+	{
+		if (mJoinedChannels[i] == channelName)
+			return Result<int>(i, true);
+	}
+	return Result<int>(-1, false);
+}
+
+void User::removeJoinedChannel(std::string channelName)
+{
+	for (std::vector<std::string>::iterator it = mJoinedChannels.begin(); it != mJoinedChannels.end(); ++it)
+	{
+		if (*it == channelName)
+			mJoinedChannels.erase(it);
+	}
+}
+
+std::string User::getJoinedChannelName(int indexOfJoinedChannels)
+{
+	return (mJoinedChannels[indexOfJoinedChannels]);
+}
