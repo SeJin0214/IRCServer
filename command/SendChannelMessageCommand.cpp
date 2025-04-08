@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 11:25:10 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 20:02:49 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 15:42:29 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 	ss >> temp >> channelName;
 	std::string msg(ss.str());
 	channelName.erase(0, 1);
-	Channel  *channel = server.findChannelOrNull(channelName);
+	Channel *channel = server.findChannelOrNull(channelName);
 	std::vector<int> userSockets = channel->getFdSet();
 	for (size_t i = 0; i < userSockets.size(); ++i)
 	{
@@ -40,7 +40,7 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 			continue;
 		}
 		User user = server.findUser(clientSocket).getValue();
-		//std::cout << "in : " << server.findUser(userSockets[i]).getValue().getNickname() << std::endl;
+		// std::cout << "in : " << server.findUser(userSockets[i]).getValue().getNickname() << std::endl;
 		std::string who = CommonCommand::getPrefixMessage(user, clientSocket);
 		retMsg.addMessage(userSockets[i], who + " PRIVMSG #" + channelName + " " + msg + "\r\n");
 	}

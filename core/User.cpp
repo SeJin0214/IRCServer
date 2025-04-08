@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 19:13:06 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 17:57:59 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 14:20:01 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,15 @@ User::User(const std::string& username, const std::string& nickname)
 , mNickname(nickname)
 {
 
+}
+
+
+User::User(const User& other)
+: mJoinedChannels(other.mJoinedChannels)
+, mUsername(other.mUsername)
+, mNickname(other.mNickname)
+{
+	mBuffer << other.mBuffer.str();
 }
 
 User::~User()
@@ -59,6 +68,18 @@ void User::setNickname(const std::string& nickname)
 void User::setUsername(const std::string& username)
 {
 	mUsername = username;
+}
+
+std::string User::flushBuffer()
+{
+	std::string result = mBuffer.str();
+	mBuffer.str("");
+	return result;
+}
+
+void User::appendStringInBuffer(const char* buffer)
+{
+	mBuffer << buffer;
 }
 
 void User::addJoinedChannel(std::string& title)

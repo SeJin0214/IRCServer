@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   DirectMessageCommand.cpp                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 11:22:22 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 13:37:49 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 14:19:13 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ MessageBetch DirectMessageCommand::getMessageBetch(const Server& server, const i
 	{
 		std::getline(ss, temp, ',');
 
-		std::cout <<  " temp: " << temp << std::endl;	
 		Result<std::pair<int, User> > user = server.findUser(temp);
 		if(user.hasSucceeded() == true)
 		{

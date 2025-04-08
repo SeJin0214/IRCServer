@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 17:13:46 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 16:15:58 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 14:12:02 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,11 +24,11 @@ IOutgoingMessageProvider* LoggedInSpace::getOutgoingMessageProvider(const char *
 	assert(buffer != NULL);
 
 	std::string command = getCommandSection(buffer);
-	if (std::strncmp("NICK", command.c_str(), command.size()) == 0)
+	if (std::strncmp("NICK", command.c_str(), std::strlen("NICK")) == 0)
 	{
 		return new NickCommand();
 	}
-	else if (std::strncmp("QUIT", command.c_str(), command.size()) == 0)
+	else if (std::strncmp("QUIT", command.c_str(), std::strlen("QUIT")) == 0)
 	{
 		return new QuitCommand();
 	}
@@ -40,19 +40,19 @@ IExecutable* LoggedInSpace::getExecutor(const char *buffer) const
 	assert(buffer != NULL);
 
 	std::string command = getCommandSection(buffer);
-	if (std::strncmp("PASS", command.c_str(), command.size()) == 0)
+	if (std::strncmp("PASS", command.c_str(), std::strlen("PASS")) == 0)
 	{
 		return new PassCommand();
 	}
-	else if (std::strncmp("USER", command.c_str(), command.size()) == 0)
+	else if (std::strncmp("USER", command.c_str(), std::strlen("USER")) == 0)
 	{
 		return new UserCommand();
 	}
-	else if (std::strncmp("NICK", command.c_str(), command.size()) == 0)
+	else if (std::strncmp("NICK", command.c_str(), std::strlen("NICK")) == 0)
 	{
 		return new NickCommand();
 	}
-	else if (std::strncmp("QUIT", command.c_str(), command.size()) == 0)
+	else if (std::strncmp("QUIT", command.c_str(), std::strlen("QUIT")) == 0)
 	{
 		return new QuitCommand();
 	}

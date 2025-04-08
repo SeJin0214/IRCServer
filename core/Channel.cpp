@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 20:15:38 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:06:33 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	std::stringstream ss(buffer);
 	std::string command;
 	std::getline(ss, command, ' ');
-	if (std::strncmp("MODE", command.c_str(), command.size()) == 0)
+	if (std::strncmp("MODE", command.c_str(), std::strlen("MODE")) == 0)
 	{
 		std::stringstream ss(buffer);
 		std::string command;
@@ -105,15 +105,19 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 			return new ErrorCommand();
 		}
 	}
-	else if (std::strncmp("PART", command.c_str(), command.size()) == 0)
+	else if (std::strncmp("PART", command.c_str(), std::strlen("PART")) == 0)
 	{
 		return new PartCommand();
 	}
-	else if (std::strncmp("INVITE", command.c_str(), command.size()) == 0)
+	else if (std::strncmp("INVITE", command.c_str(), std::strlen("INVITE")) == 0)
 	{
 		return new InviteCommand();
 	}
-	else if (std::strncmp("TOPIC", command.c_str(), command.size()) == 0)
+	else if (std::strncmp("TOPIC", command.c_str(), std::strlen("TOPIC")) == 0)
+	{
+		return new TopicCommand();
+	}
+	else if (std::strncmp("KICK", command.c_str(), std::strlen("KICK")) == 0)
 	{
 		return new TopicCommand();
 	}
@@ -131,19 +135,19 @@ IExecutable* Channel::getExecutor(const char* buffer) const
 	}
 
 	std::string command = getCommandSection(buffer);
-	if (std::strncmp("MODE", command.c_str(), command.size()) == 0)
+	if (std::strncmp("MODE", command.c_str(), std::strlen("MODE")) == 0)
 	{
 		return new ModeCommand();
 	}
-	else if (std::strncmp("PART", command.c_str(), command.size()) == 0)
+	else if (std::strncmp("PART", command.c_str(), std::strlen("PART")) == 0)
 	{
 		return new PartCommand();
 	}
-	else if (std::strncmp("INVITE", command.c_str(), command.size()) == 0)
+	else if (std::strncmp("INVITE", command.c_str(), std::strlen("INVITE")) == 0)
 	{
 		return new InviteCommand();
 	}
-	else if (std::strncmp("TOPIC", command.c_str(), command.size()) == 0)
+	else if (std::strncmp("TOPIC", command.c_str(), std::strlen("TOPIC")) == 0)
 	{
 		return new TopicCommand();
 	}

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 20:15:25 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 11:35:27 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ std::vector<std::string> Space::getUsernames() const
 	return result;
 }
 
-int Space::getUserCount() const
+size_t Space::getUserCount() const
 {
 	return static_cast<int>(mUsers.size());
 }

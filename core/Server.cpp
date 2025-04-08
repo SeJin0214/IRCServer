@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 20:09:21 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:09:23 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -404,7 +404,7 @@ bool Server::run()
 			else if (i == STDIN_FILENO)
 			{
 				char buffer[MAX_BUFFER] = { 0, };
-				const int readLength = read(STDIN_FILENO, buffer, MAX_BUFFER);
+				const int readLength = read(STDIN_FILENO, buffer, MAX_BUFFER - 1);
 				if (readLength == 0)
 				{
 					return false;
@@ -445,17 +445,29 @@ void Server::handleClientMessage(const int clientSocket)
 {
 	char buffer[MAX_BUFFER] = { 0, };
 	
-	const int readLength = recv(clientSocket, buffer, MAX_BUFFER, 0);
-
+	const int readLength = recv(clientSocket, buffer, MAX_BUFFER - 1, 0);
 	if (readLength == 0)
 	{
 		return;
 	}
+	else if (readLength == MAX_BUFFER - 1)
+	{
+		while (recv(clientSocket, buffer, MAX_BUFFER - 1, 0) == MAX_BUFFER - 1)
+		{
+			continue;
+		}
+		sendToClient(clientSocket, "ERROR :Line too long");
+		return;
+	}
+
+	User *user = findUserInAllSpace(clientSocket);
+	std::string remain = user->flushBuffer();
 	
-	assert(buffer[readLength - 1] == '\n');
-	buffer[readLength - 1] = '\0';
+	std::stringstream ss;
+	ss << remain << buffer;
 	
-	std::stringstream ss(buffer);
+	// std::cout << "stream:" <<ss.str() << std::endl;
+	
 	std::string line;
 	while (true)
 	{
@@ -464,6 +476,13 @@ void Server::handleClientMessage(const int clientSocket)
 		{
 			break;
 		}
+
+		if (ss.eof())
+		{
+			user->appendStringInBuffer(line.c_str());
+			continue;
+		}
+
 		if (line[line.size() - 1] == '\r')
 		{
 			line[line.size() - 1] = '\0';
@@ -521,7 +540,7 @@ bool Server::isDuplicatedNickname(const char* buffer) const
 // TODO: 에러처리 구현
 bool Server::sendToClient(const int clientSocket, const char* message) const
 {
-	char buffer[MAX_BUFFER] = { 0, };
+	char buffer[MAX_BUFFER + 2] = { 0, };
 	sprintf(buffer, "%s\r\n", message);
     send(clientSocket, buffer, std::strlen(buffer), 0);
 	// 에러 처리

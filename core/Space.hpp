@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:51:10 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 16:28:17 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 11:34:29 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ public:
 	virtual bool enterUser(const int clientSocket, User* user);
 	virtual User* exitUserOrNull(const int clientSocket);
 	std::vector<int> getFdSet() const;
-	int getUserCount() const;
+	size_t getUserCount() const;
 	std::vector<std::string> getNicknames() const;
 	std::vector<std::string> getUsernames() const;
 	User* findUserOrNull(const int clientSocket) const;
