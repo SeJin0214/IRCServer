@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 19:13:06 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 14:20:01 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:24:55 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,4 +111,32 @@ Result<std::string> User::getLastJoinedChannel() const
 		return Result<std::string>("", false);
 	}
 	return Result<std::string>(mJoinedChannels.back(), true);
+}
+
+Result<int> User::getIndexOfJoinedChannel(const std::string& channelName)
+{
+	for (size_t i = 0; i < mJoinedChannels.size(); ++i)
+	{
+		if (mJoinedChannels[i] == channelName)
+		{
+			return Result<int>(i, true);
+		}
+	}
+	return Result<int>(-1, false);
+}
+
+void User::removeJoinedChannel(std::string channelName)
+{
+	for (std::vector<std::string>::iterator it = mJoinedChannels.begin(); it != mJoinedChannels.end(); ++it)
+	{
+		if (*it == channelName)
+		{
+			mJoinedChannels.erase(it);
+		}
+	}
+}
+
+std::string User::getJoinedChannelName(int indexOfJoinedChannels)
+{
+	return (mJoinedChannels[indexOfJoinedChannels]);
 }

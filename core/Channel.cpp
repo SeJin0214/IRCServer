@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 16:11:05 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:13:54 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,10 @@ IExecutable* Channel::getExecutor(const char* buffer) const
 	{
 		return new PartCommand();
 	}
+	else if (std::strncmp("KICK", command.c_str(), std::strlen("KICK")) == 0)
+	{
+		return new KickCommand();
+	}
 	else if (std::strncmp("INVITE", command.c_str(), std::strlen("INVITE")) == 0)
 	{
 		return new InviteCommand();
@@ -256,6 +260,7 @@ User* Channel::exitUserOrNull(const int clientSocket)
 			++it;
 		}
 		User* user = userIt->second;
+		std::vector<std::string> channels = user->getJoinedChannels();
 		user->removeLastJoinedChannel();
 	}
 	return Space::exitUserOrNull(clientSocket);
@@ -337,7 +342,29 @@ void Channel::setMemberCount(unsigned int num)
 	mMemberCount = num;
 }
 
-unsigned int Channel::getMemberCount() const
+size_t Channel::getMemberCount() const
 {
 	return mMemberCount;
+}
+
+void Channel::removeOperatorNicknames(const std::string& nickname)
+{
+	for (std::vector<std::string>::iterator it = mOperatorNicknames.begin(); it != mOperatorNicknames.end(); ++it)
+	{
+		if (*it == nickname)
+		{
+			mOperatorNicknames.erase(it);
+		}
+	}
+}
+
+void Channel::removeInvitedLists(const std::string& nickname)
+{
+	for (std::vector<std::string>::iterator it = mInvitedList.begin(); it != mInvitedList.end(); ++it)
+	{
+		if (*it == nickname)
+		{
+			mInvitedList.erase(it);
+		}
+	}
 }

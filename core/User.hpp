@@ -33,6 +33,14 @@ public:
     std::string flushBuffer();
     void appendStringInBuffer(const char* buffer);
     void removeLastJoinedChannel();
+
+
+    Result<int> getIndexOfJoinedChannel (const std::string& channelName); // 추가 (donkim3)
+    void removeJoinedChannel(std::string channelName); // 추가 (donkim3)
+    std::string getJoinedChannelName(int indexOfJoinedChannels); // 추가 (donkim3)
+
+
+
     Result<std::string> getLastJoinedChannel() const; // 추가
     ~User();
 

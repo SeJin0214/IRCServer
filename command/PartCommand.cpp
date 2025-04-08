@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:41:48 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 14:22:09 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:45:03 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ MessageBetch PartCommand::getMessageBetch(const Server& server, const int client
 	for (size_t i = 0; i < clientSockets.size(); ++i)
 	{
 		User* userToFind = channel->findUserOrNull(clientSockets[i]);
+		// b에 접속 /part #aaa
 		assert(userToFind != NULL);
 		
 		std::string currentChannel = userToFind->getLastJoinedChannel().getValue();

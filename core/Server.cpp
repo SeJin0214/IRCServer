@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 16:09:23 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:14:52 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 #define SYSCALL_FAIL (-1)
 
 Server::Server(const char* port, const char* password)
-: mName("irc.local")
+: mName(":irc.local")
 , mbRunning(false)
 , mPort(std::atoi(port))
 , mPassword(Util::generateHash65599(password))
@@ -341,6 +341,7 @@ bool Server::enterUserInChannel(const int clientSocket, const std::string& title
 	}
 	User* user = findUserInAllSpace(clientSocket);
 	exitUserInLobbyOrNull(clientSocket);
+	channel->removeInvitedLists(user->getNickname());
 	return channel->enterUser(clientSocket, user);
 }
 
@@ -496,7 +497,7 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 {
 	const Space* space = findSpace(clientSocket);
 
-	std::cout << buffer << std::endl;
+	std::cout << "클라 ->서버: " << buffer << std::endl;
 	
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
 	if (outgoingMessageProvider != NULL)

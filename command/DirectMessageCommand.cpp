@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 11:22:22 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 14:19:13 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:37:50 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ MessageBetch DirectMessageCommand::getMessageBetch(const Server& server, const i
 	std::string pri;
 	std::string usernames;
 	si >> pri >> usernames;
-	std::string msg(si.str());
+	std::string msg;
+	getline(si, msg);
 	
 	std::cout << pri << " " << usernames << " " << std::endl;	
 	std::stringstream ss(usernames);
@@ -48,12 +49,12 @@ MessageBetch DirectMessageCommand::getMessageBetch(const Server& server, const i
 		if(user.hasSucceeded() == true)
 		{
 			User host = server.findUser(clientSocket).getValue();
-			result << CommonCommand::getPrefixMessage(host, clientSocket) << " PRIVMSG " << temp << msg << "\r\n";
+			result << CommonCommand::getPrefixMessage(host, clientSocket) << " PRIVMSG " << temp << msg;
 			retMsg.addMessage(user.getValue().first, result.str());
 		}
 		else
 		{
-			result << ":server 401 " << temp << " :No such nick/channel\r\n";
+			result << ":server 401 " << temp << " :No such nick/channel";
 			retMsg.addMessage(clientSocket, result.str());
 		}
 		if (ss.eof())

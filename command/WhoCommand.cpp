@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 13:01:53 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 18:49:43 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:48:52 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,11 @@ MessageBetch WhoCommand::getMessageBetch(const Server& server, const int clientS
 	}
 	else if (buf.find("%tcuhnfdar"))
 	{
-		std::string channelName = buf.substr(4, idxOfGuestNick);
+		assert(user.getLastJoinedChannel().hasSucceeded());
 		Channel* currentChannel = server.findChannelOrNull(user.getLastJoinedChannel().getValue());
 		std::vector<std::string> nick = currentChannel->getNicknames();
+		
+		std::string channelName = buf.substr(4, idxOfGuestNick);
 		std::stringstream ret;
 		for (size_t i = 0; i < nick.size(); ++i)
 		{

@@ -32,9 +32,12 @@ public:
 	void setPassword(std::string& password);
 	bool isPassword(std::string& password);
 	bool isInvited (std::string& invitedUser);
+
 	void enterInvitedList (std::string& invitedUser);
 	void exitInvitedList (std::string& invitedUser);
 	bool isAddUserAsAdmin(const std::string& userNickname);//서버에서 채널생성할 때 사용 유저 호스트만들기
+	void removeOperatorNicknames(const std::string& nickname);
+	void removeInvitedLists(const std::string& nickname);
 	std::string getActiveMode();
 	bool isModeActive(const eMode mode);
 	bool onMode(const int userSocket, const eMode mode);
@@ -44,7 +47,7 @@ public:
 	bool isOperator(const User& user) const;
 	bool isOperator(const int userSocket) const;
 	void setMemberCount(unsigned int num);
-	unsigned int getMemberCount() const;
+	size_t getMemberCount() const;
  
 private:
 	std::vector<std::string> mOperatorNicknames;

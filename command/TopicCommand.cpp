@@ -45,7 +45,7 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 	}
 	else if (channel->findUserOrNull(clientSocket) != NULL) // channel 만
 	{
-		if (channel->isOperator(clientSocket) == false)
+		if (channel->isModeActive(MODE_TOPIC_LOCK) == true && channel->isOperator(clientSocket) == false)
 		{
 			
 			// 권한이 없는 경우

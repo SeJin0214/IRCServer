@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:05:45 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 18:21:41 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:45:59 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,17 @@ MessageBetch QuitCommand::getMessageBetch(const Server& server, const int client
 	messageBetch.addMessage(clientSocket, message.str());
 	
 	Result<User> resultUser = server.findUser(clientSocket);
+	assert(resultUser.hasSucceeded());
+	
 	User user = resultUser.getValue();
 	std::stringstream leaveMessage(CommonCommand::getPrefixMessage(user, clientSocket));
-	leaveMessage << " QUIT :" << buffer;
 
 	std::set<int> socketsToSend;
 	std::vector<std::string> joinedChannels = user.getJoinedChannels();
 	for (size_t i = 0; i < joinedChannels.size(); ++i)
 	{
 		Channel* joinedChannel = server.findChannelOrNull(joinedChannels[i]);
+		assert(joinedChannel != NULL);
 		std::vector<int> clientSockets = joinedChannel->getFdSet();
 		for (size_t i = 0; i < clientSockets.size(); ++i)
 		{
