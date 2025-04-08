@@ -32,7 +32,7 @@
 #define SYSCALL_FAIL (-1)
 
 Server::Server(const char* port, const char* password)
-: mName("irc.local")
+: mName(":irc.local")
 , mbRunning(false)
 , mPort(std::atoi(port))
 , mPassword(Util::generateHash65599(password))
@@ -340,6 +340,7 @@ bool Server::enterUserInChannel(const int clientSocket, const std::string& title
 		assert(channel != NULL);
 	}
 	User* user = findUserInAllSpace(clientSocket);
+	/////////// invitedlist 유저 뺴기 <donjeong>
 	exitUserInLobbyOrNull(clientSocket);
 	return channel->enterUser(clientSocket, user);
 }

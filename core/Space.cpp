@@ -124,9 +124,9 @@ std::vector<std::string> Space::getUsernames() const
 	return result;
 }
 
-int Space::getUserCount() const
+size_t Space::getUserCount() const
 {
-	return static_cast<int>(mUsers.size());
+	return mUsers.size();
 }
 
 bool Space::enterUser(const int clientSocket, User* user)

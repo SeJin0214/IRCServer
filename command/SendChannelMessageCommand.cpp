@@ -29,7 +29,8 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 	std::string temp;
 	std::string channelName;
 	ss >> temp >> channelName;
-	std::string msg(ss.str());
+	std::string msg;
+	getline(ss, msg);
 	channelName.erase(0, 1);
 	Channel  *channel = server.findChannelOrNull(channelName);
 	std::vector<int> userSockets = channel->getFdSet();

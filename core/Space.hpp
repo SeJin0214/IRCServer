@@ -31,7 +31,7 @@ public:
 	virtual bool enterUser(const int clientSocket, User* user);
 	virtual User* exitUserOrNull(const int clientSocket);
 	std::vector<int> getFdSet() const;
-	int getUserCount() const;
+	size_t getUserCount() const;
 	std::vector<std::string> getNicknames() const;
 	std::vector<std::string> getUsernames() const;
 	User* findUserOrNull(const int clientSocket) const;

@@ -114,6 +114,10 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	{
 		return new InviteCommand();
 	}
+	else if (std::strncmp("KICK", command.c_str(), command.size()) == 0)
+	{
+		return new KickCommand();
+	}
 	else if (std::strncmp("TOPIC", command.c_str(), command.size()) == 0)
 	{
 		return new TopicCommand();
@@ -139,6 +143,10 @@ IExecutable* Channel::getExecutor(const char* buffer) const
 	else if (std::strncmp("PART", command.c_str(), command.size()) == 0)
 	{
 		return new PartCommand();
+	}
+	else if (std::strncmp("KICK", command.c_str(), command.size()) == 0)
+	{
+		return new KickCommand();
 	}
 	else if (std::strncmp("INVITE", command.c_str(), command.size()) == 0)
 	{
@@ -237,7 +245,6 @@ User* Channel::exitUserOrNull(const int clientSocket)
 	std::map<int, User*>::iterator userIt = mUsers.find(clientSocket);
 	if (userIt != mUsers.end())
 	{
-		std::cout << "inner" << std::endl;
 		std::vector<std::string>::iterator it = mOperatorNicknames.begin();
 		while (it != mOperatorNicknames.end())
 		{
@@ -250,10 +257,10 @@ User* Channel::exitUserOrNull(const int clientSocket)
 		}
 		User* user = userIt->second;
 		std::vector<std::string> channels = user->getJoinedChannels();
-		for (size_t i = 0; i < channels.size(); ++i)
-		{
-			std::cout << channels[i] << std::endl;
-		}
+		// for (size_t i = 0; i < channels.size(); ++i)
+		// {
+		// 	std::cout << channels[i] << std::endl;
+		// }
 		user->removeLastJoinedChannel();
 	}
 	return Space::exitUserOrNull(clientSocket);
@@ -335,7 +342,18 @@ void Channel::setMemberCount(unsigned int num)
 	mMemberCount = num;
 }
 
-unsigned int Channel::getMemberCount() const
+size_t Channel::getMemberCount() const
 {
 	return mMemberCount;
+}
+
+void Channel::removeOperatorNicknames(const std::string& nickname)
+{
+	for (std::vector<std::string>::iterator it = mOperatorNicknames.begin(); it != mOperatorNicknames.end(); ++it)
+	{
+		if (*it == nickname)
+		{
+			mOperatorNicknames.erase(it);
+		}
+	}
 }

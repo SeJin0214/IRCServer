@@ -48,7 +48,6 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 		msg.addMessage(clientSocket, clientMsg.str());
         return (msg);
 	}
-
 	if (bMode.size() != 2)
 	{
 		for (size_t i = 0; i < bMode.size(); ++i)
@@ -66,7 +65,7 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 	Channel *channel = server.findChannelOrNull(channelName);
 	std::vector<int> userSockets = channel->getFdSet();
 	
-	if (sign != '-' || sign != '+' || bMode[1] != 'i' || bMode[1] != 'k' || bMode[1] != 'l' || bMode[1] != 'o' || bMode[1] != 't')
+	if (sign != '-' && sign != '+' && bMode[1] != 'i' && bMode[1] != 'k' && bMode[1] != 'l' && bMode[1] != 'o' && bMode[1] != 't')
 	{
 		for (size_t i = 0; i < bMode.size(); ++i)
 		{
@@ -97,10 +96,6 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 			errorMsg << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to set channel mode i (inviteonly).";
 			msg.addMessage(clientSocket, errorMsg.str());
 			return (msg);
-		}
-		if ((sign == '+' && !channel->isModeActive(MODE_INVITE_ONLY)) || (sign == '-' && channel->isModeActive(MODE_INVITE_ONLY)))
-		{
-			successMsg << server.getServerName() << " MODE #" << channelName << channel->getActiveMode() << bMode;
 		}
 	}
 	else if (bMode[1] == 'k')
@@ -180,8 +175,8 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 			return (msg);
 		}
 	}
-	successMsg << server.getServerName() << " MODE #" << channelName << channel->getActiveMode() << bMode;
-
+	successMsg << server.getServerName() << " MODE #" << channelName << " " << bMode;
+	msg.addMessage(clientSocket, successMsg.str());
 	for (size_t i = 0; i < userSockets.size(); ++i)
 	{
 		if (userSockets[i] != clientSocket)
@@ -195,6 +190,76 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 void ModeCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
+	//:irc.local MODE #a +i
+	std::stringstream ss(buffer);
+	std::string temp;
+	std::string channelName;
+	std::string mode;
+	ss >> temp >> channelName >> mode;
+	channelName.erase(0, 1);
+	Channel *channel = server.findChannelOrNull(channelName);
+	if (mode[0] == '+')
+	{
+		if (mode[1] == 'i')
+		{
+			channel->onMode(clientSocket, MODE_INVITE_ONLY);
+		}
+		else if (mode[1] == 'k')
+		{
+			std::string password;
+			ss >> password;
+			channel->onMode(clientSocket, MODE_KEY_LIMIT);
+			channel->setPassword(password);
+		}
+		else if (mode[1] == 'l')
+		{
+			size_t memberCounnt;
+			ss >> memberCounnt;
+			channel->onMode(clientSocket, MODE_LIMIT_USER);
+			channel->setMemberCount(memberCounnt);
+		}
+		else if (mode[1] == 'o')
+		{
+			std::string nickname;
+			ss >> nickname;
+			channel->isAddUserAsAdmin(nickname);
+		}
+		else if (mode[1] == 't')
+		{
+			std::string topic;
+			ss >> topic;
+			channel->onMode(clientSocket, MODE_TOPIC_LOCK);
+			channel->setTopic(clientSocket, topic);
+		}
+	}
+	else if (mode[0] == '-')
+	{
+		if (mode[1] == 'i')
+		{
+			channel->offMode(clientSocket, MODE_INVITE_ONLY);
+		}
+		else if (mode[1] == 'k')
+		{
+			std::string password;
+			ss >> password;
+			if (channel->isPassword(password))
+			{
+				channel->offMode(clientSocket, MODE_KEY_LIMIT);
+			}
+		}
+		else if (mode[1] == 'l')
+		{
+			channel->offMode(clientSocket, MODE_LIMIT_USER);
+		}
+		else if (mode[1] == 'o')
+		{
+			std::string nickname;
+			ss >> nickname;
+			channel->removeOperatorNicknames(nickname);
+		}
+		else if (mode[1] == 't')
+		{
+			channel->offMode(clientSocket, MODE_TOPIC_LOCK);
+		}
+	}
 }

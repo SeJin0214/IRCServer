@@ -37,6 +37,32 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 	std::stringstream userlist;
 	if (channel != NULL)
 	{
+		std::stringstream errorMsg;//비초인
+		std::string pass;
+		// join 하기 전에 mode 확인 // i 면 list에 있는지 확인하고 메시지 출력
+		//:irc.local 475 donkim3 #a :Cannot join channel (incorrect channel key)
+		ss >> pass;
+		if (channel->isModeActive(MODE_KEY_LIMIT) == true && channel->isPassword(pass) == false)
+		{
+			errorMsg << server.getServerName() << " 475 " << nickname << " #" << channelName << " :Cannot join channel (incorrect channel key)";
+			msg.addMessage(clientSocket, errorMsg.str());
+			return msg;
+		}
+		if (channel->isModeActive(MODE_INVITE_ONLY) == true && channel->isInvited(nickname) == false)
+		{//:irc.local 473 donkim3_ #a :Cannot join channel (invite only)
+			errorMsg << server.getServerName() << " 473 " << nickname << " #" << channelName << " :Cannot join channel (invite only)";
+			msg.addMessage(clientSocket, errorMsg.str());
+			return msg;
+		}
+		if (channel->isModeActive(MODE_LIMIT_USER) == true)
+		{
+			if (channel->getUserCount() != channel->getMemberCount())
+			{
+				errorMsg << server.getServerName() << " 471 " << nickname << " #" << channelName << " :Cannot join channel (channel is full)";
+				msg.addMessage(clientSocket, errorMsg.str());
+				return msg;
+			}
+		}
 		std::vector<std::string> nicknames = channel->getNicknames();
 		std::vector<int> userSockets = channel->getFdSet();
 		for (size_t i = 0; i < nicknames.size(); ++i)
@@ -61,13 +87,14 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 	}
 	else
 	{
+		nickname = "@" + nickname;
 		userlist << nickname;
 	}
 
 	std::stringstream ret;
 	ret << CommonCommand::getPrefixMessage(user, clientSocket) << " " << join << " #" << channelName << "\r\n" 
-	<< ":irc.local 353 " << nickname << " = #" << channelName << " :" << userlist.str() << "\r\n" 
-	<< ":irc.local 366 " << nickname << " #" << channelName << " :End of /NAMES list.\r\n";
+	<< server.getServerName() << " 353 " << nickname << " = #" << channelName << " :" << userlist.str() << "\r\n" 
+	<< server.getServerName() << " 366 " << nickname << " #" << channelName << " :End of /NAMES list.";
 	
 	msg.addMessage(clientSocket, ret.str());
 
@@ -81,7 +108,7 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 	std::string buf(buffer);
 	std::string channelName;
 	channelName = buf.erase(0,6); // channel
-
+	//권한 비번 인원수 체크
 	server.enterUserInChannel(clientSocket, channelName);
 
 }
