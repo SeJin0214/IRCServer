@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:40:36 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 18:15:24 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:03:14 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 
 	std::cout <<"###\n";
 	std::cout << "in buf : " << buffer << "|" << std::endl;
-
-
 
 	assert(buffer != NULL);
 	MessageBetch msg;
@@ -104,6 +102,14 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
  //TOPIC #a :helloworld
  // 서버에서 보내주는건 없음
 }
+
+// /topic #aaa -> 토픽 확인
+// /topic #aaa 
+
+// 채널 topic 에 입장해서 /topic   -> topic
+// irssi(채널) -> /topic
+// TOPIC #채널
+// 
 
 void TopicCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
