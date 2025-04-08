@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 16:06:33 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:11:05 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include "ModeCommand.hpp"
 #include "PartCommand.hpp"
 #include "TopicCommand.hpp"
+#include "WhoCommand.hpp"
 #include "Channel.hpp"
 #include "Util.hpp"
 #include "Result.hpp"
@@ -120,6 +121,10 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	else if (std::strncmp("KICK", command.c_str(), std::strlen("KICK")) == 0)
 	{
 		return new TopicCommand();
+	}
+	else if (std::strncmp("WHO", command.c_str(), std::strlen("WHO")) == 0)
+	{
+		return new WhoCommand();
 	}
 	return new ErrorCommand();
 }
