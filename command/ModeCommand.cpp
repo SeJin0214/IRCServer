@@ -53,10 +53,11 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 		for (size_t i = 0; i < bMode.size(); ++i)
 		{
 			clientMsg << ":irc.local 472 " << nickname << " " << bMode[i] << " :is not a recognised channel mode.";
-			if (bMode.size() - 1 < i)
+			if (bMode.size() - 1 > i)
 			{
 				clientMsg << "\r\n";
 			}
+			msg.addMessage(clientSocket, clientMsg.str());
 		}
 		return (msg);
 	}
@@ -84,7 +85,7 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 
 	if (channel->isOperator(clientSocket) == false)
 	{
-		errorMsg << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to set channel mode i (inviteonly).";
+		errorMsg << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to mode a more privileged user.";
 		msg.addMessage(clientSocket, errorMsg.str());
 		return (msg);
 	}
@@ -198,6 +199,10 @@ void ModeCommand::execute(Server& server, const int clientSocket, const char* bu
 	ss >> temp >> channelName >> mode;
 	channelName.erase(0, 1);
 	Channel *channel = server.findChannelOrNull(channelName);
+	if (mode.size() != 2)
+	{
+		return ;
+	}
 	if (mode[0] == '+')
 	{
 		if (mode[1] == 'i')

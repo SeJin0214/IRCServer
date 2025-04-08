@@ -32,6 +32,16 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 	std::string msg;
 	getline(ss, msg);
 	channelName.erase(0, 1);
+	std::stringstream ret;
+	User clientUser = server.findUser(clientSocket).getValue();
+	std::vector<std::string> userChannels = clientUser.getJoinedChannels();
+	if (userChannels.size() == 0)
+	{
+		ret << server.getServerName() << " 404 " << clientUser.getNickname() << " #" << channelName << " :You cannot send external messages to this channel whilst the +n (noextmsg) mode is set.";
+		retMsg.addMessage(clientSocket, ret.str());
+		return (retMsg);
+	}
+	// :irc.local 404 donkim3 #a :You cannot send external messages to this channel whilst the +n (noextmsg) mode is set.
 	Channel  *channel = server.findChannelOrNull(channelName);
 	std::vector<int> userSockets = channel->getFdSet();
 	for (size_t i = 0; i < userSockets.size(); ++i)

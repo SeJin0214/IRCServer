@@ -340,8 +340,8 @@ bool Server::enterUserInChannel(const int clientSocket, const std::string& title
 		assert(channel != NULL);
 	}
 	User* user = findUserInAllSpace(clientSocket);
-	/////////// invitedlist 유저 뺴기 <donjeong>
 	exitUserInLobbyOrNull(clientSocket);
+	channel->removeInvitedLists(user->getNickname());
 	return channel->enterUser(clientSocket, user);
 }
 
@@ -474,6 +474,7 @@ void Server::handleClientMessage(const int clientSocket)
 void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer)
 {
 	const Space* space = findSpace(clientSocket);
+	std::cout << "클라 ->서버: " << buffer << std::endl;
 
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
 	if (outgoingMessageProvider != NULL)

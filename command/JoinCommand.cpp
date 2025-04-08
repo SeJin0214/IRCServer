@@ -105,10 +105,37 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 {
 	assert(buffer != NULL);
 	// JOIN #channel
-	std::string buf(buffer);
+	std::stringstream buf(buffer);
 	std::string channelName;
-	channelName = buf.erase(0,6); // channel
-	//권한 비번 인원수 체크
+	std::string password;
+	std::string temp;
+	buf >> temp >> channelName >> password;
+	channelName.erase(0, 1);
+	Channel *channel = server.findChannelOrNull(channelName);
+	//권한 비번 인원수 체크 
+	//키가 있을 때 비밀번호가 틀리면
+	if (channel && channel->isModeActive(MODE_KEY_LIMIT) == true)
+	{
+		if (channel->isPassword(password) == false)
+		{
+			return ;
+		}
+	}
+	if (channel && channel->isModeActive(MODE_LIMIT_USER) == true)
+	{
+		if (channel->getMemberCount() <= channel->getUserCount())
+		{
+			return ;
+		}
+	}
+	if (channel && channel->isModeActive(MODE_INVITE_ONLY) == true)
+	{
+		std::string nickname(server.findUser(clientSocket).getValue().getNickname());
+		if (channel->isInvited(nickname) == false)
+		{
+			return ;
+		}
+	}
 	server.enterUserInChannel(clientSocket, channelName);
 
 }

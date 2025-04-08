@@ -357,3 +357,14 @@ void Channel::removeOperatorNicknames(const std::string& nickname)
 		}
 	}
 }
+
+void Channel::removeInvitedLists(const std::string& nickname)
+{
+	for (std::vector<std::string>::iterator it = mInvitedList.begin(); it != mInvitedList.end(); ++it)
+	{
+		if (*it == nickname)
+		{
+			mInvitedList.erase(it);
+		}
+	}
+}

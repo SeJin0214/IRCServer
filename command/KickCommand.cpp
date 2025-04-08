@@ -96,17 +96,26 @@ void KickCommand::execute(Server& server, const int clientSocket, const char* bu
 	// std::cout << channel->getUsernames()[0] << std::endl;
 	// std::cout << channel->getUsernames()[1] << std::endl;
 	std::pair<int, User *> kickedUserPack = channel->findUser(kickedName).getValue();	
+	if (kickedUserPack.second == NULL)
+		return ;
+	else if (channel->isOperator(kickedUserPack.first) == false)
+		return ;
+	else if (channel->findUser(kickedName).hasSucceeded() == false)
+		return ;
 	int channelIndexInKickedUser = kickedUserPack.second->getIndexOfJoinedChannel(channelName).getValue();
 	// User가 가지고있는 채널들에 추방 당한 channelName 인덱스 확인
 	// a
 	// c ->  2반환
 	for (int i = 0; i <= channelIndexInKickedUser; ++i)
 	{
+		std::cout << "4\n";
 		std::string exitChannelName = kickedUserPack.second->getJoinedChannelName(i);
 		Channel* exitChannel = server.findChannelOrNull(exitChannelName);
+		std::cout << "5\n";
 		exitChannel->exitUserOrNull(kickedUserPack.first);
 		kickedUserPack.second->removeJoinedChannel(exitChannelName);
 	}
+	std::cout << "6\n";
 	if (kickedUserPack.second->getJoinedChannelCount() == 0)
 		server.enterUserInLobby(kickedUserPack.first, kickedUserPack.second);
 
