@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 18:44:17 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/07 20:06:23 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 20:44:52 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,14 @@ void PassCommand::execute(Server& server, const int clientSocket, const char* bu
 {
 	assert(buffer != NULL);
 	assert(std::strncmp(buffer, "PASS ", std::strlen("PASS ")) == 0);
-	
-	size_t startIndex = std::strlen("PASS ");
-	char temp[MAX_BUFFER] = { 0, };
-	strcpy(temp, buffer + startIndex);
 
-	assert(std::strncmp(temp, buffer + startIndex, std::strlen(temp)) == 0);
-	if (Util::generateHash65599(temp) == server.getPassword())
+	const char* password = buffer + std::strlen("PASS ");
+	if (password == NULL)
+	{
+		return;
+	}
+
+	if (Util::generateHash65599(password) == server.getPassword())
 	{
 		server.trySetAuthenticatedInLoggedSpace(clientSocket);
 	}

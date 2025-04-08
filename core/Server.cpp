@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 16:14:52 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 20:18:37 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -583,7 +583,7 @@ bool Server::isInvalidPasswordFormatted(const char* password) const
     }
     for (int i = 0; i < length; ++i)
     {
-        if (!(std::isalnum(password[i]) || std::isupper(password[i])))
+        if (std::isalnum(password[i]) == false)
         {
             return true;
         }
@@ -591,16 +591,16 @@ bool Server::isInvalidPasswordFormatted(const char* password) const
     return false;
 }
 
-bool Server::isInvalidNameFormatted(const char* password) const
+bool Server::isInvalidNameFormatted(const char* name) const
 {
-    const int length = std::strlen(password);
-    if (length < 8  || length > 16)
+    const int length = std::strlen(name);
+    if (length > 30)
     {
         return true;
     }
     for (int i = 0; i < length; ++i)
     {
-        if (!(std::isalnum(password[i]) || std::isupper(password[i])))
+        if (std::isalnum(name[i]) == false)
         {
             return true;
         }

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 17:36:00 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 16:39:23 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/08 20:44:58 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,17 @@ MessageBetch NickCommand::getMessageBetch(const Server& server, const int client
 	assert(buffer != NULL);
 	assert(std::strncmp(buffer, "NICK ", std::strlen("NICK ")) == 0);
 	
-	size_t startIndex = std::strlen("NICK ");
-	char nickname[MAX_BUFFER] = { 0, };
-	strcpy(nickname, buffer + startIndex);
-
 	std::stringstream message;
 	MessageBetch messageBetch;
 	
+	const char* nickname = buffer + std::strlen("NICK ");
 	size_t nicknameLength = std::strlen(nickname);
 	if (nicknameLength == 0)
 	{
 		message << ":" << server.getServerName() << " 431 * " << nickname << " :No nickname given";
 		messageBetch.addMessage(clientSocket, message.str());
 	}
-	else if (nicknameLength > 30)
+	else if (server.isInvalidNameFormatted(nickname))
 	{
 		message << ":" << server.getServerName() << " 432 * " << nickname << " :Erroneous nickname";
 		messageBetch.addMessage(clientSocket, message.str());
@@ -50,15 +47,13 @@ void NickCommand::execute(Server& server, const int clientSocket, const char* bu
 {
 	assert(buffer != NULL);
 	assert(std::strncmp(buffer, "NICK ", std::strlen("NICK ")) == 0);
+
+	const char* nickname = buffer + std::strlen("NICK ");
 	
-	size_t startIndex = std::strlen("NICK ");
-	char nickname[MAX_BUFFER] = { 0, };
-	strcpy(nickname, buffer + startIndex);
-
-	assert(std::strncmp(nickname, buffer + startIndex, std::strlen(nickname)) == 0);
-
-	if (server.isDuplicatedNickname(nickname) == false)
+	size_t nicknameLength = std::strlen(nickname);
+	if (nicknameLength == 0 || server.isInvalidNameFormatted(nickname) || server.isDuplicatedNickname(nickname))
 	{
-		server.trySetNicknameInLoggedSpace(clientSocket, nickname);
+		return;	
 	}
+	server.trySetNicknameInLoggedSpace(clientSocket, nickname);
 }
