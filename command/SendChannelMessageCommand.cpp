@@ -31,6 +31,12 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 	ss >> temp >> channelName;
 	std::string msg;
 	getline(ss, msg);
+	if (channelName[0] != '#')
+	{
+		std::string errMsg = "Invalid format.";
+		retMsg.addMessage(clientSocket, errMsg);
+		return retMsg;
+	}
 	channelName.erase(0, 1);
 
 	std::stringstream ret;
@@ -43,9 +49,14 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 		return (retMsg);
 	}
 
-	
 	// :irc.local 404 donkim3 #a :You cannot send external messages to this channel whilst the +n (noextmsg) mode is set.
 	Channel  *channel = server.findChannelOrNull(channelName);
+	if (channel == NULL)
+	{
+		std::string errMsg = "Invalid format.";
+		retMsg.addMessage(clientSocket, errMsg);
+		return retMsg;
+	}
 	std::vector<int> userSockets = channel->getFdSet();
 	for (size_t i = 0; i < userSockets.size(); ++i)
 	{
@@ -54,7 +65,6 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 			continue;
 		}
 		User user = server.findUser(clientSocket).getValue();
-		// std::cout << "in : " << server.findUser(userSockets[i]).getValue().getNickname() << std::endl;
 		std::string who = CommonCommand::getPrefixMessage(user, clientSocket);
 		retMsg.addMessage(userSockets[i], who + " PRIVMSG #" + channelName + " " + msg + "\r\n");
 	}

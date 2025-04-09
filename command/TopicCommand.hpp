@@ -13,7 +13,7 @@
 #pragma once
 #include "IOutgoingMessageProvider.hpp"
 
-class TopicCommand : public IOutgoingMessageProvider
+class TopicCommand : public IOutgoingMessageProvider, public IExecutable
 {
 public:
     MessageBetch getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const;

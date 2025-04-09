@@ -87,7 +87,6 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	{
 		return provider;
 	}
-
 	std::stringstream ss(buffer);
 	std::string command;
 	std::getline(ss, command, ' ');
@@ -120,7 +119,7 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	}
 	else if (std::strncmp("KICK", command.c_str(), std::strlen("KICK")) == 0)
 	{
-		return new TopicCommand();
+		return new KickCommand();
 	}
 	else if (std::strncmp("WHO", command.c_str(), std::strlen("WHO")) == 0)
 	{

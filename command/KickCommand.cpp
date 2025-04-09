@@ -28,11 +28,24 @@ MessageBetch KickCommand::getMessageBetch(const Server& server, const int client
 	std::string kickMsg;
 	std::stringstream ss(buffer);
 	std::stringstream ret;
-	ss >> temp >> channelName >> kickedName;
+	ss >> temp >> channelName;
+	if (channelName[0] != '#')
+	{
+		std::string errMsg = "Invalid format.";
+		msg.addMessage(clientSocket, errMsg);
+		return msg;
+	}
+	if (!(ss >> kickedName))
+	{
+		std::string errMsg = "Invalid format.";
+		msg.addMessage(clientSocket, errMsg);
+		return msg;
+	}
 	channelName.erase(0, 1);
 	getline(ss, kickMsg);
 	Channel* channel = server.findChannelOrNull(channelName);
 	assert(channel != NULL);
+	std::cout << "name :" << kickedName << std::endl;
 	if (server.findUser(kickedName).hasSucceeded() == false)
 	{
 		//존재하지 않는 유저
@@ -90,6 +103,10 @@ void KickCommand::execute(Server& server, const int clientSocket, const char* bu
 	channelName.erase(0, 1);
 
 	Channel* channel = server.findChannelOrNull(channelName);
+	if (channel == NULL)
+	{
+		return ;
+	}
 	Result<std::pair<int, User*> > result = channel->findUser(kickedName);
 	std::pair<int, User *> kickedUserPack = result.getValue();	
 	if (result.hasSucceeded() == false 

@@ -30,6 +30,12 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 	std::string join;
 	std::string channelName;
 	ss >> join >> channelName;
+	if (channelName[0] != '#')
+	{
+		std::string errMsg = "Invalid format.";
+		msg.addMessage(clientSocket, errMsg);
+		return msg;
+	}
 	channelName.erase(0,1);
 	std::string nickname = user.getNickname();
 
@@ -137,5 +143,4 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 		}
 	}
 	server.enterUserInChannel(clientSocket, channelName);
-
 }

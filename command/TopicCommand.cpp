@@ -16,10 +16,6 @@
 
 MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
-
-	std::cout <<"###\n";
-	std::cout << "in buf : " << buffer << "|" << std::endl;
-
 	assert(buffer != NULL);
 	MessageBetch msg;
 	std::string temp;
@@ -29,6 +25,12 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 	std::stringstream ss(buffer);
 	std::stringstream ret;
 	ss >> temp >> channelName >> topic;
+	if (channelName[0] != '#')
+	{
+		std::string errMsg = "Invalid format.";
+		msg.addMessage(clientSocket, errMsg);
+		return msg;
+	}
 	channelName.erase(0, 1);
 	Channel* channel = server.findChannelOrNull(channelName);
 	std::string clientNickname = server.findUser (clientSocket).getValue().getNickname();
@@ -90,13 +92,23 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 			// TOPIC #a
 			// :irc.local 332 sejjeong #a :hello
 			// :irc.local 333 sejjeong #a donkim3!root@127.0.0.1 :1744009620
-		ret << server.getServerName() << " 222 " << clientNickname << " #" << channelName << " :" << topic << "\r\n" \
-		<< server.getServerName() << " 222 " << clientNickname << " #" << channelName << " " << CommonCommand::getPrefixMessage(server.findUser(clientSocket).getValue(), clientSocket) << " :1744009620";
-			msg.addMessage(clientSocket, ret.str());
+		if (channel->getTopic().empty())
+		{
+			ret << server.getServerName() << " 331 " << clientNickname << " #" << channelName << " :No topic is set.";
+		}
+		else
+		{
+			ret << server.getServerName() << " 332 " << clientNickname << " #" << channelName << " :" << channel->getTopic() << "\r\n" \
+			<< server.getServerName() << " 333 " << clientNickname << " #" << channelName << " " << CommonCommand::getPrefixMessage(server.findUser(clientSocket).getValue(), clientSocket) << " :1744009620";
+		}
+		msg.addMessage(clientSocket, ret.str());
 	}
 	return (msg);
 
-	//channel 존재만 성공
+// lobby -> topic #a << 있는 채널   ---> topic에 안들어옴 -> 
+
+
+//channel 존재만 성공
 
  // 바뀐게 없을 떄
  //TOPIC #a :helloworld
@@ -106,7 +118,7 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 // /topic #aaa -> 토픽 확인
 // /topic #aaa 
 
-// 채널 topic 에 입장해서 /topic   -> topic
+// 채널 topic 에 입장해서 /topic   -> topic -->> 패킷없음
 // irssi(채널) -> /topic
 // TOPIC #채널
 // 
@@ -114,6 +126,27 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 void TopicCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
-	(void) server;
-	(void) clientSocket;
+	std::string temp;
+	std::string channelName;
+	std::string topic;
+	std::stringstream ss(buffer);
+
+	ss >> temp >> channelName >> topic;
+	if (channelName[0] != '#')
+	{
+		return ;
+	}
+	channelName.erase(0, 1);
+	Channel* channel = server.findChannelOrNull(channelName);
+	if (channel == NULL)
+	{
+		return ;
+	}
+	User user = server.findUser(clientSocket).getValue();
+	if (user.getLastJoinedChannel().getValue() != channelName
+		|| (channel->isModeActive(MODE_TOPIC_LOCK) == true && channel->isOperator(clientSocket) == false))
+	{
+		return ;
+	}
+	channel->setTopic(clientSocket, topic);
 }
