@@ -6,10 +6,11 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 17:36:20 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 11:27:15 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/10 12:05:26 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <iostream>
 #include <cassert>
 #include <cstring>
 #include <cstddef>
@@ -36,7 +37,8 @@ void UserCommand::execute(Server& server, const int clientSocket, const char* bu
 	{
 		return;
 	}
-	size_t realnameStartIndex = std::strlen(username) + 1 
+	
+	size_t realnameStartIndex = std::strlen(command) + 1 + std::strlen(username) + 1 
 	+ std::strlen(hostname) + 1 + std::strlen(servername) + 1;
 	bool isNotExistedRealName = bufferLength <= realnameStartIndex;
 	if (isNotExistedRealName)
@@ -48,5 +50,6 @@ void UserCommand::execute(Server& server, const int clientSocket, const char* bu
 	{
 		return;
 	}
+	
 	server.trySetUsernameInLoggedSpace(clientSocket, username);
 }

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 20:33:34 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/10 11:55:16 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	}
 	else if (command == "KICK")
 	{
-		return new TopicCommand();
+		return new KickCommand();
 	}
 	else if (command == "WHO")
 	{
