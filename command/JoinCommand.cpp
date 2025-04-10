@@ -48,11 +48,17 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 		// join 하기 전에 mode 확인 // i 면 list에 있는지 확인하고 메시지 출력
 		//:irc.local 475 donkim3 #a :Cannot join channel (incorrect channel key)
 		ss >> pass;
-		if (channel->isModeActive(MODE_KEY_LIMIT) == true && channel->isPassword(pass) == false)
+		if (channel->isModeActive(MODE_KEY_LIMIT) == true)
 		{
-			errorMsg << server.getServerName() << " 475 " << nickname << " #" << channelName << " :Cannot join channel (incorrect channel key)";
-			msg.addMessage(clientSocket, errorMsg.str());
-			return msg;
+			if (channel->isPassword(pass) == false)
+			{
+				if (channel->isInvited(nickname) == false)
+				{
+					errorMsg << server.getServerName() << " 475 " << nickname << " #" << channelName << " :Cannot join channel (incorrect channel key)";
+					msg.addMessage(clientSocket, errorMsg.str());
+					return msg;
+				}
+			}
 		}
 		if (channel->isModeActive(MODE_INVITE_ONLY) == true && channel->isInvited(nickname) == false)
 		{//:irc.local 473 donkim3_ #a :Cannot join channel (invite only)
@@ -118,13 +124,16 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 	buf >> temp >> channelName >> password;
 	channelName.erase(0, 1);
 	Channel *channel = server.findChannelOrNull(channelName);
-	//권한 비번 인원수 체크 
-	//키가 있을 때 비밀번호가 틀리면
+	std::string nickname(server.findUser(clientSocket).getValue().getNickname());
+
 	if (channel && channel->isModeActive(MODE_KEY_LIMIT) == true)
 	{
 		if (channel->isPassword(password) == false)
 		{
-			return ;
+			if (channel->isInvited(nickname) == false)
+			{
+				return ;
+			}
 		}
 	}
 	if (channel && channel->isModeActive(MODE_LIMIT_USER) == true)
@@ -136,7 +145,6 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 	}
 	if (channel && channel->isModeActive(MODE_INVITE_ONLY) == true)
 	{
-		std::string nickname(server.findUser(clientSocket).getValue().getNickname());
 		if (channel->isInvited(nickname) == false)
 		{
 			return ;

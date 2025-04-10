@@ -365,6 +365,7 @@ void Channel::removeInvitedLists(const std::string& nickname)
 		if (*it == nickname)
 		{
 			mInvitedList.erase(it);
+			return ;
 		}
 	}
 }

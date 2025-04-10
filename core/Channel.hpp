@@ -48,10 +48,10 @@ public:
 	bool isOperator(const int userSocket) const;
 	void setMemberCount(unsigned int num);
 	size_t getMemberCount() const;
+	std::vector<std::string> mInvitedList;
  
 private:
 	std::vector<std::string> mOperatorNicknames;
-	std::vector<std::string> mInvitedList;
 	unsigned int mMemberCount;
 	unsigned char mModeFlag;
 	std::string mTitle;
