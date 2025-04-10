@@ -344,7 +344,7 @@ bool Server::enterUserInChannel(const int clientSocket, const std::string& title
 
 
 	exitUserInLobbyOrNull(clientSocket);
-	channel->removeInvitedLists(user->getNickname());
+	channel->removeInvitedLists(user->getNickname());//////
 	return channel->enterUser(clientSocket, user);
 }
 
