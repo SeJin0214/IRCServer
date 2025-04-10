@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 20:33:34 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/10 11:34:49 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,23 +140,23 @@ IExecutable* Channel::getExecutor(const char* buffer) const
 	}
 
 	std::string command = getCommandSection(buffer);
-	if (std::strncmp("MODE", command.c_str(), std::strlen("MODE")) == 0)
+	if (command == "MODE")
 	{
 		return new ModeCommand();
 	}
-	else if (std::strncmp("PART", command.c_str(), std::strlen("PART")) == 0)
+	else if (command == "PART")
 	{
 		return new PartCommand();
 	}
-	else if (std::strncmp("KICK", command.c_str(), std::strlen("KICK")) == 0)
+	else if (command == "KICK")
 	{
 		return new KickCommand();
 	}
-	else if (std::strncmp("INVITE", command.c_str(), std::strlen("INVITE")) == 0)
+	else if (command == "INVITE")
 	{
 		return new InviteCommand();
 	}
-	else if (std::strncmp("TOPIC", command.c_str(), std::strlen("TOPIC")) == 0)
+	else if (command == "TOPIC")
 	{
 		return new TopicCommand();
 	}

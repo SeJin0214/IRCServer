@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:47 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 20:15:42 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/10 11:35:13 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ private:
 	const int mPort;
 	const unsigned int mPassword;
 	
-	// 채널 토픽 세터 만들기
 	fd_set getFdSet() const;
 	int getMaxFd() const;
 	std::vector<const Space*> getSpaces() const;
