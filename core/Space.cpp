@@ -17,6 +17,7 @@
 #include "IOutgoingMessageProvider.hpp"
 #include "JoinCommand.hpp"
 #include "QuitCommand.hpp"
+#include "TopicCommand.hpp"
 #include "SendChannelMessageCommand.hpp"
 #include "Space.hpp"
 #include "Util.hpp"
@@ -55,6 +56,11 @@ IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer) 
 	{
 		return new JoinCommand();
 	}
+	else if (std::strncmp("TOPIC", command.c_str(), command.size()) == 0)
+	{
+		return new TopicCommand();
+	}
+	
 	return NULL;
 }
 

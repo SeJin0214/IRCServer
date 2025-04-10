@@ -88,7 +88,6 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	{
 		return provider;
 	}
-
 	std::stringstream ss(buffer);
 	std::string command;
 	std::getline(ss, command, ' ');
@@ -121,7 +120,7 @@ IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer
 	}
 	else if (command == "KICK")
 	{
-		return new TopicCommand();
+		return new KickCommand();
 	}
 	else if (command == "WHO")
 	{

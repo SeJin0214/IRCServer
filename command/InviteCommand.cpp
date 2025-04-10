@@ -19,30 +19,38 @@ MessageBetch InviteCommand::getMessageBetch(const Server& server, const int clie
 {
 	assert(buffer != NULL);
 
-	// INVITE donjeong #channel\r\n
+	// INVITE donkim3 #channel
+	// INVITE donkim3 donjeong
+
 	std::string guestNick, guestNick2, channelName;
 	MessageBetch msg;
 	CommonCommand commonCommand;
-
-	// buf.erase(0, 7);
-	// buf.erase(buf.size() - 2); // donjeong #channel
 	std::stringstream ss(buffer);
 	std::string temp;
+
 	ss >> temp >> guestNick >> channelName;
-	User user = server.findUser(clientSocket).getValue();
-	Result<std::pair<int, User *> > guestInChannelPack = server.findChannelOrNull(user.getLastJoinedChannel().getValue())->findUser(guestNick);
+
 	const User hostUser = server.findUser(clientSocket).getValue();
-	if (!ss.eof()) // 2개 이상
+	if (channelName[0] != '#')
 	{
-	// INVITE donjeong sejjeong --> donkim3 -> server
-		// :irc.local 403 donkim3 sejjeong :No such channel
-		// server -> donkim3
 		guestNick2 = channelName;
 		ss >> channelName;
 		msg.addMessage(clientSocket, ":irc.local 403 " + hostUser.getNickname() + " " + guestNick2 + " :No such channel\r\n");
 		return msg;
 	}
-	else if (server.findChannelOrNull(user.getLastJoinedChannel().getValue())->isOperator(clientSocket) == false)
+
+	User user = server.findUser(clientSocket).getValue();
+	Channel *channel = server.findChannelOrNull(user.getLastJoinedChannel().getValue());
+	
+	if (channel == NULL)
+	{
+		std::string errMsg = "Invalid format.";
+		msg.addMessage(clientSocket, errMsg);
+		return msg;
+	}
+
+	Result<std::pair<int, User *> > guestInChannelPack = channel->findUser(guestNick);
+	if (server.findChannelOrNull(user.getLastJoinedChannel().getValue())->isOperator(clientSocket) == false)
 	{
 		// 권한 없음
 	// INVITE sejjeong #channel
@@ -92,9 +100,17 @@ void InviteCommand::execute(Server& server, const int clientSocket, const char* 
 //  :donkim3!root@127.0.0.1 INVITE sejjeong :#channel
 	std::stringstream ss(buffer);
 	ss >> temp >> guest >> channelName;
+	if (channelName[0] != '#')
+	{
+		return ;
+	}
 	User invitedUser = server.findUser(guest).getValue().second; // 초대받은 유저
 	std::string currentChannelName = server.findUser(clientSocket).getValue().getLastJoinedChannel().getValue();   //그 유저(소켓)의 마지막 채널
 	Channel *channel = server.findChannelOrNull(currentChannelName);
+	if (channel == NULL)
+	{
+		return ;
+	}
 	std::string nick(invitedUser.getNickname());
 	channel->enterInvitedList(nick);
 }

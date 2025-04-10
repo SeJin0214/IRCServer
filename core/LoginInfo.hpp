@@ -30,7 +30,7 @@ public:
 	void setNickname(const std::string& nickname);
     void setUsername(const std::string& username);
 private:
-	enum { MAX_TIME = 10 };
+	enum { MAX_TIME = 100 };
 	std::string mUsername;
     std::string mNickname;
     bool mbAuthenticated;

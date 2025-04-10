@@ -29,11 +29,24 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 	std::stringstream ss (buffer);
 	std::string temp, channelName;
 	ss >> temp >> channelName;
+	if (channelName[0] != '#')
+	{
+		std::string errMsg = "Invalid format.";
+		msg.addMessage(clientSocket, errMsg);
+		return msg;
+	}
 	channelName.erase(0, 1);
+	Channel *channel = server.findChannelOrNull(channelName);
+	if (channel == NULL)
+	{
+		std::string errMsg = "Invalid format.";
+		msg.addMessage(clientSocket, errMsg);
+		return msg;
+	}
 	if (ss.eof())
 	{
 		std::stringstream ret;
-		ret << ":irc.local 324 " << nickname << " #" << channelName << " :" << server.findChannelOrNull(channelName)->getActiveMode() << "\r\n";
+		ret << ":irc.local 324 " << nickname << " #" << channelName << " :" << channel->getActiveMode() << "\r\n";
 		ret << ":irc.local 329 " << nickname << " #" << channelName << " :1743734234";//시간체크
 		msg.addMessage(clientSocket, ret.str());
 		return (msg);
@@ -57,13 +70,12 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 			{
 				clientMsg << "\r\n";
 			}
-			msg.addMessage(clientSocket, clientMsg.str());
 		}
+		msg.addMessage(clientSocket, clientMsg.str());
 		return (msg);
 	}
 
 	char sign = bMode[0];
-	Channel *channel = server.findChannelOrNull(channelName);
 	std::vector<int> userSockets = channel->getFdSet();
 	
 	if (sign != '-' && sign != '+' && bMode[1] != 'i' && bMode[1] != 'k' && bMode[1] != 'l' && bMode[1] != 'o' && bMode[1] != 't')
@@ -199,10 +211,21 @@ void ModeCommand::execute(Server& server, const int clientSocket, const char* bu
 	ss >> temp >> channelName >> mode;
 	channelName.erase(0, 1);
 	Channel *channel = server.findChannelOrNull(channelName);
-	if (mode.size() != 2)
+	User user = server.findUser(clientSocket).getValue();
+
+	if (mode.size() != 2 || channel == NULL)
 	{
 		return ;
 	}
+	else if (user.getLastJoinedChannel().getValue() != channelName)
+	{
+		return ;
+	}
+	else if (channel->isOperator(clientSocket) == false)
+	{
+		return ;
+	}
+
 	if (mode[0] == '+')
 	{
 		if (mode[1] == 'i')

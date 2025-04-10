@@ -25,7 +25,7 @@ MessageBetch ErrorCommand::getMessageBetch(const Server& server, const int clien
 	User user = server.findUser(clientSocket).getValue();
 	assert(server.findUser(clientSocket).hasSucceeded());
 	
-	message << ":" << server.getServerName() << " 421 " << user.getNickname() << " " << command 
+	message << server.getServerName() << " 421 " << user.getNickname() << " " << command 
 	<< " :Unknown command";
 	
 	MessageBetch messageBetch;
