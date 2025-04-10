@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 11:35:30 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/10 13:41:07 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,6 +340,9 @@ bool Server::enterUserInChannel(const int clientSocket, const std::string& title
 		assert(channel != NULL);
 	}
 	User* user = findUserInAllSpace(clientSocket);
+	
+
+
 	exitUserInLobbyOrNull(clientSocket);
 	channel->removeInvitedLists(user->getNickname());
 	return channel->enterUser(clientSocket, user);
@@ -353,6 +356,10 @@ User* Server::exitUserInChannel(const int clientSocket, const std::string& title
 		return NULL;
 	}
 	User* user = channel->exitUserOrNull(clientSocket);
+	if (user == NULL)
+	{
+		return NULL;
+	}
 	if (channel->getUserCount() == 0)
 	{
 		std::vector<Channel *>::iterator it = mChannels.begin();
@@ -564,14 +571,14 @@ bool Server::isInvalidPortNumber(const char* port) const
 
 bool Server::isInvalidPassword(const char* password) const
 {
-	bool bSucceeded;
+	bool bIsSucceeded;
 	if (isInvalidPasswordFormatted(password))
 	{
 		return true;
 	}
 
-	bSucceeded = mPassword != Util::generateHash65599(password);
-	return bSucceeded;
+	bIsSucceeded = mPassword != Util::generateHash65599(password);
+	return bIsSucceeded;
 }
 
 // 8 ~ 16  min Uppercase, lowercase, digit

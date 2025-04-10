@@ -115,10 +115,10 @@ void KickCommand::execute(Server& server, const int clientSocket, const char* bu
 		return ;
 	}
 	
-	int channelIndexInKickedUser = kickedUserPack.second->getIndexOfJoinedChannel(channelName).getValue();
+	size_t channelIndexInKickedUser = kickedUserPack.second->getIndexOfJoinedChannel(channelName).getValue();
 	// User가 가지고있는 채널들에 추방 당한 channelName 인덱스 확인
 
-	for (int i = 0; i <= channelIndexInKickedUser; ++i)
+	for (size_t i = 0; i <= channelIndexInKickedUser; ++i)
 	{
 		std::string exitChannelName = kickedUserPack.second->getJoinedChannelName(i);
 		server.exitUserInChannel(kickedUserPack.first, exitChannelName);

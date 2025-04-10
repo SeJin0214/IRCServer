@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 12:07:54 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/10 13:55:56 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,11 +237,15 @@ bool Channel::enterUser(const int clientSocket, User* user)
 	{
 		mOperatorNicknames.push_back(user->getNickname());
 	}
-	bool bSucceed = Space::enterUser(clientSocket, user);
-	assert(bSucceed);
+	bool bIsSucceed = Space::enterUser(clientSocket, user);
+	assert(bIsSucceed);
 	user->addJoinedChannel(mTitle);
+
+	std::string nickname = user->getNickname();
+	exitInvitedList(nickname);
+	
 	assert(getUserCount() > 0);
-	return bSucceed;
+	return bIsSucceed;
 }
 
 User* Channel::exitUserOrNull(const int clientSocket)
@@ -260,8 +264,7 @@ User* Channel::exitUserOrNull(const int clientSocket)
 			++it;
 		}
 		User* user = userIt->second;
-		std::vector<std::string> channels = user->getJoinedChannels();
-		user->removeLastJoinedChannel();
+		user->removeJoinedChannel(mTitle);
 	}
 	return Space::exitUserOrNull(clientSocket);
 }
@@ -273,7 +276,9 @@ bool Channel::isAddUserAsAdmin(const std::string& userNickname)
 		for (size_t i = 0; i < mOperatorNicknames.size(); ++i)
 		{
 			if (mOperatorNicknames[i] == userNickname)
+			{
 				return true;
+			}
 		}
 		mOperatorNicknames.push_back(userNickname);
 		return true;
@@ -306,27 +311,33 @@ bool Channel::isOperator(const int userSocket) const
 	return false;
 }
 
-bool Channel::isInvited (std::string& invitedUser)
+bool Channel::isInvited(std::string& invitedUser)
 {
 	for (std::vector<std::string>::iterator it = mInvitedList.begin(); it != mInvitedList.end(); ++it)
 	{
 		if (*it == invitedUser)
+		{
 			return true;
+		}
 	}
 	return false;
 }
 
-void Channel::enterInvitedList (std::string& invitedUser)
+void Channel::enterInvitedList(std::string& invitedUser)
 {
 	if (isInvited(invitedUser) == true)
+	{	
 		return ;
-	mInvitedList.push_back (invitedUser);
+	}
+	mInvitedList.push_back(invitedUser);
 }
 
-void Channel::exitInvitedList (std::string& invitedUser)
+void Channel::exitInvitedList(std::string& invitedUser)
 {
 	if (isInvited(invitedUser) == false)
+	{
 		return ;
+	}
 	for (std::vector<std::string>::iterator it = mInvitedList.begin(); it != mInvitedList.end(); ++it)
 	{
 		if (*it == invitedUser)
@@ -337,16 +348,18 @@ void Channel::exitInvitedList (std::string& invitedUser)
 	}
 }
 
-void Channel::setMemberCount(unsigned int num)
+// maxMemberCount
+void Channel::setMaxMemberCount(unsigned int num)
 {
-	mMemberCount = num;
+	mMaxMemberCount = num;
 }
 
 size_t Channel::getMemberCount() const
 {
-	return mMemberCount;
+	return mMaxMemberCount;
 }
 
+// TODO: 문제 있는 코드
 void Channel::removeOperatorNicknames(const std::string& nickname)
 {
 	for (std::vector<std::string>::iterator it = mOperatorNicknames.begin(); it != mOperatorNicknames.end(); ++it)
@@ -354,10 +367,12 @@ void Channel::removeOperatorNicknames(const std::string& nickname)
 		if (*it == nickname)
 		{
 			mOperatorNicknames.erase(it);
+			break;
 		}
 	}
 }
 
+// TODO: 문제 있는 코드
 void Channel::removeInvitedLists(const std::string& nickname)
 {
 	for (std::vector<std::string>::iterator it = mInvitedList.begin(); it != mInvitedList.end(); ++it)
@@ -365,6 +380,7 @@ void Channel::removeInvitedLists(const std::string& nickname)
 		if (*it == nickname)
 		{
 			mInvitedList.erase(it);
+			break;
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:41:48 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 11:29:31 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/10 13:26:50 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 
 MessageBetch PartCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
-	// 다시하고
 	assert(buffer != NULL);
 	assert(std::strncmp(buffer, "PART ", std::strlen("PART ")) == 0);
 	
@@ -25,24 +24,52 @@ MessageBetch PartCommand::getMessageBetch(const Server& server, const int client
 	assert(server.findUser(clientSocket).hasSucceeded());
 	User user = server.findUser(clientSocket).getValue();
 
- 	const char* channelName = std::strchr(buffer, '#');
-	assert(channelName != NULL);
+	char temp[MAX_BUFFER];
+	std::strcpy(temp, buffer);
+
+	const char* command = std::strtok(temp, " ");
+	(void) command;
+ 	const char* channelToken = std::strtok(NULL, " ");
+	bool bIsParamMissing = channelToken == NULL;
+	if (bIsParamMissing)
+	{
+		std::string needMoreParam = server.getServerName() + " 461 " + user.getNickname() 
+		+ " PART :Not enough parameters"; 
+		messageBetch.addMessage(clientSocket, needMoreParam);
+		return messageBetch;
+	}
+	
+	const char* channelName = channelToken + 1;
+	Channel* channel = server.findChannelOrNull(channelName);
+	bool bIsChannel = channelToken[0] == '#';
+	if (bIsChannel == false || channel == NULL)
+	{
+		std::string noSuchChannel = server.getServerName() + " 403 " + channelToken 
+		+ " :No such channel"; 
+		messageBetch.addMessage(clientSocket, noSuchChannel);
+		return messageBetch;
+	}
+	else if (user.isInChannel(channelName) == false)
+	{
+		std::string notOnChannel = server.getServerName() + " 442 " + user.getNickname() + " " + channelToken 
+		+ " :You're not on that channel";
+		messageBetch.addMessage(clientSocket, notOnChannel);
+		return messageBetch;
+	}
+
+	assert(bIsChannel && channel != NULL && user.isInChannel(channelName));
 
 	std::string leaveMessage = CommonCommand::getPrefixMessage(user, clientSocket) + " PART :" + channelName;
-	
 	messageBetch.addMessage(clientSocket, leaveMessage);
-
-	assert(user.getLastJoinedChannel().hasSucceeded());
-	std::string currentJoinedChannelName = user.getLastJoinedChannel().getValue();
-
-	Channel* channel = server.findChannelOrNull(currentJoinedChannelName);
-	assert(channel != NULL);
 
 	std::vector<int> clientSockets = channel->getFdSet();
 	for (size_t i = 0; i < clientSockets.size(); ++i)
 	{
+		if (clientSockets[i] == clientSocket)
+		{
+			continue;
+		}
 		User* userToFind = channel->findUserOrNull(clientSockets[i]);
-		// b에 접속 /part #aaa
 		assert(userToFind != NULL);
 		
 		std::string currentChannel = userToFind->getLastJoinedChannel().getValue();
@@ -61,9 +88,17 @@ void PartCommand::execute(Server& server, const int clientSocket, const char* bu
 	assert(buffer != NULL);
 	assert(std::strncmp(buffer, "PART ", std::strlen("PART ")) == 0);
 	
-	const char* startPointer = strchr(buffer, '#');
-	assert(startPointer != NULL);
+	char temp[MAX_BUFFER];
+	std::strcpy(temp, buffer);
 	
-	std::string channelName(startPointer + 1);
+	const char* command = std::strtok(temp, " ");
+	(void) command;
+ 	const char* channelToken = std::strtok(NULL, " ");
+	if (channelToken == NULL || channelToken[0] != '#')
+	{
+		return;
+	}
+	
+	const char* channelName = channelToken + 1;
 	server.exitUserInChannel(clientSocket, channelName);
 }

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:37:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 17:04:52 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/10 13:41:14 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,10 +241,10 @@ void ModeCommand::execute(Server& server, const int clientSocket, const char* bu
 		}
 		else if (mode[1] == 'l')
 		{
-			size_t memberCounnt;
-			ss >> memberCounnt;
+			size_t maxMemberCounnt;
+			ss >> maxMemberCounnt;
 			channel->onMode(clientSocket, MODE_LIMIT_USER);
-			channel->setMemberCount(memberCounnt);
+			channel->setMaxMemberCount(maxMemberCounnt);
 		}
 		else if (mode[1] == 'o')
 		{

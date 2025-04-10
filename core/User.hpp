@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 19:13:00 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 11:39:32 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/10 14:02:06 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,19 @@ public:
     std::vector<std::string> getJoinedChannels() const;
     void setNickname(const std::string& nickname);
     void setUsername(const std::string& username);
+    bool isInChannel(const std::string& title);
     void addJoinedChannel(std::string& title);
     std::string flushBuffer();
     void appendStringInBuffer(const char* buffer);
     void removeLastJoinedChannel();
 
 
-    Result<int> getIndexOfJoinedChannel (const std::string& channelName); // 추가 (donkim3)
+    Result<size_t> getIndexOfJoinedChannel (const std::string& channelName); // 추가 (donkim3)
     void removeJoinedChannel(std::string channelName); // 추가 (donkim3)
-    std::string getJoinedChannelName(int indexOfJoinedChannels); // 추가 (donkim3)
+    std::string getJoinedChannelName(size_t indexOfJoinedChannels); // 추가 (donkim3)
+    
 
-
-
-    Result<std::string> getLastJoinedChannel() const; // 추가
+    Result<std::string> getLastJoinedChannel() const;
     ~User();
 
 private:

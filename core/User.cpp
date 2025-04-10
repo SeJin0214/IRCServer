@@ -6,10 +6,11 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 19:13:06 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 16:24:55 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/10 14:02:08 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <cassert>
 #include "User.hpp"
 
 User::User()
@@ -70,6 +71,18 @@ void User::setUsername(const std::string& username)
 	mUsername = username;
 }
 
+bool User::isInChannel(const std::string& title)
+{
+	for (size_t i = 0; i < mJoinedChannels.size(); ++i)
+	{
+		if (mJoinedChannels[i] == title)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 std::string User::flushBuffer()
 {
 	std::string result = mBuffer.str();
@@ -113,16 +126,16 @@ Result<std::string> User::getLastJoinedChannel() const
 	return Result<std::string>(mJoinedChannels.back(), true);
 }
 
-Result<int> User::getIndexOfJoinedChannel(const std::string& channelName)
+Result<size_t> User::getIndexOfJoinedChannel(const std::string& channelName)
 {
 	for (size_t i = 0; i < mJoinedChannels.size(); ++i)
 	{
 		if (mJoinedChannels[i] == channelName)
 		{
-			return Result<int>(i, true);
+			return Result<size_t>(i, true);
 		}
 	}
-	return Result<int>(-1, false);
+	return Result<size_t>(-1, false);
 }
 
 void User::removeJoinedChannel(std::string channelName)
@@ -132,11 +145,13 @@ void User::removeJoinedChannel(std::string channelName)
 		if (*it == channelName)
 		{
 			mJoinedChannels.erase(it);
+			break;
 		}
 	}
 }
 
-std::string User::getJoinedChannelName(int indexOfJoinedChannels)
+std::string User::getJoinedChannelName(size_t indexOfJoinedChannels)
 {
+	assert(indexOfJoinedChannels < mJoinedChannels.size() - 1);
 	return (mJoinedChannels[indexOfJoinedChannels]);
 }

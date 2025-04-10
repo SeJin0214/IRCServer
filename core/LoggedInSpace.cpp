@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 17:13:46 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 12:05:32 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/10 13:19:36 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,8 @@ void LoggedInSpace::admitOrExile(Server& server)
 
 bool LoggedInSpace::enterUser(const int clientSocket, User* user)
 {
-	bool bSucceed = Space::enterUser(clientSocket, user);
-	assert(bSucceed);
+	bool bIsSucceed = Space::enterUser(clientSocket, user);
+	assert(bIsSucceed);
 	LoginInfo info;
 	std::pair<int, LoginInfo> pair(clientSocket, info);
 	mInfos.insert(pair);
