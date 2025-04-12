@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 11:35:27 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/12 18:30:10 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <cstring>
 #include "DirectMessageCommand.hpp"
 #include "IOutgoingMessageProvider.hpp"
+#include "ListCommand.hpp"
 #include "JoinCommand.hpp"
 #include "QuitCommand.hpp"
 #include "TopicCommand.hpp"
@@ -33,7 +34,7 @@ IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer) 
 	assert(buffer != NULL);
 
 	std::string command = getCommandSection(buffer);
-	if (std::strncmp("PRIVMSG", command.c_str(), command.size()) == 0)
+	if (command == "PRIVMSG")
 	{
 		std::stringstream ss(buffer);
 		std::string channel;
@@ -48,17 +49,21 @@ IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer) 
 			return new DirectMessageCommand();
 		}
 	}
-	else if (std::strncmp("QUIT", command.c_str(), command.size()) == 0)
+	else if (command == "QUIT")
 	{
 		return new QuitCommand();
 	}
-	else if (std::strncmp("JOIN", command.c_str(), command.size()) == 0)
+	else if (command == "JOIN")
 	{
 		return new JoinCommand();
 	}
-	else if (std::strncmp("TOPIC", command.c_str(), command.size()) == 0)
+	else if (command == "TOPIC")
 	{
 		return new TopicCommand();
+	}
+	else if (command == "LIST")
+	{
+		return new ListCommand();
 	}
 	
 	return NULL;
@@ -69,11 +74,11 @@ IExecutable* Space::getExecutor(const char* buffer) const
 	assert(buffer != NULL);
 	std::string command = getCommandSection(buffer);
 	
-	if (std::strncmp("QUIT", command.c_str(), command.size()) == 0)
+	if (command == "QUIT")
 	{
 		return new QuitCommand();
 	}
-	else if (std::strncmp("JOIN", command.c_str(), command.size()) == 0)
+	else if (command == "JOIN")
 	{
 		return new JoinCommand();
 	}

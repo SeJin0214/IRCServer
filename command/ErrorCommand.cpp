@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 12:53:02 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 16:40:31 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/12 17:17:17 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ MessageBetch ErrorCommand::getMessageBetch(const Server& server, const int clien
 	User user = server.findUser(clientSocket).getValue();
 	assert(server.findUser(clientSocket).hasSucceeded());
 	
-	message << server.getServerName() << " 421 " << user.getNickname() << " " << command 
+	message << ":" << server.getServerName() << " 421 " << user.getNickname() << " " << command 
 	<< " :Unknown command";
 	
 	MessageBetch messageBetch;

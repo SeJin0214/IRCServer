@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:41:48 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 13:26:50 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/12 17:32:54 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ MessageBetch PartCommand::getMessageBetch(const Server& server, const int client
 	bool bIsParamMissing = channelToken == NULL;
 	if (bIsParamMissing)
 	{
-		std::string needMoreParam = server.getServerName() + " 461 " + user.getNickname() 
+		std::string needMoreParam = ":" + server.getServerName() + " 461 " + user.getNickname() 
 		+ " PART :Not enough parameters"; 
 		messageBetch.addMessage(clientSocket, needMoreParam);
 		return messageBetch;
@@ -44,14 +44,14 @@ MessageBetch PartCommand::getMessageBetch(const Server& server, const int client
 	bool bIsChannel = channelToken[0] == '#';
 	if (bIsChannel == false || channel == NULL)
 	{
-		std::string noSuchChannel = server.getServerName() + " 403 " + channelToken 
+		std::string noSuchChannel = ":" + server.getServerName() + " 403 " + channelToken 
 		+ " :No such channel"; 
 		messageBetch.addMessage(clientSocket, noSuchChannel);
 		return messageBetch;
 	}
 	else if (user.isInChannel(channelName) == false)
 	{
-		std::string notOnChannel = server.getServerName() + " 442 " + user.getNickname() + " " + channelToken 
+		std::string notOnChannel = ":" + server.getServerName() + " 442 " + user.getNickname() + " " + channelToken 
 		+ " :You're not on that channel";
 		messageBetch.addMessage(clientSocket, notOnChannel);
 		return messageBetch;
@@ -59,7 +59,7 @@ MessageBetch PartCommand::getMessageBetch(const Server& server, const int client
 
 	assert(bIsChannel && channel != NULL && user.isInChannel(channelName));
 
-	std::string leaveMessage = CommonCommand::getPrefixMessage(user, clientSocket) + " PART :" + channelName;
+	std::string leaveMessage = CommonCommand::getPrefixMessage(user, clientSocket) + " PART :#" + channelName;
 	messageBetch.addMessage(clientSocket, leaveMessage);
 
 	std::vector<int> clientSockets = channel->getFdSet();

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 17:13:46 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 13:19:36 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/10 14:18:21 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ IExecutable* LoggedInSpace::getExecutor(const char *buffer) const
 	return NULL;
 }
 
+// before erase, ++  
 void LoggedInSpace::admitOrExile(Server& server)
 {
 	std::map<int, LoginInfo>::iterator it = mInfos.begin();

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:40:36 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 17:03:14 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/11 13:34:39 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,15 +104,6 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 		msg.addMessage(clientSocket, ret.str());
 	}
 	return (msg);
-
-// lobby -> topic #a << 있는 채널   ---> topic에 안들어옴 -> 
-
-
-//channel 존재만 성공
-
- // 바뀐게 없을 떄
- //TOPIC #a :helloworld
- // 서버에서 보내주는건 없음
 }
 
 // /topic #aaa -> 토픽 확인

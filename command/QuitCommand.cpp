@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:05:45 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 20:15:04 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/12 17:16:22 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ MessageBetch QuitCommand::getMessageBetch(const Server& server, const int client
 	assert(std::strncmp(buffer, "QUIT", std::strlen("QUIT")) == 0);
 
 	MessageBetch messageBetch;
-	std::stringstream message("ERROR :Closing link: (");
-	message << CommonCommand::getHostIP(clientSocket) << ") [" << buffer << "]";
+	std::stringstream message;
+	message << "ERROR :Closing link: (" << CommonCommand::getHostIP(clientSocket) << ") [" << buffer << "]";
 
 	messageBetch.addMessage(clientSocket, message.str());
 	

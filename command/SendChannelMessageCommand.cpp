@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 11:25:10 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 16:14:13 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/12 18:09:33 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 	std::stringstream ss(str);
 	std::string temp;
 	std::string channelName;
-	ss >> temp >> channelName;
+	// ss >> temp >> channelName;
+	getline(ss, temp, ' ');
+	getline(ss, channelName, ' ');
 	std::string msg;
 	getline(ss, msg);
 	if (channelName[0] != '#')
@@ -66,6 +68,9 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 		}
 		User user = server.findUser(clientSocket).getValue();
 		std::string who = CommonCommand::getPrefixMessage(user, clientSocket);
+
+		std::cout << msg << std::endl;
+		
 		retMsg.addMessage(userSockets[i], who + " PRIVMSG #" + channelName + " " + msg + "\r\n");
 	}
 	return retMsg;

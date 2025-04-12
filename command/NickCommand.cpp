@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 17:36:00 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 11:28:48 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/12 17:14:34 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <cstddef>
 #include <cstring>
 #include "NickCommand.hpp"
+#include "Parser.hpp"
 
 MessageBetch NickCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
@@ -30,7 +31,7 @@ MessageBetch NickCommand::getMessageBetch(const Server& server, const int client
 		message << ":" << server.getServerName() << " 431 * " << nickname << " :No nickname given";
 		messageBetch.addMessage(clientSocket, message.str());
 	}
-	else if (server.isInvalidNameFormatted(nickname))
+	else if (Parser::isInvalidNameFormatted(nickname))
 	{
 		message << ":" << server.getServerName() << " 432 * " << nickname << " :Erroneous nickname";
 		messageBetch.addMessage(clientSocket, message.str());
@@ -51,7 +52,7 @@ void NickCommand::execute(Server& server, const int clientSocket, const char* bu
 	const char* nickname = buffer + std::strlen("NICK ");
 	
 	size_t nicknameLength = std::strlen(nickname);
-	if (nicknameLength == 0 || server.isInvalidNameFormatted(nickname) || server.isDuplicatedNickname(nickname))
+	if (nicknameLength == 0 || Parser::isInvalidNameFormatted(nickname) || server.isDuplicatedNickname(nickname))
 	{
 		return;	
 	}

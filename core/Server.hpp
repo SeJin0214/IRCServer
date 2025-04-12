@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:47 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 11:35:13 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/12 15:25:15 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ public:
 	bool enterUserInChannel(const int clientSocket, const std::string& title);
 	User* exitUserInChannel(const int clientSocket, const std::string& title);
 	
-	bool isDuplicatedNickname(const char* buffer) const;
 	void exitAllSpaces(const int clientSocket);
 	Channel* findChannelOrNull(const std::string& title) const;
-	bool isInvalidNameFormatted(const char* name) const;
+	std::vector<const Channel*> loadChannels() const;
+	bool isDuplicatedNickname(const char* buffer) const;
 	
 private:
 	Lobby mLobby;
@@ -70,11 +70,9 @@ private:
 	Channel* createChannel(const std::string& title);
 	
 	void acceptClient();
-	bool sendToClient(const int clientSocket, const char* message) const;
+	bool sendToClient(const int clientSocket, const char* message);
 	void handleClientMessage(const int clientSocket);
 	void ExecuteCommandByProtocol(const int clientSocket, const char* buffer);
-	bool isInvalidPortNumber(const char* port) const;
-	bool isInvalidPasswordFormatted(const char* password) const;
 	bool isInvalidPassword(const char* password) const;
 
 };

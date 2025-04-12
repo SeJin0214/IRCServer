@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   LoginInfo.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/05 15:07:31 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/06 12:50:02 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/11 18:05:50 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ public:
 	void setNickname(const std::string& nickname);
     void setUsername(const std::string& username);
 private:
-	enum { MAX_TIME = 100 };
+	enum { MAX_TIME = 10 };
 	std::string mUsername;
     std::string mNickname;
     bool mbAuthenticated;

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 17:36:20 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 13:18:29 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/11 13:36:06 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <cstddef>
 #include "UserCommand.hpp"
 #include "Server.hpp"
+#include "Parser.hpp"
 
 void UserCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
@@ -33,7 +34,7 @@ void UserCommand::execute(Server& server, const int clientSocket, const char* bu
 	const char* servername = std::strtok(NULL, " ");
 	
 	if (servername == NULL || hostname == NULL || username == NULL
-	|| server.isInvalidNameFormatted(username))
+	|| Parser::isInvalidNameFormatted(username))
 	{
 		return;
 	}

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 14:05:09 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/11 13:19:59 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ void Channel::setPassword(std::string& password)
 {
 	mPassword = Util::generateHash65599(password.c_str());
 }
-
 
 bool Channel::setTopic(const int clientSocket, std::string& topic)
 {
@@ -348,7 +347,6 @@ void Channel::exitInvitedList(std::string& invitedUser)
 	}
 }
 
-// maxMemberCount
 void Channel::setMaxMemberCount(unsigned int num)
 {
 	mMaxMemberCount = num;
@@ -359,7 +357,6 @@ size_t Channel::getMemberCount() const
 	return mMaxMemberCount;
 }
 
-// TODO: 문제 있는 코드
 void Channel::removeOperatorNicknames(const std::string& nickname)
 {
 	for (std::vector<std::string>::iterator it = mOperatorNicknames.begin(); it != mOperatorNicknames.end(); ++it)
@@ -372,7 +369,6 @@ void Channel::removeOperatorNicknames(const std::string& nickname)
 	}
 }
 
-// TODO: 문제 있는 코드
 void Channel::removeInvitedLists(const std::string& nickname)
 {
 	for (std::vector<std::string>::iterator it = mInvitedList.begin(); it != mInvitedList.end(); ++it)
