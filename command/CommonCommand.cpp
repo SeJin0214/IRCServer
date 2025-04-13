@@ -16,7 +16,7 @@
 
 std::string CommonCommand::getPrefixMessage(const User& user, const int clientsocket)
 {
-	return (":"+ user.getNickname() + "!" + user.getUsername() + "@" + getHostIP(clientsocket));
+	return (":" + user.getNickname() + "!" + user.getUsername() + "@" + getHostIP(clientsocket));
 }
 
 std::string CommonCommand::getHostIP(int sockfd)

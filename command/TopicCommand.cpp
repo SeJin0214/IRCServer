@@ -40,7 +40,7 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 			// 유효하지 않은 채널입력했을 경우
 		//  TOPIC #invalidchannel
 		// :irc.local 403 donkim3 #invalidchannel :No such channel
-		ret << server.getServerName() << " 403 " << clientNickname << " #" << channelName << " :No such channel";
+		ret << ":" << server.getServerName() << " 403 " << clientNickname << " #" << channelName << " :No such channel";
 		msg.addMessage(clientSocket, ret.str());
 	}
 	else if (channel->findUserOrNull(clientSocket) != NULL) // channel 만
@@ -52,7 +52,7 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 			// client -> donjeong
 			// TOPIC #a :s
 			// :irc.local 482 donjeong #a :You must be a channel op or higher to change the topic.
-			ret << server.getServerName() << " 482 " << clientNickname << " #" << channelName << " :You must be a channel op or higher to change the topic.";
+			ret << ":" << server.getServerName() << " 482 " << clientNickname << " #" << channelName << " :You must be a channel op or higher to change the topic.";
 			msg.addMessage(clientSocket, ret.str());
 		}
 		else
@@ -66,7 +66,7 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 			std::vector<int> namesInChannel = channel->getFdSet();
 			for (size_t i = 0; i < namesInChannel.size(); ++i)
 			{
-				ret << server.getServerName() << " " << buffer;
+				ret << ":" << server.getServerName() << " " << buffer;
 				msg.addMessage(namesInChannel[i], ret.str());
 			}
 		}
@@ -78,7 +78,7 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 		// lobby /topic만 쳤을 경우
 			// TOPIC 
 			// :irc.local 461 sejjeong TOPIC :Not enough parameters.
-			ret << server.getServerName() << " 461 " << clientNickname << " TOPIC :Not enough parameters.";
+			ret << ":" << server.getServerName() << " 461 " << clientNickname << " TOPIC :Not enough parameters.";
 			msg.addMessage(clientSocket, ret.str());
 		}
 		else if (topic.empty() == false)
@@ -86,7 +86,7 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 			 // channel 존재 ->  topic이 있는 경우
 				// TOPIC #a :asdf
 				// :irc.local 442 sejjeong #a :You're not on that channel!
-			ret << server.getServerName() << " 442 " << clientNickname << " #" << channelName << " :You're not on that channel!";
+			ret << ":" << server.getServerName() << " 442 " << clientNickname << " #" << channelName << " :You're not on that channel!";
 			msg.addMessage(clientSocket, ret.str());
 		}
 			// TOPIC #a
@@ -94,12 +94,12 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 			// :irc.local 333 sejjeong #a donkim3!root@127.0.0.1 :1744009620
 		if (channel->getTopic().empty())
 		{
-			ret << server.getServerName() << " 331 " << clientNickname << " #" << channelName << " :No topic is set.";
+			ret << ":" << server.getServerName() << " 331 " << clientNickname << " #" << channelName << " :No topic is set.";
 		}
 		else
 		{
-			ret << server.getServerName() << " 332 " << clientNickname << " #" << channelName << " :" << channel->getTopic() << "\r\n" \
-			<< server.getServerName() << " 333 " << clientNickname << " #" << channelName << " " << CommonCommand::getPrefixMessage(server.findUser(clientSocket).getValue(), clientSocket) << " :1744009620";
+			ret << ":" << server.getServerName() << " 332 " << clientNickname << " #" << channelName << " :" << channel->getTopic() << "\r\n" \
+			<< ":" << server.getServerName() << " 333 " << clientNickname << " #" << channelName << " " << CommonCommand::getPrefixMessage(server.findUser(clientSocket).getValue(), clientSocket) << " :1744009620";
 		}
 		msg.addMessage(clientSocket, ret.str());
 	}

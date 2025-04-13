@@ -54,7 +54,7 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 			{
 				if (channel->isInvited(nickname) == false)
 				{
-					errorMsg << server.getServerName() << " 475 " << nickname << " #" << channelName << " :Cannot join channel (incorrect channel key)";
+					errorMsg << ":" << server.getServerName() << " 475 " << nickname << " #" << channelName << " :Cannot join channel (incorrect channel key)";
 					msg.addMessage(clientSocket, errorMsg.str());
 					return msg;
 				}
@@ -62,7 +62,7 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 		}
 		if (channel->isModeActive(MODE_INVITE_ONLY) == true && channel->isInvited(nickname) == false)
 		{//:irc.local 473 donkim3_ #a :Cannot join channel (invite only)
-			errorMsg << server.getServerName() << " 473 " << nickname << " #" << channelName << " :Cannot join channel (invite only)";
+			errorMsg << ":" << server.getServerName() << " 473 " << nickname << " #" << channelName << " :Cannot join channel (invite only)";
 			msg.addMessage(clientSocket, errorMsg.str());
 			return msg;
 		}
@@ -70,7 +70,7 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 		{
 			if (channel->getUserCount() != channel->getMemberCount())
 			{
-				errorMsg << server.getServerName() << " 471 " << nickname << " #" << channelName << " :Cannot join channel (channel is full)";
+				errorMsg << ":" << server.getServerName() << " 471 " << nickname << " #" << channelName << " :Cannot join channel (channel is full)";
 				msg.addMessage(clientSocket, errorMsg.str());
 				return msg;
 			}
@@ -105,8 +105,8 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 
 	std::stringstream ret;
 	ret << CommonCommand::getPrefixMessage(user, clientSocket) << " " << join << " #" << channelName << "\r\n" 
-	<< server.getServerName() << " 353 " << nickname << " = #" << channelName << " :" << userlist.str() << "\r\n" 
-	<< server.getServerName() << " 366 " << nickname << " #" << channelName << " :End of /NAMES list.";
+	<< ":" << server.getServerName() << " 353 " << nickname << " = #" << channelName << " :" << userlist.str() << "\r\n" 
+	<< ":" << server.getServerName() << " 366 " << nickname << " #" << channelName << " :End of /NAMES list.";
 	
 	msg.addMessage(clientSocket, ret.str());
 

@@ -46,7 +46,7 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 	std::vector<std::string> userChannels = clientUser.getJoinedChannels();
 	if (userChannels.size() == 0)
 	{
-		ret << server.getServerName() << " 404 " << clientUser.getNickname() << " #" << channelName << " :You cannot send external messages to this channel whilst the +n (noextmsg) mode is set.";
+		ret << ":" << server.getServerName() << " 404 " << clientUser.getNickname() << " #" << channelName << " :You cannot send external messages to this channel whilst the +n (noextmsg) mode is set.";
 		retMsg.addMessage(clientSocket, ret.str());
 		return (retMsg);
 	}

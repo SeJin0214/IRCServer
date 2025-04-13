@@ -161,7 +161,7 @@ void Bot::handleCommand()
         std::getline(ss, message);
 
         assert(message[message.size() - 1] == '\r');
-        message.erase(message.size() - 1, 1);
+        message.erase(message.size() - 1, 1); //'\r\n' 아니냐;
        
         if (message == ":!help")
         {

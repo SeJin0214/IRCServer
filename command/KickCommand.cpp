@@ -51,7 +51,7 @@ MessageBetch KickCommand::getMessageBetch(const Server& server, const int client
 		//존재하지 않는 유저
 		//  KICK #a donf :
 		// :irc.local 401 donkim3 donf :No such nick
-		ret << server.getServerName() << " 401 " << clientUser.getNickname() << " " << kickedName << " :No such nick";
+		ret << ":" << server.getServerName() << " 401 " << clientUser.getNickname() << " " << kickedName << " :No such nick";
 		msg.addMessage(clientSocket, ret.str());
 	}
 	else if (channel->isOperator(clientSocket) == false)
@@ -59,7 +59,7 @@ MessageBetch KickCommand::getMessageBetch(const Server& server, const int client
 		//권한 (donjeong -> donkim3(방장))
 		// KICK #a donkim3 :
 		// :irc.local 482 sejjeong #a :You must be a channel op or higher to kick a more privileged user.
-		ret << server.getServerName() << " 482 " << clientUser.getNickname() << " #" << channelName << " :You must be a channel op or higher to kick a more privileged user.";
+		ret << ":" << server.getServerName() << " 482 " << clientUser.getNickname() << " #" << channelName << " :You must be a channel op or higher to kick a more privileged user.";
 		msg.addMessage(clientSocket, ret.str());
 	}
 	else if (channel->findUser(kickedName).hasSucceeded() == false)
@@ -67,7 +67,7 @@ MessageBetch KickCommand::getMessageBetch(const Server& server, const int client
 		// 유저 전체에는 존재하나 -> 현재 채널에는 없는 경우
 		// KICK #a sejjeong :#a hello
 		// :irc.local 441 donkim3 sejjeong #a :They are not on that channel
-		ret << server.getServerName() << " 441 " << clientUser.getNickname() << " " << kickedName << " #" << channelName << " :They are not on that channel";
+		ret << ":" << server.getServerName() << " 441 " << clientUser.getNickname() << " " << kickedName << " #" << channelName << " :They are not on that channel";
 		msg.addMessage(clientSocket, ret.str());
 	}
 	else
@@ -117,10 +117,10 @@ void KickCommand::execute(Server& server, const int clientSocket, const char* bu
 	
 	size_t channelIndexInKickedUser = kickedUserPack.second->getIndexOfJoinedChannel(channelName).getValue();
 	// User가 가지고있는 채널들에 추방 당한 channelName 인덱스 확인
-
 	for (size_t i = 0; i <= channelIndexInKickedUser; ++i)
 	{
-		std::string exitChannelName = kickedUserPack.second->getJoinedChannelName(i);
+		std::cout << "i = " << i << std::endl;
+		std::string exitChannelName = kickedUserPack.second->getJoinedChannelName(0);
 		server.exitUserInChannel(kickedUserPack.first, exitChannelName);
 		kickedUserPack.second->removeJoinedChannel(exitChannelName);
 	}

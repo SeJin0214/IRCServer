@@ -97,7 +97,7 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 
 	if (channel->isOperator(clientSocket) == false)
 	{
-		errorMsg << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to mode a more privileged user.";
+		errorMsg << ":" << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to mode a more privileged user.";
 		msg.addMessage(clientSocket, errorMsg.str());
 		return (msg);
 	}
@@ -106,7 +106,7 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 	{
 		if (channel->isOperator(clientSocket) == false)
 		{
-			errorMsg << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to set channel mode i (inviteonly).";
+			errorMsg << ":" << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to set channel mode i (inviteonly).";
 			msg.addMessage(clientSocket, errorMsg.str());
 			return (msg);
 		}
@@ -115,14 +115,14 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 	{
 		if (channel->isOperator(clientSocket) == false)
 		{
-			errorMsg << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to unset channel mode k (key).";
+			errorMsg << ":" << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to unset channel mode k (key).";
 			msg.addMessage(clientSocket, errorMsg.str());
 			return (msg);
 		}
 		std::string password;
 		if (!(ss >> password))
 		{
-			errorMsg << server.getServerName() << " 696 " << nickname << " #" << channelName << " k * :You must specify a parameter for the key mode. Syntax: <key>.";
+			errorMsg << ":" << server.getServerName() << " 696 " << nickname << " #" << channelName << " k * :You must specify a parameter for the key mode. Syntax: <key>.";
             msg.addMessage(clientSocket, errorMsg.str());
             return (msg);
 		}
@@ -130,7 +130,7 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 		{
 			if (!channel->isPassword(password))
 			{
-				errorMsg << server.getServerName() << " 467 " << nickname << " #" << channelName << " :Channel key already set";
+				errorMsg << ":" << server.getServerName() << " 467 " << nickname << " #" << channelName << " :Channel key already set";
 				msg.addMessage(clientSocket, errorMsg.str());
 				return (msg);
 			}
@@ -142,13 +142,13 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 		unsigned int memberCount;
 		if (!(ss >> memberCount))
 		{
-			errorMsg << server.getServerName() << " 696 " << nickname << " #" << channelName << " l * :You must specify a parameter for the limit mode. Syntax: <limit>.";
+			errorMsg << ":" << server.getServerName() << " 696 " << nickname << " #" << channelName << " l * :You must specify a parameter for the limit mode. Syntax: <limit>.";
             msg.addMessage(clientSocket, errorMsg.str());
             return (msg);
 		}
 		if (channel->isOperator(clientSocket) == false)
 		{
-			errorMsg << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to set channel mode l (limit).";
+			errorMsg << ":" << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to set channel mode l (limit).";
 			msg.addMessage(clientSocket, errorMsg.str());
 			return (msg);
 		}
@@ -161,19 +161,19 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 		std::string username;
 		if (!(ss >> username))
 		{
-			errorMsg << server.getServerName() << " 696 " << username << " #" << channelName << " " << "o * :You must specify a parameter for the op mode. Syntax: <nick>.";
+			errorMsg << ":" << server.getServerName() << " 696 " << username << " #" << channelName << " " << "o * :You must specify a parameter for the op mode. Syntax: <nick>.";
             msg.addMessage(clientSocket, errorMsg.str());
             return (msg);
 		}
 		if (channel->isOperator(clientSocket) == false)
 		{
-			errorMsg << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to set channel mode o (op).";
+			errorMsg << ":" << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to set channel mode o (op).";
 			msg.addMessage(clientSocket, errorMsg.str());
 			return (msg);
 		}
 		if (channel->isAddUserAsAdmin(username) == false) 
 		{
-			errorMsg << server.getServerName() << " 401 " << nickname << " " << username << " :No such nick.";
+			errorMsg << ":" << server.getServerName() << " 401 " << nickname << " " << username << " :No such nick.";
             msg.addMessage(clientSocket, errorMsg.str());
             return (msg);
 		}
@@ -183,12 +183,12 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 	{
 		if (channel->isOperator(clientSocket) == false)
 		{
-			errorMsg << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to set channel mode t (topiclock).";
+			errorMsg << ":" << server.getServerName() << " 482 " << nickname << " #" << channelName << " :You must be a channel op or higher to set channel mode t (topiclock).";
 			msg.addMessage(clientSocket, errorMsg.str());
 			return (msg);
 		}
 	}
-	successMsg << server.getServerName() << " MODE #" << channelName << " " << bMode;
+	successMsg << ":" << server.getServerName() << " MODE #" << channelName << " " << bMode;
 	msg.addMessage(clientSocket, successMsg.str());
 	for (size_t i = 0; i < userSockets.size(); ++i)
 	{

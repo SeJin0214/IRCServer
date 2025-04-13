@@ -35,7 +35,7 @@ MessageBetch InviteCommand::getMessageBetch(const Server& server, const int clie
 	{
 		guestNick2 = channelName;
 		ss >> channelName;
-		msg.addMessage(clientSocket, ":irc.local 403 " + hostUser.getNickname() + " " + guestNick2 + " :No such channel\r\n");
+		msg.addMessage(clientSocket, ":" + server.getServerName() + " 403 " + hostUser.getNickname() + " " + guestNick2 + " :No such channel\r\n");
 		return msg;
 	}
 
@@ -55,14 +55,14 @@ MessageBetch InviteCommand::getMessageBetch(const Server& server, const int clie
 		// 권한 없음
 	// INVITE sejjeong #channel
 		// :irc.local 482 donjeong #channel :You must be a channel op or higher to send an invite.
-		msg.addMessage(clientSocket, ":irc.local 482 " + hostUser.getNickname() + " " + channelName + "  :You must be a channel op or higher to send an invite.\r\n");
+		msg.addMessage(clientSocket, ":" + server.getServerName() + " 482 " + hostUser.getNickname() + " " + channelName + "  :You must be a channel op or higher to send an invite.\r\n");
 		return msg;
 	}
 	else if (server.findUser(guestNick).hasSucceeded() == false)// Nickname이 없음;
 	{
 		// 127.000.000.001.58398-127.000.000.001.06667: INVITE asdf #channel
 		// 127.000.000.001.06667-127.000.000.001.58398: :irc.local 401 donkim3 asdf :No such nick
-		msg.addMessage (clientSocket, ":irc.local 401 " + hostUser.getNickname() + " " + guestNick + " :No such nick\r\n");
+		msg.addMessage (clientSocket, ":" + server.getServerName() + " 401 " + hostUser.getNickname() + " " + guestNick + " :No such nick\r\n");
 		return msg;
 	}
 	else if (guestInChannelPack.hasSucceeded() == true) // 채널가입자에 있으면    -> 채널안에 들어가있으면
@@ -70,7 +70,7 @@ MessageBetch InviteCommand::getMessageBetch(const Server& server, const int clie
 		//  채널에 있는 donkim3 초대
 	// INVITE donkim3 #channel
 	// :irc.local 443 donkim3 donkim3 #channel :is already on channel
-		msg.addMessage(clientSocket, ":irc.local 443 " + guestNick + " " + guestNick + " " + channelName + "  :is already on channel\r\n");
+		msg.addMessage(clientSocket, ":" + server.getServerName() + " 443 " + guestNick + " " + guestNick + " " + channelName + "  :is already on channel\r\n");
 		return msg;
 	}
 	else
@@ -81,7 +81,7 @@ MessageBetch InviteCommand::getMessageBetch(const Server& server, const int clie
  
 		//성공
 		int userSocket = server.findUser(guestNick).getValue().first;
-		msg.addMessage(clientSocket, ":irc.local 341 " + hostUser.getNickname() + " " + guestNick + " :" + channelName + "\r\n");
+		msg.addMessage(clientSocket, ":" + server.getServerName() + " 341 " + hostUser.getNickname() + " " + guestNick + " :" + channelName + "\r\n");
 		msg.addMessage(userSocket, commonCommand.getPrefixMessage(hostUser, clientSocket) + " INVITE " + guestNick + " :" + channelName + "\r\n");
 		return msg;
 	}
