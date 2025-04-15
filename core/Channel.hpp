@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:19:57 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 14:19:17 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/15 15:32:01 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ public:
 	bool isOperator(const User& user) const;
 	bool isOperator(const int userSocket) const;
 	void setMaxMemberCount(unsigned int num);
-	size_t getMemberCount() const;
+	size_t getMaxMemberCount() const;
  
 private:
 	std::vector<std::string> mOperatorNicknames;

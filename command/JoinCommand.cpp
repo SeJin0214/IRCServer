@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 11:43:26 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 15:09:14 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/15 15:32:01 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 		}
 		if (channel->isModeActive(MODE_LIMIT_USER) == true)
 		{
-			if (channel->getUserCount() >= channel->getMemberCount())
+			if (channel->getUserCount() >= channel->getMaxMemberCount())
 			{
 				errorMsg << ":" << server.getServerName() << " 471 " << nickname << " #" << channelName << " :Cannot join channel (channel is full)";
 				msg.addMessage(clientSocket, errorMsg.str());
@@ -135,7 +135,7 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 	}
 	if (channel && channel->isModeActive(MODE_LIMIT_USER) == true)
 	{
-		if (channel->getUserCount() >= channel->getMemberCount())
+		if (channel->getUserCount() >= channel->getMaxMemberCount())
 		{
 			return ;
 		}

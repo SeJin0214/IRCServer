@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/11 13:19:59 by sejjeong         ###   ########.fr       */
+/*   Updated: 2025/04/15 15:32:01 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -352,7 +352,7 @@ void Channel::setMaxMemberCount(unsigned int num)
 	mMaxMemberCount = num;
 }
 
-size_t Channel::getMemberCount() const
+size_t Channel::getMaxMemberCount() const
 {
 	return mMaxMemberCount;
 }
