@@ -26,20 +26,21 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 	std::string join;
 	std::string channelName;
 	ss >> join >> channelName;
-	if (channelName[0] != '#' || channelName.length() < 30)
+	std::string nickname = user.getNickname();
+	std::stringstream errorMsg;
+	
+	if (channelName[0] != '#' || channelName.length() > 30)
 	{
-		std::string errMsg = "Invalid format.";
-		msg.addMessage(clientSocket, errMsg);
+		errorMsg << ":" << server.getServerName() << " 403 " << nickname << " #" << channelName << " :ERR_NOSUCHCHANNEL";
+		msg.addMessage(clientSocket, errorMsg.str());
 		return msg;
 	}
 	channelName.erase(0,1);
-	std::string nickname = user.getNickname();
 
 	Channel *channel = server.findChannelOrNull(channelName);
 	std::stringstream userlist;
 	if (channel != NULL)
 	{
-		std::stringstream errorMsg;
 		std::string pass;
 		ss >> pass;
 		if (channel->isModeActive(MODE_KEY_LIMIT) == true)
@@ -96,7 +97,7 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 		nickname = "@" + nickname;
 		userlist << nickname;
 	}
-
+	
 	std::stringstream ret;
 	ret << CommonCommand::getPrefixMessage(user, clientSocket) << " " << join << " #" << channelName << "\r\n" 
 	<< ":" << server.getServerName() << " 353 " << nickname << " = #" << channelName << " :" << userlist.str() << "\r\n" 
@@ -116,9 +117,12 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 	std::string temp;
 	buf >> temp >> channelName >> password;
 	channelName.erase(0, 1);
+	if (channelName.length() > 30)
+	{
+		return ;
+	}
 	Channel *channel = server.findChannelOrNull(channelName);
 	std::string nickname(server.findUser(clientSocket).getValue().getNickname());
-
 	if (channel && channel->isModeActive(MODE_KEY_LIMIT) == true)
 	{
 		if (channel->isPassword(password) == false)
