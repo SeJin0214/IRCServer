@@ -31,7 +31,7 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 	
 	if (channelName[0] != '#' || channelName.length() > 30)
 	{
-		errorMsg << ":" << server.getServerName() << " 403 " << nickname << " #" << channelName << " :ERR_NOSUCHCHANNEL";
+		errorMsg << ":" << server.getServerName() << " 403 " << nickname << " " << channelName << " :ERR_NOSUCHCHANNEL";
 		msg.addMessage(clientSocket, errorMsg.str());
 		return msg;
 	}
@@ -63,7 +63,7 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 		}
 		if (channel->isModeActive(MODE_LIMIT_USER) == true)
 		{
-			if (channel->getUserCount() != channel->getMemberCount())
+			if (channel->getUserCount() >= channel->getMemberCount())
 			{
 				errorMsg << ":" << server.getServerName() << " 471 " << nickname << " #" << channelName << " :Cannot join channel (channel is full)";
 				msg.addMessage(clientSocket, errorMsg.str());
@@ -135,7 +135,7 @@ void JoinCommand::execute(Server& server, const int clientSocket, const char* bu
 	}
 	if (channel && channel->isModeActive(MODE_LIMIT_USER) == true)
 	{
-		if (channel->getMemberCount() <= channel->getUserCount())
+		if (channel->getUserCount() >= channel->getMemberCount())
 		{
 			return ;
 		}
