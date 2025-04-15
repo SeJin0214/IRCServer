@@ -6,13 +6,13 @@
 #    By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/19 16:33:48 by sejjeong          #+#    #+#              #
-#    Updated: 2025/04/12 16:24:31 by sejjeong         ###   ########.fr        #
+#    Updated: 2025/04/15 13:28:34 by sejjeong         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = ircserv
 C++ = c++
-FLAGS= -Wall -Wextra -Werror -std=c++98 -g
+FLAGS= -Wall -Wextra -Werror -std=c++98
 
 RM = rm
 RM_FLAGS = -rf
@@ -66,11 +66,13 @@ all: $(NAME)
 	
 
 clean:
+	make -C $(BOT_DIR) clean
 	$(RM) $(RM_FLAGS) $(OBJS)
 
 fclean: clean
+	make -C $(BOT_DIR) fclean
 	$(RM) $(RM_FLAGS) $(NAME)
 
-re: fclean all
-	
+re: fclean all	
+	make -C $(BOT_DIR) re
 .PHONY: all re clean fclean 
