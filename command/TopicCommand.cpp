@@ -45,9 +45,8 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 	}
 	else if (channel->findUserOrNull(clientSocket) != NULL) // channel 만
 	{
-		if (channel->isModeActive(MODE_TOPIC_LOCK) == true && channel->isOperator(clientSocket) == false)
+		if (/*channel->isModeActive(MODE_TOPIC_LOCK) == true && */channel->isOperator(clientSocket) == false)
 		{
-			
 			// 권한이 없는 경우
 			// client -> donjeong
 			// TOPIC #a :s
@@ -92,7 +91,7 @@ MessageBetch TopicCommand::getMessageBetch(const Server& server, const int clien
 			// TOPIC #a
 			// :irc.local 332 sejjeong #a :hello
 			// :irc.local 333 sejjeong #a donkim3!root@127.0.0.1 :1744009620
-		if (channel->getTopic().empty())
+		else if (channel->getTopic().empty())
 		{
 			ret << ":" << server.getServerName() << " 331 " << clientNickname << " #" << channelName << " :No topic is set.";
 		}

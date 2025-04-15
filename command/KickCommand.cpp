@@ -54,20 +54,20 @@ MessageBetch KickCommand::getMessageBetch(const Server& server, const int client
 		ret << ":" << server.getServerName() << " 401 " << clientUser.getNickname() << " " << kickedName << " :No such nick";
 		msg.addMessage(clientSocket, ret.str());
 	}
-	else if (channel->isOperator(clientSocket) == false)
-	{
-		//권한 (donjeong -> donkim3(방장))
-		// KICK #a donkim3 :
-		// :irc.local 482 sejjeong #a :You must be a channel op or higher to kick a more privileged user.
-		ret << ":" << server.getServerName() << " 482 " << clientUser.getNickname() << " #" << channelName << " :You must be a channel op or higher to kick a more privileged user.";
-		msg.addMessage(clientSocket, ret.str());
-	}
 	else if (channel->findUser(kickedName).hasSucceeded() == false)
 	{
 		// 유저 전체에는 존재하나 -> 현재 채널에는 없는 경우
 		// KICK #a sejjeong :#a hello
 		// :irc.local 441 donkim3 sejjeong #a :They are not on that channel
 		ret << ":" << server.getServerName() << " 441 " << clientUser.getNickname() << " " << kickedName << " #" << channelName << " :They are not on that channel";
+		msg.addMessage(clientSocket, ret.str());
+	}
+	else if (channel->isOperator(clientSocket) == false)
+	{
+		//권한 (donjeong -> donkim3(방장))
+		// KICK #a donkim3 :
+		// :irc.local 482 sejjeong #a :You must be a channel op or higher to kick a more privileged user.
+		ret << ":" << server.getServerName() << " 482 " << clientUser.getNickname() << " #" << channelName << " :You must be a channel op or higher to kick a more privileged user.";
 		msg.addMessage(clientSocket, ret.str());
 	}
 	else
