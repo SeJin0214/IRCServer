@@ -21,7 +21,6 @@
 
 enum { MAX_BUFFER = 512 };
 
-// 쪼갠다면, 전체 Space와 comunicator가 있을 듯(여기서 커맨드를 건네준다)
 class Server
 {
 

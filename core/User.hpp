@@ -36,9 +36,9 @@ public:
     void removeLastJoinedChannel();
 
 
-    Result<size_t> getIndexOfJoinedChannel (const std::string& channelName); // 추가 (donkim3)
-    void removeJoinedChannel(std::string channelName); // 추가 (donkim3)
-    std::string getJoinedChannelName(size_t indexOfJoinedChannels); // 추가 (donkim3)
+    Result<size_t> getIndexOfJoinedChannel (const std::string& channelName);
+    void removeJoinedChannel(std::string channelName);
+    std::string getJoinedChannelName(size_t indexOfJoinedChannels);
     
 
     Result<std::string> getLastJoinedChannel() const;

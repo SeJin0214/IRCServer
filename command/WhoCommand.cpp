@@ -23,7 +23,7 @@ MessageBetch WhoCommand::getMessageBetch(const Server& server, const int clientS
 	User user = server.findUser(clientSocket).getValue();
 	std::string nickname = user.getNickname();
 	int idxOfGuestNick = buf.find_first_of(" ", 4);
-      // who 닉네임 %tna,745 / who 채널 %tcuhnfdar,743
+	
 	if (buf.find ("%tna,745"))
 	{
 		std::string guestNick = buf.substr(4, idxOfGuestNick);

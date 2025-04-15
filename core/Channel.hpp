@@ -35,7 +35,7 @@ public:
 
 	void enterInvitedList (std::string& invitedUser);
 	void exitInvitedList (std::string& invitedUser);
-	bool isAddUserAsAdmin(const std::string& userNickname);//서버에서 채널생성할 때 사용 유저 호스트만들기
+	bool isAddUserAsAdmin(const std::string& userNickname);
 	void removeOperatorNicknames(const std::string& nickname);
 	void removeInvitedLists(const std::string& nickname);
 	std::string getActiveMode();

@@ -59,7 +59,6 @@ IExecutable* LoggedInSpace::getExecutor(const char *buffer) const
 	return NULL;
 }
 
-// before erase, ++  
 void LoggedInSpace::admitOrExile(Server& server)
 {
 	std::map<int, LoginInfo>::iterator it = mInfos.begin();

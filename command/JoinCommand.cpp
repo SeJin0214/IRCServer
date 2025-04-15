@@ -15,22 +15,18 @@
 #include <cstring>
 #include <sstream>
 #include "JoinCommand.hpp"
-
  
 MessageBetch JoinCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
-	// JoinCommand a;
-	// a.execute(const_cast<Server&>(server), clientSocket, buffer);
 	assert(buffer != NULL);
 	assert(std::strncmp(buffer, "JOIN ", std::strlen("JOIN ")) == 0);
-		//채널 30자 이내
 	MessageBetch msg;
 	User user = server.findUser(clientSocket).getValue();
 	std::stringstream ss(buffer);
 	std::string join;
 	std::string channelName;
 	ss >> join >> channelName;
-	if (channelName[0] != '#')
+	if (channelName[0] != '#' || channelName.length() < 30)
 	{
 		std::string errMsg = "Invalid format.";
 		msg.addMessage(clientSocket, errMsg);
@@ -43,10 +39,8 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 	std::stringstream userlist;
 	if (channel != NULL)
 	{
-		std::stringstream errorMsg;//비초인
+		std::stringstream errorMsg;
 		std::string pass;
-		// join 하기 전에 mode 확인 // i 면 list에 있는지 확인하고 메시지 출력
-		//:irc.local 475 donkim3 #a :Cannot join channel (incorrect channel key)
 		ss >> pass;
 		if (channel->isModeActive(MODE_KEY_LIMIT) == true)
 		{
@@ -61,7 +55,7 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 			}
 		}
 		if (channel->isModeActive(MODE_INVITE_ONLY) == true && channel->isInvited(nickname) == false)
-		{//:irc.local 473 donkim3_ #a :Cannot join channel (invite only)
+		{
 			errorMsg << ":" << server.getServerName() << " 473 " << nickname << " #" << channelName << " :Cannot join channel (invite only)";
 			msg.addMessage(clientSocket, errorMsg.str());
 			return msg;
@@ -116,7 +110,6 @@ MessageBetch JoinCommand::getMessageBetch(const Server& server, const int client
 void JoinCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
-	// JOIN #channel
 	std::stringstream buf(buffer);
 	std::string channelName;
 	std::string password;

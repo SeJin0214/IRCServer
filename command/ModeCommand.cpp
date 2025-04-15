@@ -19,10 +19,6 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 	std::cout << "mode : " << buffer << std::endl;
 	assert(buffer != NULL);
 	MessageBetch msg;
-	// CommonCommand commoncommand;
-
-	// MODE #channel + - 
-	// std::cout << "클라->서버 : " << buffer << std::endl;
 	User user = server.findUser(clientSocket).getValue();
 	std::string nickname = user.getNickname();
 
@@ -47,7 +43,7 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 	{
 		std::stringstream ret;
 		ret << ":irc.local 324 " << nickname << " #" << channelName << " :" << channel->getActiveMode() << "\r\n";
-		ret << ":irc.local 329 " << nickname << " #" << channelName << " :1743734234";//시간체크
+		ret << ":irc.local 329 " << nickname << " #" << channelName << " :1743734234";
 		msg.addMessage(clientSocket, ret.str());
 		return (msg);
 	} 
@@ -203,7 +199,6 @@ MessageBetch ModeCommand::getMessageBetch(const Server& server, const int client
 void ModeCommand::execute(Server& server, const int clientSocket, const char* buffer)
 {
 	assert(buffer != NULL);
-	//:irc.local MODE #a +i
 	std::stringstream ss(buffer);
 	std::string temp;
 	std::string channelName;

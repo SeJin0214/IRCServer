@@ -33,7 +33,6 @@ bool Parser::isInvalidPortNumber(const char* port)
     return (value < 1024 || value == 65535);
 }
 
-// 8 ~ 16  min Uppercase, lowercase, digit
 bool Parser::isInvalidPasswordFormatted(const char* password)
 {
     const size_t length = std::strlen(password);

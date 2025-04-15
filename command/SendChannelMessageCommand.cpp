@@ -22,13 +22,10 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 	std::map<int, std::string> socketAndMessage;
 	MessageBetch retMsg;
 
-	// PRIVMSG #aaa :asdfasdf
-	// donkim!root@127.0.0.1 PRIVMSG #aaa :asdfasdf
 	std::string str(buffer);
 	std::stringstream ss(str);
 	std::string temp;
 	std::string channelName;
-	// ss >> temp >> channelName;
 	getline(ss, temp, ' ');
 	getline(ss, channelName, ' ');
 	std::string msg;
@@ -51,7 +48,6 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 		return (retMsg);
 	}
 
-	// :irc.local 404 donkim3 #a :You cannot send external messages to this channel whilst the +n (noextmsg) mode is set.
 	Channel  *channel = server.findChannelOrNull(channelName);
 	if (channel == NULL)
 	{

@@ -35,9 +35,6 @@ public:
 	std::vector<std::string> getNicknames() const;
 	std::vector<std::string> getUsernames() const;
 	User* findUserOrNull(const int clientSocket) const;
-	
-
-	// 이 둘은 channel과 lobby에만 있어야 함, 이동할 지 생각하기, 
 	Result<std::pair<int, User*> > findUser(const std::string& nickname) const;
 
 protected:

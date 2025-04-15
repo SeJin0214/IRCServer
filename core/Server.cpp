@@ -241,7 +241,6 @@ Result<User> Server::findUser(const int clientSocket) const
 	return emptyUser;
 }
 
-// return <socket, User>
 Result<std::pair<int, User> > Server::findUser(const std::string& nickname) const
 {
 	for (size_t i = 0; i < mChannels.size(); ++i)
@@ -494,7 +493,6 @@ void Server::handleClientMessage(const int clientSocket)
 	}
 }
 
-// TODO: remove log
 void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer)
 {
 	const Space* space = findSpace(clientSocket);
