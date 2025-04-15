@@ -88,7 +88,6 @@ bool Bot::tryLogin(const char* password)
         assert(token != NULL);
         if (std::strcmp(token, "ERROR") == 0)
         {
-            std::cout << "ERROR!" << std::endl;
             return false;
         }
         const char* code = std::strtok(NULL, " ");
@@ -149,7 +148,6 @@ void Bot::handleCommand()
 
     std::stringstream ss;
     ss << buffer;
-    std::cout << ss.str();
     std::string command;
     std::getline(ss, command, ' ');
     std::getline(ss, command, ' ');
@@ -195,8 +193,6 @@ void Bot::handleCommand()
         }
         else if (message == ":!dice")
         {
-            std::cout << message << std::endl;
-
             std::stringstream messageToSend;
             messageToSend
             << command << " " << name << " :result! {";

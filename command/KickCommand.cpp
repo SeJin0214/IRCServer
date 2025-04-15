@@ -45,7 +45,6 @@ MessageBetch KickCommand::getMessageBetch(const Server& server, const int client
 	getline(ss, kickMsg);
 	Channel* channel = server.findChannelOrNull(channelName);
 	assert(channel != NULL);
-	std::cout << "name :" << kickedName << std::endl;
 	if (server.findUser(kickedName).hasSucceeded() == false)
 	{
 		ret << ":" << server.getServerName() << " 401 " << clientUser.getNickname() << " " << kickedName << " :No such nick";
@@ -103,7 +102,6 @@ void KickCommand::execute(Server& server, const int clientSocket, const char* bu
 	size_t channelIndexInKickedUser = kickedUserPack.second->getIndexOfJoinedChannel(channelName).getValue();
 	for (size_t i = 0; i <= channelIndexInKickedUser; ++i)
 	{
-		std::cout << "i = " << i << std::endl;
 		std::string exitChannelName = kickedUserPack.second->getJoinedChannelName(0);
 		server.exitUserInChannel(kickedUserPack.first, exitChannelName);
 		kickedUserPack.second->removeJoinedChannel(exitChannelName);

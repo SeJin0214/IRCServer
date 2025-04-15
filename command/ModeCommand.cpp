@@ -16,7 +16,6 @@
 
 MessageBetch ModeCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
 {
-	std::cout << "mode : " << buffer << std::endl;
 	assert(buffer != NULL);
 	MessageBetch msg;
 	User user = server.findUser(clientSocket).getValue();

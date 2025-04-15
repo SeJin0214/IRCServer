@@ -64,9 +64,6 @@ MessageBetch SendChannelMessageCommand::getMessageBetch(const Server& server, co
 		}
 		User user = server.findUser(clientSocket).getValue();
 		std::string who = CommonCommand::getPrefixMessage(user, clientSocket);
-
-		std::cout << msg << std::endl;
-		
 		retMsg.addMessage(userSockets[i], who + " PRIVMSG #" + channelName + " " + msg + "\r\n");
 	}
 	return retMsg;
