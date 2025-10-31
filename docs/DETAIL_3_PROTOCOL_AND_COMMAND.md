@@ -69,11 +69,12 @@ https://github.com/SeJin0214/IRCServer/blob/3274f7e8b6a36168284eaf8812ca7fcb171f
 https://github.com/SeJin0214/IRCServer/blob/3274f7e8b6a36168284eaf8812ca7fcb171f4363/core/Server.cpp#L184-L196
 
 getSpace는 Lobby, LoginSpace, Channel을 담아서 줍니다.  
-https://github.com/SeJin0214/IRCServer/blob/3274f7e8b6a36168284eaf8812ca7fcb171f4363/core/Server.cpp#L109
+https://github.com/SeJin0214/IRCServer/blob/3274f7e8b6a36168284eaf8812ca7fcb171f4363/core/Server.cpp#L109-L119
 
 <br>
 </details>  
 <br><br>
+
 
 
 
