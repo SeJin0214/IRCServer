@@ -3,7 +3,7 @@
 
 ## 프로토콜
 
-irc 클라이언트를 호환하기 위해서 irc 프로토콜로 처리해야 합니다. 
+irc 클라이언트를 호환하기 위해서 irc 프로토콜로 처리해야 합니다.  
 RFC 문서 [2811](https://datatracker.ietf.org/doc/html/rfc2811), [2812](https://datatracker.ietf.org/doc/html/rfc2812)  과 함께 irssi와 상용 irc 서버를 연결하고 tcpflow를 실행해보면서 세그먼트가 어떻게 주고받는지 확인했습니다. 
 
 <details>
@@ -74,6 +74,7 @@ https://github.com/SeJin0214/IRCServer/blob/3274f7e8b6a36168284eaf8812ca7fcb171f
 <br>
 </details>  
 <br><br>
+
 
 
 
