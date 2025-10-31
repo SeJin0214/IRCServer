@@ -56,5 +56,5 @@ IRC 클라이언트는 채널에 입장할 수 있고, 그 안에서 유저들�
 아래와 같은 구조를 같게 된 이유는 [DETAIL_3_PROTOCOL_AND_COMMAND](../docs/DETAIL_3_PROTOCOL_AND_COMMAND.md)와도 밀접한 관련이 있습니다.  
 
 중간 결과  
-![alt text](Images/midResult.png)
+<img width="381" height="202" alt="image" src="https://github.com/IRCServer/docs/Images/midResult.png" />
 
