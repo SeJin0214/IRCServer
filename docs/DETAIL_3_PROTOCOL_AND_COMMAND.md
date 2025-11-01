@@ -8,11 +8,11 @@ RFC 문서 [2811](https://datatracker.ietf.org/doc/html/rfc2811), [2812](https:/
 
 <details>
     <summary> irc 프로토콜 예시</summary>
-#PRIVMSG < ChannelName > <br>  
-#PRIVMSG < Nickname > <br>
-#JOIN < ChannelName > <br>
-#QUIT <br>
-#PART <br>
+PRIVMSG #ChannelName <br>  
+PRIVMSG Nickname <br>
+JOIN #ChannelName <br>
+QUIT <br>
+PART <br>
 <br>
 tcpflow로 확인한 세그먼트 <br>
 127.000.000.001.52636-127.000.000.001.06667: PRIVMSG #aaa :helloworldaaaaaaaaaaaaaaaaaaaaaaaaa <br>
@@ -74,6 +74,7 @@ https://github.com/SeJin0214/IRCServer/blob/3274f7e8b6a36168284eaf8812ca7fcb171f
 <br>
 </details>  
 <br><br>
+
 
 
 
