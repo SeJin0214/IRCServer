@@ -80,4 +80,7 @@ https://github.com/SeJin0214/IRCServer/blob/f76751beab8a610e79597646ed4c6dcfa2a4
 \$ make   
 \$ ./bot < PORT_NUMBER > < SERVER_PASSWORD > < NICKNAME > < USERNAME >
 
-// 실행 영상
+
+https://github.com/user-attachments/assets/857fbea4-9988-4924-9547-0935feb20660
+
+
