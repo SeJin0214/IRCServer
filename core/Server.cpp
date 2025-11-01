@@ -496,6 +496,7 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 {
 	const Space* space = findSpace(clientSocket);
 
+	std::cout << "[LOG][RECV] Server: |" << buffer << std::endl;
 	IOutgoingMessageProvider* outgoingMessageProvider = space->getOutgoingMessageProvider(buffer);
 	if (outgoingMessageProvider != NULL)
 	{
@@ -504,6 +505,7 @@ void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer
 		for (size_t i = 0; i < socketAndMessages.size(); ++i)
 		{
 			std::pair<int, std::string> socketAndMessage = socketAndMessages[i];
+			std::cout << "[LOG][SEND] Server: |" << socketAndMessage.second << std::endl;
 			sendToClient(socketAndMessage.first, socketAndMessage.second.c_str());
 		}
 	}
