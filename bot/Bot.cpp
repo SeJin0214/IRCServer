@@ -65,6 +65,7 @@ bool Bot::tryLogin(const char* password)
 
     struct timeval start;
     gettimeofday(&start, NULL);
+    
     struct timeval end;
     do
     {
@@ -131,6 +132,7 @@ void Bot::run()
         {
             handleQuit();
         }
+
         struct timeval current;
         gettimeofday(&current, NULL);
         if (current.tv_sec - timer.tv_sec > 1)
