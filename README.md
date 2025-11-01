@@ -21,10 +21,8 @@ http 서버를 만드는 프로젝트가 아닌 이 프로젝트를 선택했습
 - [DETAIL_3_PROTOCOL_AND_COMMAND](docs/DETAIL_3_PROTOCOL_AND_COMMAND.md)  
     - 커맨드 공통 인터페이스(CommonCommand) + 확장 클래스로 각 명령 모듈화   
     - 명령어 기능 구현: PASS, NICK, USER, PART, QUIK (본인 구현)  
-    - JOIN, TOPIC, MODE, KICK, INVITE, PRIVMSG (팀원 구현)  
-- [DETAIL_4_HANDLE_ERROR](docs/DETAIL_4_HANDLE_ERROR.md)  
-    - 에러 핸들링 : 인증 실패(잘못된 비밀번호 , 오랜 로그인 시간), 커맨드 오류(잘못된 명령어 또는 포맷)  
-- [DETAIL_5_BOT](docs/DETAIL_5_BOT.md)  
+    - JOIN, TOPIC, MODE, KICK, INVITE, PRIVMSG (팀원 구현)    
+- [DETAIL_4_BOT](docs/DETAIL_4_BOT.md)  
     - 봇 구현(채팅방에서 유저의 ! 명령어에 따라 행동)  
 
 
