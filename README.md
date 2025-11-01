@@ -23,7 +23,8 @@ http 서버를 만드는 프로젝트가 아닌 이 프로젝트를 선택했습
     - 명령어 기능 구현: PASS, NICK, USER, PART, QUIK (본인 구현)  
     - JOIN, TOPIC, MODE, KICK, INVITE, PRIVMSG (팀원 구현)    
 - [DETAIL_4_BOT](docs/DETAIL_4_BOT.md)  
-    - 봇 구현(채팅방에서 유저의 ! 명령어에 따라 행동)  
+    - 봇 구현(채팅방에서 유저의 ! 명령어에 따라 행동)
+    - 실행 영상 포함  
 
 
 ## 실행
