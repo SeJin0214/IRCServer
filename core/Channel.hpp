@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 18:19:57 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/15 15:32:01 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/05 02:47:54 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,13 @@ class Channel : public Space
 {
 
 public:
-	virtual ~Channel();
-	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const;
-	IExecutable* getExecutor(const char* buffer) const;
+	~Channel() override = default;
 	Channel(const std::string& title, const char* password);
+	Channel(const Channel&) = delete;
+	Channel& operator=(const Channel&) = delete;
+
+	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const override;
+	IExecutable* getExecutor(const char* buffer) const override;
 	bool operator<(const Channel& rhs) const;
 	std::string getTitle() const;
 	std::string getTopic() const;
@@ -42,8 +45,8 @@ public:
 	bool isModeActive(const eMode mode) const;
 	bool onMode(const int userSocket, const eMode mode);
 	bool offMode(const int userSocket, const eMode mode);
-	bool enterUser(const int clientSocket, User* user);
-	User* exitUserOrNull(const int clientSocket);
+	bool enterUser(const int clientSocket, User* user) override;
+	User* exitUserOrNull(const int clientSocket) override;
 	bool isOperator(const User& user) const;
 	bool isOperator(const int userSocket) const;
 	void setMaxMemberCount(unsigned int num);

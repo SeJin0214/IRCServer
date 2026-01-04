@@ -6,19 +6,12 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 19:13:06 by sejjeong          #+#    #+#             */
-/*   Updated: 2026/01/05 02:23:29 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/05 02:52:48 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cassert>
 #include "User.hpp"
-
-User::User()
-: mUsername("")
-, mNickname("")
-{
-
-}
 
 User::User(const std::string& username, const std::string& nickname)
 : mUsername(username)
@@ -27,18 +20,12 @@ User::User(const std::string& username, const std::string& nickname)
 
 }
 
-
 User::User(const User& other)
 : mJoinedChannels(other.mJoinedChannels)
 , mUsername(other.mUsername)
 , mNickname(other.mNickname)
 {
 	mBuffer << other.mBuffer.str();
-}
-
-User::~User()
-{
-
 }
 
 std::string User::getUsername() const

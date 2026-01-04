@@ -18,7 +18,7 @@ class IExecutable
 {
 
 public:
-	virtual ~IExecutable() {};
+	virtual ~IExecutable() = default;
 	virtual void execute(Server& server,  const int clientSocket, const char* buffer) = 0;
 
 };

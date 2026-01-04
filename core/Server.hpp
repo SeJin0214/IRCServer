@@ -27,6 +27,8 @@ class Server
 public:
 	Server(const char* port, const char* password);
 	~Server();
+	Server(const Server&) = delete;
+	Server& operator=(const Server&) = delete;
 	bool run();
 	Result<User> findUser(const int clientSocket) const;
 	Result<std::pair<int, User> > findUser(const std::string& nickname) const;

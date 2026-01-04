@@ -18,10 +18,11 @@ class LoggedInSpace : public Space
 {
 	
 public:
-	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const;
-	IExecutable* getExecutor(const char* buffer) const;
-	bool enterUser(const int clientSocket, User* user);
-	User* exitUserOrNull(const int clientSocket);
+	~LoggedInSpace() override = default;
+	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const override;
+	IExecutable* getExecutor(const char* buffer) const override;
+	bool enterUser(const int clientSocket, User* user) override;
+	User* exitUserOrNull(const int clientSocket) override;
 	void admitOrExile(Server& server);
 	/* setter */
 	bool trySetAuthenticated(const int clientSocket);

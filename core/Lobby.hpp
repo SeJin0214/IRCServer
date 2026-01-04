@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Lobby.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42gyeongsan>    +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 13:01:32 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/05 13:37:59 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/05 02:44:56 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ class Lobby : public Space
 {
 
 public:
-	virtual ~Lobby();
-	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const;
-	IExecutable* getExecutor(const char* buffer) const;
+	~Lobby() override = default;
+	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const override;
+	IExecutable* getExecutor(const char* buffer) const override;
 private:
 
 };

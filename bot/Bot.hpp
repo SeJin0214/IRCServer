@@ -20,6 +20,8 @@ class Bot
 public:
     Bot(const char* port, const char* nickname, const char* username);
     ~Bot();
+    Bot(const Bot&) = delete;
+    Bot& operator=(const Bot&) = delete;
     bool tryLogin(const char* password);
     void run();
 private:

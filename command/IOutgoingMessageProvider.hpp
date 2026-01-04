@@ -23,6 +23,6 @@
 class IOutgoingMessageProvider
 {
 public:
-	virtual ~IOutgoingMessageProvider() {};	
+	virtual ~IOutgoingMessageProvider() = default;	
 	virtual MessageBetch getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const = 0;
  };

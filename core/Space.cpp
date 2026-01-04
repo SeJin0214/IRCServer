@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Space.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:54 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/12 18:30:10 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/05 02:44:36 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,6 @@
 #include "SendChannelMessageCommand.hpp"
 #include "Space.hpp"
 #include "Util.hpp"
-
-Space::~Space()
-{
-	
-}
 
 /* getter */
 IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer) const
@@ -178,4 +173,3 @@ Result<std::pair<int, User*> > Space::findUser(const std::string& nickname) cons
 	Result<std::pair<int, User*> > result(socketAndUser, false);
 	return result;
 }
-

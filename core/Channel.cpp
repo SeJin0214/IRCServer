@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/15 15:32:01 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/05 02:59:42 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,6 @@ Channel::Channel(const std::string& title, const char* password)
 , mPassword(Util::generateHash65599(password))
 {
 	
-}
-
-Channel::~Channel()
-{
-
 }
 
 bool Channel::operator<(const Channel& rhs) const

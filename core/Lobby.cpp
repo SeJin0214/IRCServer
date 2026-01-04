@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Lobby.cpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:48:49 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/08 20:33:37 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/05 02:44:59 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,6 @@
 #include <string>
 #include "Lobby.hpp"
 #include "ErrorCommand.hpp"
-
-Lobby::~Lobby()
-{
-	
-}
 
 IOutgoingMessageProvider* Lobby::getOutgoingMessageProvider(const char* buffer) const
 {

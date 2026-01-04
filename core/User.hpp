@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 19:13:00 by sejjeong          #+#    #+#             */
-/*   Updated: 2026/01/05 02:23:34 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/05 02:52:51 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,11 @@ class User
 {
     
 public:
-    User();
+    User() = default;
     User(const User& user);
     User(const std::string& nickname, const std::string& username);
+    ~User() = default;
+
     std::string getUsername() const;
     std::string getNickname() const;
     size_t getJoinedChannelCount() const;
@@ -42,7 +44,6 @@ public:
     
 
     Result<std::string> getLastJoinedChannel() const;
-    ~User();
 
 private:
     std::vector<std::string> mJoinedChannels;

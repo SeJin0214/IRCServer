@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Space.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:51:10 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 13:19:25 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/05 02:51:27 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class IOutgoingMessageProvider;
 class Space
 {
 public:
-	virtual ~Space();
+	virtual ~Space() = default;
 	/* getter */
 	virtual IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const;
 	virtual IExecutable* getExecutor(const char* buffer) const;
@@ -38,7 +38,9 @@ public:
 	Result<std::pair<int, User*> > findUser(const std::string& nickname) const;
 
 protected:
-	Space() {};
+	Space() = default;
+	Space(const Space&) = delete;
+	Space& operator=(const Space&) = delete;
 	std::map<int, User*> mUsers;
   	std::string getCommandSection(const char* buffer) const;
 
