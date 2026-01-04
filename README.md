@@ -22,7 +22,11 @@ make
 ./ircserv 6667 <password>
 
 
-https://github.com/user-attachments/assets/60a9d745-d6e6-4fba-a552-e3a95d8b8099
+
+https://github.com/user-attachments/assets/daa38f11-f587-4c88-be74-181063d93134
+
+
+
 
 
 irssi 설치 방법  
