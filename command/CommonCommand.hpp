@@ -19,6 +19,6 @@
 class CommonCommand
 {
 public:
-	static std::string getHostIP(int sockfd);
+	static std::string getHostIP(const int sockfd);
 	static std::string getPrefixMessage(const User& user, const int clientSocket);
 };

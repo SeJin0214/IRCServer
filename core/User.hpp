@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 19:13:00 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 14:02:06 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/05 02:23:34 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,16 @@ public:
     std::vector<std::string> getJoinedChannels() const;
     void setNickname(const std::string& nickname);
     void setUsername(const std::string& username);
-    bool isInChannel(const std::string& title);
-    void addJoinedChannel(std::string& title);
+    bool isInChannel(const std::string& title) const;
+    void addJoinedChannel(const std::string& title);
     std::string flushBuffer();
     void appendStringInBuffer(const char* buffer);
     void removeLastJoinedChannel();
 
 
-    Result<size_t> getIndexOfJoinedChannel (const std::string& channelName);
-    void removeJoinedChannel(std::string channelName);
-    std::string getJoinedChannelName(size_t indexOfJoinedChannels);
+    Result<size_t> getIndexOfJoinedChannel (const std::string& channelName) const;
+    void removeJoinedChannel(const std::string& channelName);
+    std::string getJoinedChannelName(const size_t indexOfJoinedChannels) const;
     
 
     Result<std::string> getLastJoinedChannel() const;

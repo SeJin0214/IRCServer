@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   User.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 19:13:06 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 14:05:26 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/05 02:23:29 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void User::setUsername(const std::string& username)
 	mUsername = username;
 }
 
-bool User::isInChannel(const std::string& title)
+bool User::isInChannel(const std::string& title) const
 {
 	for (size_t i = 0; i < mJoinedChannels.size(); ++i)
 	{
@@ -95,7 +95,7 @@ void User::appendStringInBuffer(const char* buffer)
 	mBuffer << buffer;
 }
 
-void User::addJoinedChannel(std::string& title)
+void User::addJoinedChannel(const std::string& title)
 {
 	for (std::vector<std::string> :: iterator it = mJoinedChannels.begin(); it != mJoinedChannels.end(); ++it)
 	{
@@ -126,7 +126,7 @@ Result<std::string> User::getLastJoinedChannel() const
 	return Result<std::string>(mJoinedChannels.back(), true);
 }
 
-Result<size_t> User::getIndexOfJoinedChannel(const std::string& channelName)
+Result<size_t> User::getIndexOfJoinedChannel(const std::string& channelName) const
 {
 	for (size_t i = 0; i < mJoinedChannels.size(); ++i)
 	{
@@ -138,7 +138,7 @@ Result<size_t> User::getIndexOfJoinedChannel(const std::string& channelName)
 	return Result<size_t>(-1, false);
 }
 
-void User::removeJoinedChannel(std::string channelName)
+void User::removeJoinedChannel(const std::string& channelName)
 {
 	for (std::vector<std::string>::iterator it = mJoinedChannels.begin(); it != mJoinedChannels.end(); ++it)
 	{
@@ -150,7 +150,7 @@ void User::removeJoinedChannel(std::string channelName)
 	}
 }
 
-std::string User::getJoinedChannelName(size_t indexOfJoinedChannels)
+std::string User::getJoinedChannelName(const size_t indexOfJoinedChannels) const
 {
 	return (mJoinedChannels[indexOfJoinedChannels]);
 }

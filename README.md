@@ -47,3 +47,4 @@ sudo apt install -y irssi
 - [DETAIL_4_BOT](docs/DETAIL_4_BOT.md)  
     - 봇 구현(채팅방에서 유저의 ! 명령어에 따라 행동)
     - 실행 영상 포함  
+

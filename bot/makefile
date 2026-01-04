@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+         #
+#    By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/19 16:33:48 by sejjeong          #+#    #+#              #
-#    Updated: 2025/04/11 13:40:24 by sejjeong         ###   ########.fr        #
+#    Updated: 2026/01/05 02:25:59 by sejjeong         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = bot
 C++ = c++
-FLAGS= -Wall -Wextra -Werror -std=c++98 -g
+FLAGS= -Wall -Wextra -Werror
 
 RM = rm
 RM_FLAGS = -rf

@@ -40,7 +40,7 @@ Channel::~Channel()
 
 }
 
-bool Channel::operator<(const Channel& rhs)
+bool Channel::operator<(const Channel& rhs) const
 {
 	return mTitle < rhs.mTitle;
 }
@@ -63,12 +63,12 @@ unsigned int Channel::getPassword() const
 
 /* setter */
 
-void Channel::setPassword(std::string& password)
+void Channel::setPassword(const std::string& password)
 {
 	mPassword = Util::generateHash65599(password.c_str());
 }
 
-bool Channel::setTopic(const int clientSocket, std::string& topic)
+bool Channel::setTopic(const int clientSocket, const std::string& topic)
 {
 	if (isOperator(clientSocket) == false)
 	{
@@ -162,7 +162,7 @@ IExecutable* Channel::getExecutor(const char* buffer) const
 	return NULL;
 }
 
-std::string Channel::getActiveMode()
+std::string Channel::getActiveMode() const
 {
 	std::stringstream ss;
 	ss << "+n";
@@ -185,7 +185,7 @@ std::string Channel::getActiveMode()
 	return ss.str();
 }
 
-bool Channel::isPassword(std::string& password)
+bool Channel::isPassword(const std::string& password) const
 {
 	unsigned int	hash = 0;
 
@@ -200,7 +200,7 @@ bool Channel::isPassword(std::string& password)
 }
 
 
-bool Channel::isModeActive(const eMode mode)
+bool Channel::isModeActive(const eMode mode) const
 {
 	const unsigned char bitFlag = 1 << mode;
 	return (mModeFlag & bitFlag) != 0;
@@ -310,9 +310,9 @@ bool Channel::isOperator(const int userSocket) const
 	return false;
 }
 
-bool Channel::isInvited(std::string& invitedUser)
+bool Channel::isInvited(const std::string& invitedUser) const
 {
-	for (std::vector<std::string>::iterator it = mInvitedList.begin(); it != mInvitedList.end(); ++it)
+	for (std::vector<std::string>::const_iterator it = mInvitedList.begin(); it != mInvitedList.end(); ++it)
 	{
 		if (*it == invitedUser)
 		{
@@ -322,7 +322,7 @@ bool Channel::isInvited(std::string& invitedUser)
 	return false;
 }
 
-void Channel::enterInvitedList(std::string& invitedUser)
+void Channel::enterInvitedList(const std::string& invitedUser)
 {
 	if (isInvited(invitedUser) == true)
 	{	
@@ -331,7 +331,7 @@ void Channel::enterInvitedList(std::string& invitedUser)
 	mInvitedList.push_back(invitedUser);
 }
 
-void Channel::exitInvitedList(std::string& invitedUser)
+void Channel::exitInvitedList(const std::string& invitedUser)
 {
 	if (isInvited(invitedUser) == false)
 	{

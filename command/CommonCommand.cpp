@@ -19,7 +19,7 @@ std::string CommonCommand::getPrefixMessage(const User& user, const int clientso
 	return (":" + user.getNickname() + "!" + user.getUsername() + "@" + getHostIP(clientsocket));
 }
 
-std::string CommonCommand::getHostIP(int sockfd)
+std::string CommonCommand::getHostIP(const int sockfd)
 {
     struct sockaddr_storage addr;
     socklen_t addr_len = sizeof(addr);

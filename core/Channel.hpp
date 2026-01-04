@@ -23,23 +23,23 @@ public:
 	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const;
 	IExecutable* getExecutor(const char* buffer) const;
 	Channel(const std::string& title, const char* password);
-	bool operator<(const Channel& rhs);
+	bool operator<(const Channel& rhs) const;
 	std::string getTitle() const;
 	std::string getTopic() const;
-	bool setTopic(int clientSocket, std::string& topic);
+	bool setTopic(int clientSocket, const std::string& topic);
 	unsigned int getPassword() const;
 
-	void setPassword(std::string& password);
-	bool isPassword(std::string& password);
-	bool isInvited (std::string& invitedUser);
+	void setPassword(const std::string& password);
+	bool isPassword(const std::string& password) const;
+	bool isInvited(const std::string& invitedUser) const;
 
-	void enterInvitedList (std::string& invitedUser);
-	void exitInvitedList (std::string& invitedUser);
+	void enterInvitedList (const std::string& invitedUser);
+	void exitInvitedList (const std::string& invitedUser);
 	bool isAddUserAsAdmin(const std::string& userNickname);
 	void removeOperatorNicknames(const std::string& nickname);
 	void removeInvitedLists(const std::string& nickname);
-	std::string getActiveMode();
-	bool isModeActive(const eMode mode);
+	std::string getActiveMode() const;
+	bool isModeActive(const eMode mode) const;
 	bool onMode(const int userSocket, const eMode mode);
 	bool offMode(const int userSocket, const eMode mode);
 	bool enterUser(const int clientSocket, User* user);

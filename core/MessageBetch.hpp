@@ -19,7 +19,7 @@ class MessageBetch
 {
 public :
     std::vector<std::pair<int, std::string> > getMessage() const;
-    void addMessage(int socket, std::string msg);
+    void addMessage(const int socket, const std::string& msg);
 private :
     std::vector <std::pair<int, std::string> > mMsg;
 };
