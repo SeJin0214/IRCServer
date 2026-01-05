@@ -13,6 +13,7 @@
 #include <cassert>
 #include <cstring>
 #include <sstream>
+#include <unordered_map>
 #include "ListCommand.hpp"
 
 MessageBetch ListCommand::getMessageBetch(const Server& server, const int clientSocket, const char* buffer) const
@@ -26,12 +27,12 @@ MessageBetch ListCommand::getMessageBetch(const Server& server, const int client
     std::stringstream ss;
     ss << ":" << serverName << " 321 " << nickname << " Channel :Users Name\n";
     
-    std::vector<const Channel*> channels = server.loadChannels();
+    const std::unordered_map<std::string, Channel*>& channels = server.loadChannels();
     
-    for (size_t i = 0; i < channels.size(); ++i)
+    for (std::unordered_map<std::string, Channel*>::const_iterator it = channels.begin(); it != channels.end(); ++it)
     {
-        int userCount = channels[i]->getUserCount();
-        std::string title = channels[i]->getTitle();
+        int userCount = it->second->getUserCount();
+        std::string title = it->second->getTitle();
         ss << ":" << serverName << " 322 " << nickname << " #" << title << " " << userCount << " :[]\n";
     }
     ss << ":" << serverName << " 323 " << nickname << " :End of channel list.";

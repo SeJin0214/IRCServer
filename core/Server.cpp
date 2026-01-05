@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/12 17:21:25 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/06 05:36:18 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,9 +109,9 @@ Server::~Server()
 std::vector<Space*> Server::getSpaces()
 {
 	std::vector<Space*> spaces;
-	for (size_t i = 0; i < mChannels.size(); ++i)
+	for (std::unordered_map<std::string, Channel*>::iterator it = mChannels.begin(); it != mChannels.end(); ++it)
 	{
-		spaces.push_back(mChannels[i]);
+		spaces.push_back(it->second);
 	}
 	spaces.push_back(&mLobby);
 	spaces.push_back(&mLoggedInSpace);
@@ -121,9 +121,9 @@ std::vector<Space*> Server::getSpaces()
 std::vector<const Space *> Server::getSpaces() const
 {
 	std::vector<const Space*> spaces;
-	for (size_t i = 0; i < mChannels.size(); ++i)
+	for (std::unordered_map<std::string, Channel*>::const_iterator it = mChannels.begin(); it != mChannels.end(); ++it)
 	{
-		spaces.push_back(mChannels[i]);
+		spaces.push_back(it->second);
 	}
 	spaces.push_back(&mLobby);
 	spaces.push_back(&mLoggedInSpace);
@@ -216,15 +216,16 @@ Channel* Server::createChannel(const std::string& title)
 	assert(findChannelOrNull(title) == NULL 
 	|| findChannelOrNull(title)->getTitle() != title);
 	Channel* newChannel = new Channel(title, "");
-	mChannels.push_back(newChannel);
-	return newChannel;
+	std::pair<std::unordered_map<std::string, Channel*>::iterator, bool> inserted = mChannels.insert(std::make_pair(title, newChannel));
+	assert(inserted.second);
+	return inserted.first->second;
 }
 
 Result<User> Server::findUser(const int clientSocket) const
 {
-	for (size_t i = 0; i < mChannels.size(); ++i)
+	for (std::unordered_map<std::string, Channel*>::const_iterator it = mChannels.begin(); it != mChannels.end(); ++it)
 	{
-		User* user = mChannels[i]->findUserOrNull(clientSocket);
+		User* user = it->second->findUserOrNull(clientSocket);
 		if (user != NULL)
 		{
 			Result<User> result(*user, true);
@@ -243,9 +244,9 @@ Result<User> Server::findUser(const int clientSocket) const
 
 Result<std::pair<int, User> > Server::findUser(const std::string& nickname) const
 {
-	for (size_t i = 0; i < mChannels.size(); ++i)
+	for (std::unordered_map<std::string, Channel*>::const_iterator it = mChannels.begin(); it != mChannels.end(); ++it)
 	{
-		Result<std::pair<int, User*> > userToFind = mChannels[i]->findUser(nickname);
+		Result<std::pair<int, User*> > userToFind = it->second->findUser(nickname);
 		if (userToFind.hasSucceeded())
 		{
 			std::pair<int, User*> pointerPair(userToFind.getValue());
@@ -269,22 +270,19 @@ Result<std::pair<int, User> > Server::findUser(const std::string& nickname) cons
 
 Channel* Server::findChannelOrNull(const std::string& title) const
 {
-	for (size_t i = 0; i < mChannels.size(); ++i)
+	std::unordered_map<std::string, Channel*>::const_iterator it = mChannels.find(title);
+	if (it == mChannels.end())
 	{
-		Channel* channel = mChannels[i];
-		if (channel->getTitle() == title)
-		{
-			return channel;
-		}
+		return NULL;
 	}
-	return NULL;
+	return it->second;
 }
 
 Channel* Server::findChannelOrNull(const int clientSocket) const
 {
-	for (size_t i = 0; i < mChannels.size(); ++i)
+	for (std::unordered_map<std::string, Channel*>::const_iterator it = mChannels.begin(); it != mChannels.end(); ++it)
 	{
-		Channel* channel = mChannels[i];
+		Channel* channel = it->second;
 		User* result = channel->findUserOrNull(clientSocket);
 		if (result != NULL)
 		{
@@ -357,16 +355,7 @@ User* Server::exitUserInChannel(const int clientSocket, const std::string& title
 	}
 	if (channel->getUserCount() == 0)
 	{
-		std::vector<Channel *>::iterator it = mChannels.begin();
-		while (it != mChannels.end())
-		{
-			if ((*it)->getTitle() == channel->getTitle())
-			{
-				mChannels.erase(it);
-				break;
-			}
-			++it;
-		}
+		mChannels.erase(title);
 		delete channel;
 	}
 	if (user->getJoinedChannelCount() == 0)
@@ -547,12 +536,7 @@ bool Server::sendToClient(const int clientSocket, const char* message)
 
 std::vector<const Channel*> Server::loadChannels() const
 {
-	std::vector<const Channel*> channels;
-	for (size_t i = 0; i < mChannels.size(); ++i)
-	{
-		channels.push_back(mChannels[i]);
-	}
-	return channels;
+	return mChannels;
 }
 
 bool Server::isInvalidPassword(const char* password) const
@@ -586,12 +570,12 @@ void Server::exitAllSpaces(const int clientSocket)
 		}
 	}
 
-	std::vector<Channel *>::iterator it = mChannels.begin();
+	std::unordered_map<std::string, Channel*>::iterator it = mChannels.begin();
 	while (it != mChannels.end())
 	{
-		if ((*it)->getUserCount() == 0)
+		if (it->second->getUserCount() == 0)
 		{
-			Channel* channel = *it;
+			Channel* channel = it->second;
 			it = mChannels.erase(it);
 			delete channel;
 		}

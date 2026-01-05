@@ -3,17 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:49:47 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/12 15:25:15 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/06 05:06:56 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <sys/socket.h>
 #include <sys/types.h>
-#include <map>
+#include <unordered_map>
+#include <vector>
 #include "Channel.hpp"
 #include "Lobby.hpp"
 #include "LoggedInSpace.hpp"
@@ -29,6 +30,7 @@ public:
 	~Server();
 	Server(const Server&) = delete;
 	Server& operator=(const Server&) = delete;
+	
 	bool run();
 	Result<User> findUser(const int clientSocket) const;
 	Result<std::pair<int, User> > findUser(const std::string& nickname) const;
@@ -48,13 +50,13 @@ public:
 	
 	void exitAllSpaces(const int clientSocket);
 	Channel* findChannelOrNull(const std::string& title) const;
-	std::vector<const Channel*> loadChannels() const;
+	const std::unordered_map<std::string, Channel*>& loadChannels() const;
 	bool isDuplicatedNickname(const char* buffer) const;
 	
 private:
 	Lobby mLobby;
 	LoggedInSpace mLoggedInSpace;
-	std::vector<Channel *> mChannels;
+	std::unordered_map<std::string, Channel*> mChannels;
 	std::string mName;
 	int mServerSocket;
 	bool mbRunning;
