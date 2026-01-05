@@ -28,17 +28,17 @@ User::User(const User& other)
 	mBuffer << other.mBuffer.str();
 }
 
-std::string User::getUsername() const
+const std::string& User::getUsername() const
 { 
 	return mUsername;
 }
 
-std::string User::getNickname() const
+const std::string& User::getNickname() const
 { 
 	return mNickname;
 }
 
-std::vector<std::string> User::getJoinedChannels() const
+const std::vector<std::string>& User::getJoinedChannels() const
 {
 	return mJoinedChannels;
 }
@@ -137,7 +137,7 @@ void User::removeJoinedChannel(const std::string& channelName)
 	}
 }
 
-std::string User::getJoinedChannelName(const size_t indexOfJoinedChannels) const
+const std::string& User::getJoinedChannelName(const size_t indexOfJoinedChannels) const
 {
 	return (mJoinedChannels[indexOfJoinedChannels]);
 }

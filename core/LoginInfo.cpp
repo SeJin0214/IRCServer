@@ -20,12 +20,12 @@ LoginInfo::LoginInfo()
 	gettimeofday(&mStartTime, NULL);
 }
 
-std::string LoginInfo::getUsername() const
+const std::string& LoginInfo::getUsername() const
 { 
 	return mUsername;
 }
 
-std::string LoginInfo::getNickname() const
+const std::string& LoginInfo::getNickname() const
 { 
 	return mNickname;
 }

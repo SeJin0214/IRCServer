@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2026/01/06 05:36:18 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/06 06:05:19 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include <unistd.h>
 #include <netinet/in.h>
 #include <set>
+#include <unordered_map>
 #include "Server.hpp"
 #include "Space.hpp"
 #include "Util.hpp"
@@ -534,7 +535,8 @@ bool Server::sendToClient(const int clientSocket, const char* message)
 	return (true);
 }
 
-std::vector<const Channel*> Server::loadChannels() const
+
+const std::unordered_map<std::string, Channel*>& Server::loadChannels() const
 {
 	return mChannels;
 }

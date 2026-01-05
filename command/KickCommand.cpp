@@ -102,7 +102,7 @@ void KickCommand::execute(Server& server, const int clientSocket, const char* bu
 	size_t channelIndexInKickedUser = kickedUserPack.second->getIndexOfJoinedChannel(channelName).getValue();
 	for (size_t i = 0; i <= channelIndexInKickedUser; ++i)
 	{
-		std::string exitChannelName = kickedUserPack.second->getJoinedChannelName(0);
+		const std::string& exitChannelName = kickedUserPack.second->getJoinedChannelName(0);
 		server.exitUserInChannel(kickedUserPack.first, exitChannelName);
 		kickedUserPack.second->removeJoinedChannel(exitChannelName);
 	}

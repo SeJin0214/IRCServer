@@ -19,8 +19,8 @@ class LoginInfo
 
 public:
 	LoginInfo();
-	std::string getUsername() const;
-    std::string getNickname() const;
+	const std::string& getUsername() const;
+    const std::string& getNickname() const;
     bool hasNickname() const;
     bool hasUsername() const;
     bool isPassed() const;

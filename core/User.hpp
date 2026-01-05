@@ -25,10 +25,10 @@ public:
     User(const std::string& nickname, const std::string& username);
     ~User() = default;
 
-    std::string getUsername() const;
-    std::string getNickname() const;
+    const std::string& getUsername() const;
+    const std::string& getNickname() const;
     size_t getJoinedChannelCount() const;
-    std::vector<std::string> getJoinedChannels() const;
+    const std::vector<std::string>& getJoinedChannels() const;
     void setNickname(const std::string& nickname);
     void setUsername(const std::string& username);
     bool isInChannel(const std::string& title) const;
@@ -40,7 +40,7 @@ public:
 
     Result<size_t> getIndexOfJoinedChannel (const std::string& channelName) const;
     void removeJoinedChannel(const std::string& channelName);
-    std::string getJoinedChannelName(const size_t indexOfJoinedChannels) const;
+    const std::string& getJoinedChannelName(const size_t indexOfJoinedChannels) const;
     
 
     Result<std::string> getLastJoinedChannel() const;
