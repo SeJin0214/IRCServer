@@ -34,7 +34,7 @@ public:
 	bool run();
 	Result<User> findUser(const int clientSocket) const;
 	Result<std::pair<int, User> > findUser(const std::string& nickname) const;
-	std::string getServerName() const;
+	const std::string& getServerName() const;
 	unsigned int getPassword() const;
 	bool trySetAuthenticatedInLoggedSpace(const int clientSocket);
 	bool trySetNicknameInLoggedSpace(const int clientSocket, const std::string& nickname);

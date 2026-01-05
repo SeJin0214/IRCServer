@@ -131,7 +131,7 @@ std::vector<const Space *> Server::getSpaces() const
 }
 
 /* getter */
-std::string Server::getServerName() const
+const std::string& Server::getServerName() const
 {
 	return mName;
 }
