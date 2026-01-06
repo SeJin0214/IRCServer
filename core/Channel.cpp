@@ -6,24 +6,14 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:50:15 by sejjeong          #+#    #+#             */
-/*   Updated: 2026/01/05 02:59:42 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/06 09:31:45 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <algorithm>
 #include <cassert>
-#include <cstring>
 #include <sstream>
-#include "DirectMessageCommand.hpp"
-#include "ErrorCommand.hpp"
-#include "InviteCommand.hpp"
-#include "KickCommand.hpp"
-#include "ModeCommand.hpp"
-#include "PartCommand.hpp"
-#include "TopicCommand.hpp"
-#include "WhoCommand.hpp"
-#include "TopicCommand.hpp"
 #include "Channel.hpp"
+#include "CommandRegistry.hpp"
 #include "Util.hpp"
 #include "Result.hpp"
 
@@ -73,88 +63,32 @@ bool Channel::setTopic(const int clientSocket, const std::string& topic)
 	return true;
 }
 
-IOutgoingMessageProvider* Channel::getOutgoingMessageProvider(const char* buffer) const
+std::shared_ptr<IOutgoingMessageProvider> Channel::getOutgoingMessageProvider(const char* buffer) const
 {
 	assert(buffer != NULL);
 
-	IOutgoingMessageProvider* provider = Space::getOutgoingMessageProvider(buffer);
-	if (provider != NULL)
+	std::string command = getCommandSection(buffer);
+	CommandRegistry& instance = CommandRegistry::getInstance();
+	Result<std::shared_ptr<IOutgoingMessageProvider> > result = instance.getProviderInChannel(command);
+	if (result.hasSucceeded())
 	{
-		return provider;
+		return result.getValue();
 	}
-	std::stringstream ss(buffer);
-	std::string command;
-	std::getline(ss, command, ' ');
-	if (command == "MODE")
-	{
-		std::stringstream ss(buffer);
-		std::string command;
-		std::getline(ss, command, ' ');
-		std::getline(ss, command, ' ');
-		if (command[0] == '#')
-		{
-			return new ModeCommand();
-		}
-		else
-		{
-			return new ErrorCommand();
-		}
-	}
-	else if (command == "PART")
-	{
-		return new PartCommand();
-	}
-	else if (command == "INVITE")
-	{
-		return new InviteCommand();
-	}
-	else if (command == "TOPIC")
-	{
-		return new TopicCommand();
-	}
-	else if (command == "KICK")
-	{
-		return new KickCommand();
-	}
-	else if (command == "WHO")
-	{
-		return new WhoCommand();
-	}
-	return new ErrorCommand();
+	return std::shared_ptr<IOutgoingMessageProvider>();
 }
 
-IExecutable* Channel::getExecutor(const char* buffer) const
+std::shared_ptr<IExecutable> Channel::getExecutor(const char* buffer) const
 {
 	assert(buffer != NULL);
 	
-	IExecutable* executor = Space::getExecutor(buffer);
-	if (executor != NULL)
-	{
-		return executor;
-	}
-
 	std::string command = getCommandSection(buffer);
-	if (command == "MODE")
+	CommandRegistry& instance = CommandRegistry::getInstance();
+	Result<std::shared_ptr<IExecutable> > result = instance.getExecutorInChannel(command);
+	if (result.hasSucceeded())
 	{
-		return new ModeCommand();
+		return result.getValue();
 	}
-	else if (command == "PART")
-	{
-		return new PartCommand();
-	}
-	else if (command == "KICK")
-	{
-		return new KickCommand();
-	}
-	else if (command == "INVITE")
-	{
-		return new InviteCommand();
-	}
-	else if (command == "TOPIC")
-	{
-		return new TopicCommand();
-	}
-	return NULL;
+	return std::shared_ptr<IExecutable>();
 }
 
 std::string Channel::getActiveMode() const

@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 19:13:00 by sejjeong          #+#    #+#             */
-/*   Updated: 2026/01/05 02:52:51 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/06 09:32:48 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ public:
     Result<size_t> getIndexOfJoinedChannel (const std::string& channelName) const;
     void removeJoinedChannel(const std::string& channelName);
     const std::string& getJoinedChannelName(const size_t indexOfJoinedChannels) const;
-    
-
     Result<std::string> getLastJoinedChannel() const;
 
 private:

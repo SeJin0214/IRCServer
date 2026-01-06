@@ -24,8 +24,8 @@ public:
 	Channel(const Channel&) = delete;
 	Channel& operator=(const Channel&) = delete;
 
-	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const override;
-	IExecutable* getExecutor(const char* buffer) const override;
+	std::shared_ptr<IOutgoingMessageProvider> getOutgoingMessageProvider(const char* buffer) const override;
+	std::shared_ptr<IExecutable> getExecutor(const char* buffer) const override;
 	bool operator<(const Channel& rhs) const;
 	std::string getTitle() const;
 	std::string getTopic() const;

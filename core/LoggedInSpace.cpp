@@ -3,60 +3,46 @@
 /*                                                        :::      ::::::::   */
 /*   LoggedInSpace.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sejjeong <sejjeong@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 17:13:46 by sejjeong          #+#    #+#             */
-/*   Updated: 2025/04/10 14:18:21 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/06 09:32:21 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cassert>
-#include <cstring>
-#include "ErrorCommand.hpp"
+#include "Server.hpp"
 #include "LoggedInSpace.hpp"
-#include "NickCommand.hpp"
-#include "UserCommand.hpp"
-#include "PassCommand.hpp"
-#include "QuitCommand.hpp"
+#include "CommandRegistry.hpp"
 
-IOutgoingMessageProvider* LoggedInSpace::getOutgoingMessageProvider(const char *buffer) const
+std::shared_ptr<IOutgoingMessageProvider> LoggedInSpace::getOutgoingMessageProvider(const char *buffer) const
 {
 	assert(buffer != NULL);
 
 	std::string command = getCommandSection(buffer);
-	if (command == "NICK")
+
+	CommandRegistry& instance = CommandRegistry::getInstance();
+	Result<std::shared_ptr<IOutgoingMessageProvider> > result = instance.getProviderInLoggedInSpace(command);
+	if (result.hasSucceeded())
 	{
-		return new NickCommand();
+		return result.getValue();
 	}
-	else if (command == "QUIT")
-	{
-		return new QuitCommand();
-	}
-	return NULL;
+	return std::shared_ptr<IOutgoingMessageProvider>();
 }
 
-IExecutable* LoggedInSpace::getExecutor(const char *buffer) const
+std::shared_ptr<IExecutable> LoggedInSpace::getExecutor(const char *buffer) const
 {
 	assert(buffer != NULL);
 
 	std::string command = getCommandSection(buffer);
-	if (command == "PASS")
+
+	CommandRegistry& instance = CommandRegistry::getInstance();
+	Result<std::shared_ptr<IExecutable> > result = instance.getExecutorInLoggedInSpace(command);
+	if (result.hasSucceeded())
 	{
-		return new PassCommand();
+		return result.getValue();
 	}
-	else if (command == "USER")
-	{
-		return new UserCommand();
-	}
-	else if (command == "NICK")
-	{
-		return new NickCommand();
-	}
-	else if (command == "QUIT")
-	{
-		return new QuitCommand();
-	}
-	return NULL;
+	return std::shared_ptr<IExecutable>();
 }
 
 void LoggedInSpace::admitOrExile(Server& server)

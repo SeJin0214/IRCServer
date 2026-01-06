@@ -6,35 +6,38 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 10:48:49 by sejjeong          #+#    #+#             */
-/*   Updated: 2026/01/05 02:44:59 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/06 09:12:08 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <cassert>
-#include <cstring>
-#include <string>
+#include <sstream>
 #include "Lobby.hpp"
-#include "ErrorCommand.hpp"
+#include "CommandRegistry.hpp"
 
-IOutgoingMessageProvider* Lobby::getOutgoingMessageProvider(const char* buffer) const
+std::shared_ptr<IOutgoingMessageProvider> Lobby::getOutgoingMessageProvider(const char* buffer) const
 {
 	assert(buffer != NULL);
-	IOutgoingMessageProvider* provider = Space::getOutgoingMessageProvider(buffer);
-	if (provider != NULL)
+	std::string command = getCommandSection(buffer);
+
+	CommandRegistry& instance = CommandRegistry::getInstance();
+	Result<std::shared_ptr<IOutgoingMessageProvider> > result = instance.getProviderInLobby(command);
+	if (result.hasSucceeded())
 	{
-		return provider;
+		return result.getValue();
 	}
-	return new ErrorCommand();
+	return std::shared_ptr<IOutgoingMessageProvider>();
 }
 
-IExecutable* Lobby::getExecutor(const char* buffer) const
+std::shared_ptr<IExecutable> Lobby::getExecutor(const char* buffer) const
 {
 	assert(buffer != NULL);
-	IExecutable* executor = Space::getExecutor(buffer);
-	if (executor != NULL)
-	{
-		return executor;
-	}
-	return NULL;
 
+	CommandRegistry& instance = CommandRegistry::getInstance();
+	Result<std::shared_ptr<IExecutable> > result = instance.getExecutorInLobby(getCommandSection(buffer));
+	if (result.hasSucceeded())
+	{
+		return result.getValue();
+	}
+	return std::shared_ptr<IExecutable>();
 }

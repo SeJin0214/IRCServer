@@ -26,6 +26,7 @@ INCLUDE = -I $(CORE_DIR) -I $(COMMAND_DIR) -I $(PARSER_DIR)
 
 SRCS = $(SRCS_DIR)/main.cpp \
 		$(CORE_DIR)/Channel.cpp \
+		$(CORE_DIR)/CommandRegistry.cpp \
 		$(CORE_DIR)/Lobby.cpp \
 		$(CORE_DIR)/LoggedInSpace.cpp \
 		$(CORE_DIR)/LoginInfo.cpp \

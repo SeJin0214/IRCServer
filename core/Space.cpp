@@ -12,73 +12,8 @@
 
 #include <cassert>
 #include <sstream>
-#include <cstring>
-#include "DirectMessageCommand.hpp"
-#include "IOutgoingMessageProvider.hpp"
-#include "ListCommand.hpp"
-#include "JoinCommand.hpp"
-#include "QuitCommand.hpp"
-#include "TopicCommand.hpp"
-#include "SendChannelMessageCommand.hpp"
 #include "Space.hpp"
 #include "Util.hpp"
-
-/* getter */
-IOutgoingMessageProvider* Space::getOutgoingMessageProvider(const char* buffer) const
-{
-	assert(buffer != NULL);
-
-	std::string command = getCommandSection(buffer);
-	if (command == "PRIVMSG")
-	{
-		std::stringstream ss(buffer);
-		std::string channel;
-		std::getline(ss, channel, ' ');
-		std::getline(ss, channel, ' ');
-		if (channel[0] == '#')
-		{
-			return new SendChannelMessageCommand();
-		}
-		else
-		{
-			return new DirectMessageCommand();
-		}
-	}
-	else if (command == "QUIT")
-	{
-		return new QuitCommand();
-	}
-	else if (command == "JOIN")
-	{
-		return new JoinCommand();
-	}
-	else if (command == "TOPIC")
-	{
-		return new TopicCommand();
-	}
-	else if (command == "LIST")
-	{
-		return new ListCommand();
-	}
-	
-	return NULL;
-}
-
-IExecutable* Space::getExecutor(const char* buffer) const
-{
-	assert(buffer != NULL);
-	std::string command = getCommandSection(buffer);
-	
-	if (command == "QUIT")
-	{
-		return new QuitCommand();
-	}
-	else if (command == "JOIN")
-	{
-		return new JoinCommand();
-	}
-	return NULL;
-}
 
 std::string Space::getCommandSection(const char* buffer) const
 {

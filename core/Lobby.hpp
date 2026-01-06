@@ -18,8 +18,8 @@ class Lobby : public Space
 
 public:
 	~Lobby() override = default;
-	IOutgoingMessageProvider* getOutgoingMessageProvider(const char* buffer) const override;
-	IExecutable* getExecutor(const char* buffer) const override;
+	std::shared_ptr<IOutgoingMessageProvider> getOutgoingMessageProvider(const char* buffer) const override;
+	std::shared_ptr<IExecutable> getExecutor(const char* buffer) const override;
 private:
 
 };
