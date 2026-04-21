@@ -27,15 +27,15 @@ CommandRegistry& CommandRegistry::getInstance()
 CommandRegistry::CommandRegistry()
 {
     {
-        loggedInSpaceProviders.insert(std::make_pair("NICK", std::make_shared<NickCommand>()));
-        loggedInSpaceProviders.insert(std::make_pair("QUIT", std::make_shared<QuitCommand>()));
+        AuthSpaceProviders.insert(std::make_pair("NICK", std::make_shared<NickCommand>()));
+        AuthSpaceProviders.insert(std::make_pair("QUIT", std::make_shared<QuitCommand>()));
     }
 
     {
-        loggedInSpaceExecutors.insert(std::make_pair("PASS", std::make_shared<PassCommand>()));
-        loggedInSpaceExecutors.insert(std::make_pair("USER", std::make_shared<UserCommand>()));
-        loggedInSpaceExecutors.insert(std::make_pair("NICK", std::make_shared<NickCommand>()));
-        loggedInSpaceExecutors.insert(std::make_pair("QUIT", std::make_shared<QuitCommand>()));
+        AuthSpaceExecutors.insert(std::make_pair("PASS", std::make_shared<PassCommand>()));
+        AuthSpaceExecutors.insert(std::make_pair("USER", std::make_shared<UserCommand>()));
+        AuthSpaceExecutors.insert(std::make_pair("NICK", std::make_shared<NickCommand>()));
+        AuthSpaceExecutors.insert(std::make_pair("QUIT", std::make_shared<QuitCommand>()));
     }
 
     {
@@ -86,10 +86,10 @@ Result<std::shared_ptr<IOutgoingMessageProvider> > CommandRegistry::getProviderI
     return Result<std::shared_ptr<IOutgoingMessageProvider> >(it->second, true);
 }
 
-Result<std::shared_ptr<IOutgoingMessageProvider> > CommandRegistry::getProviderInLoggedInSpace(const std::string& command) const
+Result<std::shared_ptr<IOutgoingMessageProvider> > CommandRegistry::getProviderInAuthSpace(const std::string& command) const
 {
-    std::unordered_map<std::string, std::shared_ptr<IOutgoingMessageProvider> >::const_iterator it = loggedInSpaceProviders.find(command);
-    if (it == loggedInSpaceProviders.end())
+    std::unordered_map<std::string, std::shared_ptr<IOutgoingMessageProvider> >::const_iterator it = AuthSpaceProviders.find(command);
+    if (it == AuthSpaceProviders.end())
     {
         return Result<std::shared_ptr<IOutgoingMessageProvider> >(std::shared_ptr<IOutgoingMessageProvider>(), false);
     }
@@ -116,10 +116,10 @@ Result<std::shared_ptr<IExecutable> > CommandRegistry::getExecutorInChannel(cons
     return Result<std::shared_ptr<IExecutable> >(it->second, true);
 }
 
-Result<std::shared_ptr<IExecutable> > CommandRegistry::getExecutorInLoggedInSpace(const std::string& command) const
+Result<std::shared_ptr<IExecutable> > CommandRegistry::getExecutorInAuthSpace(const std::string& command) const
 {
-    std::unordered_map<std::string, std::shared_ptr<IExecutable> >::const_iterator it = loggedInSpaceExecutors.find(command);
-    if (it == loggedInSpaceExecutors.end())
+    std::unordered_map<std::string, std::shared_ptr<IExecutable> >::const_iterator it = AuthSpaceExecutors.find(command);
+    if (it == AuthSpaceExecutors.end())
     {
         return Result<std::shared_ptr<IExecutable> >(std::shared_ptr<IExecutable>(), false);
     }

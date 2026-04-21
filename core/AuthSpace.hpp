@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   LoggedInSpace.hpp                                  :+:      :+:    :+:   */
+/*   AuthSpace.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -16,11 +16,11 @@
 
 class Server;
 
-class LoggedInSpace : public Space
+class AuthSpace : public Space
 {
 	
 public:
-	~LoggedInSpace() override = default;
+	~AuthSpace() override = default;
 	std::shared_ptr<IOutgoingMessageProvider> getOutgoingMessageProvider(const char* buffer) const override;
 	std::shared_ptr<IExecutable> getExecutor(const char* buffer) const override;
 	bool enterUser(const int clientSocket, User* user) override;

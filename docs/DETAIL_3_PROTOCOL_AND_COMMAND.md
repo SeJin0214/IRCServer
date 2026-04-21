@@ -53,7 +53,7 @@ https://github.com/SeJin0214/IRCServer/blob/3274f7e8b6a36168284eaf8812ca7fcb171f
 
 <details> 
     <summary> LoginSpace 매핑 코드 </summary>
-https://github.com/SeJin0214/IRCServer/blob/3274f7e8b6a36168284eaf8812ca7fcb171f4363/core/LoggedInSpace.cpp#L42-L59
+https://github.com/SeJin0214/IRCServer/blob/3274f7e8b6a36168284eaf8812ca7fcb171f4363/core/AuthSpace.cpp#L42-L59
     <br>
 </details>  
 <br>

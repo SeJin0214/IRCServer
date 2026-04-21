@@ -6,7 +6,7 @@
 /*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/24 12:40:43 by sejjeong          #+#    #+#             */
-/*   Updated: 2026/01/06 09:18:29 by sejjeong         ###   ########.fr       */
+/*   Updated: 2026/01/06 13:25:45 by sejjeong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ std::vector<Space*> Server::getSpaces()
 		spaces.push_back(it->second);
 	}
 	spaces.push_back(&mLobby);
-	spaces.push_back(&mLoggedInSpace);
+	spaces.push_back(&mAuthSpace);
 	return spaces;
 }
 
@@ -129,7 +129,7 @@ std::vector<const Space *> Server::getSpaces() const
 		spaces.push_back(it->second);
 	}
 	spaces.push_back(&mLobby);
-	spaces.push_back(&mLoggedInSpace);
+	spaces.push_back(&mAuthSpace);
 	return spaces;
 }
 
@@ -298,17 +298,17 @@ Channel* Server::findChannelOrNull(const int clientSocket) const
  
 bool Server::trySetAuthenticatedInLoggedSpace(const int clientSocket)
 {
-	return mLoggedInSpace.trySetAuthenticated(clientSocket);
+	return mAuthSpace.trySetAuthenticated(clientSocket);
 }
 
 bool Server::trySetNicknameInLoggedSpace(const int clientSocket, const std::string& nickname)
 {
-	return mLoggedInSpace.trySetNickname(clientSocket, nickname);
+	return mAuthSpace.trySetNickname(clientSocket, nickname);
 }
 
 bool Server::trySetUsernameInLoggedSpace(const int clientSocket, const std::string& username)
 {
-	return mLoggedInSpace.trySetUsername(clientSocket, username);
+	return mAuthSpace.trySetUsername(clientSocket, username);
 }
 
 void Server::loginToServer(const int clientSocket, User* user)
@@ -417,7 +417,7 @@ bool Server::run()
 			}
 		}
 		
-		mLoggedInSpace.admitOrExile(*this);
+		mAuthSpace.admitOrExile(*this);
 	}
 	return (true);
 }
@@ -433,7 +433,7 @@ void Server::acceptClient()
 		assert(false);
 		return;
 	}
-	mLoggedInSpace.enterUser(clientSocket, new User());
+	mAuthSpace.enterUser(clientSocket, new User());
 }
 
 void Server::handleClientMessage(const int clientSocket)
@@ -443,6 +443,7 @@ void Server::handleClientMessage(const int clientSocket)
 	const int readLength = recv(clientSocket, buffer, MAX_BUFFER - 1, 0);
 	if (readLength == 0)
 	{
+		leaveServer(clientSocket);
 		return;
 	}
 	else if (readLength == MAX_BUFFER - 1)
@@ -480,11 +481,11 @@ void Server::handleClientMessage(const int clientSocket)
 		{
 			line[line.size() - 1] = '\0';
 		}
-		ExecuteCommandByProtocol(clientSocket, line.c_str());
+		executeCommandByProtocol(clientSocket, line.c_str());
 	}
 }
 
-void Server::ExecuteCommandByProtocol(const int clientSocket, const char* buffer)
+void Server::executeCommandByProtocol(const int clientSocket, const char* buffer)
 {
 	const Space* space = findSpace(clientSocket);
 
@@ -555,7 +556,7 @@ bool Server::isInvalidPassword(const char* password) const
 void Server::leaveServer(const int clientSocket)
 {
 	const char* quitProtocol = "QUIT :leaving";
-	ExecuteCommandByProtocol(clientSocket, quitProtocol);
+	executeCommandByProtocol(clientSocket, quitProtocol);
 }
 
 void Server::exitAllSpaces(const int clientSocket)

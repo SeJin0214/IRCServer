@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   LoggedInSpace.cpp                                  :+:      :+:    :+:   */
+/*   AuthSpace.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sejjeong <sejjeong@student.42gyeongsan.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,17 +12,17 @@
 
 #include <cassert>
 #include "Server.hpp"
-#include "LoggedInSpace.hpp"
+#include "AuthSpace.hpp"
 #include "CommandRegistry.hpp"
 
-std::shared_ptr<IOutgoingMessageProvider> LoggedInSpace::getOutgoingMessageProvider(const char *buffer) const
+std::shared_ptr<IOutgoingMessageProvider> AuthSpace::getOutgoingMessageProvider(const char *buffer) const
 {
 	assert(buffer != NULL);
 
 	std::string command = getCommandSection(buffer);
 
 	CommandRegistry& instance = CommandRegistry::getInstance();
-	Result<std::shared_ptr<IOutgoingMessageProvider> > result = instance.getProviderInLoggedInSpace(command);
+	Result<std::shared_ptr<IOutgoingMessageProvider> > result = instance.getProviderInAuthSpace(command);
 	if (result.hasSucceeded())
 	{
 		return result.getValue();
@@ -30,14 +30,14 @@ std::shared_ptr<IOutgoingMessageProvider> LoggedInSpace::getOutgoingMessageProvi
 	return std::shared_ptr<IOutgoingMessageProvider>();
 }
 
-std::shared_ptr<IExecutable> LoggedInSpace::getExecutor(const char *buffer) const
+std::shared_ptr<IExecutable> AuthSpace::getExecutor(const char *buffer) const
 {
 	assert(buffer != NULL);
 
 	std::string command = getCommandSection(buffer);
 
 	CommandRegistry& instance = CommandRegistry::getInstance();
-	Result<std::shared_ptr<IExecutable> > result = instance.getExecutorInLoggedInSpace(command);
+	Result<std::shared_ptr<IExecutable> > result = instance.getExecutorInAuthSpace(command);
 	if (result.hasSucceeded())
 	{
 		return result.getValue();
@@ -45,7 +45,7 @@ std::shared_ptr<IExecutable> LoggedInSpace::getExecutor(const char *buffer) cons
 	return std::shared_ptr<IExecutable>();
 }
 
-void LoggedInSpace::admitOrExile(Server& server)
+void AuthSpace::admitOrExile(Server& server)
 {
 	std::map<int, LoginInfo>::iterator it = mInfos.begin();
 	while (it != mInfos.end())
@@ -73,7 +73,7 @@ void LoggedInSpace::admitOrExile(Server& server)
 	}
 }
 
-bool LoggedInSpace::enterUser(const int clientSocket, User* user)
+bool AuthSpace::enterUser(const int clientSocket, User* user)
 {
 	bool bIsSucceed = Space::enterUser(clientSocket, user);
 	assert(bIsSucceed);
@@ -83,13 +83,13 @@ bool LoggedInSpace::enterUser(const int clientSocket, User* user)
 	return true;
 }
 
-User* LoggedInSpace::exitUserOrNull(const int clientSocket)
+User* AuthSpace::exitUserOrNull(const int clientSocket)
 {
 	mInfos.erase(clientSocket);
 	return Space::exitUserOrNull(clientSocket);
 }
 
-bool LoggedInSpace::trySetAuthenticated(const int clientSocket)
+bool AuthSpace::trySetAuthenticated(const int clientSocket)
 {
 	std::map<int, LoginInfo>::iterator it = mInfos.find(clientSocket);
 	if (it != mInfos.end())
@@ -100,7 +100,7 @@ bool LoggedInSpace::trySetAuthenticated(const int clientSocket)
 	return false;
 }
 
-bool LoggedInSpace::trySetNickname(const int clientSocket, const std::string& nickname)
+bool AuthSpace::trySetNickname(const int clientSocket, const std::string& nickname)
 {
 	std::map<int, LoginInfo>::iterator it = mInfos.find(clientSocket);
 	if (it != mInfos.end())
@@ -111,7 +111,7 @@ bool LoggedInSpace::trySetNickname(const int clientSocket, const std::string& ni
 	return false;
 }
 
-bool LoggedInSpace::trySetUsername(const int clientSocket, const std::string& username)
+bool AuthSpace::trySetUsername(const int clientSocket, const std::string& username)
 {
 	std::map<int, LoginInfo>::iterator it = mInfos.find(clientSocket);
 	if (it != mInfos.end())

@@ -18,7 +18,7 @@
 
 #include "Channel.hpp"
 #include "Lobby.hpp"
-#include "LoggedInSpace.hpp"
+#include "AuthSpace.hpp"
 #include "Result.hpp"
 
 enum { MAX_BUFFER = 512 };
@@ -57,7 +57,7 @@ public:
 	
 private:
 	Lobby mLobby;
-	LoggedInSpace mLoggedInSpace;
+	AuthSpace mAuthSpace;
 	std::unordered_map<std::string, Channel*> mChannels;
 	std::string mName;
 	int mServerSocket;
@@ -77,7 +77,7 @@ private:
 	void acceptClient();
 	bool sendToClient(const int clientSocket, const char* message);
 	void handleClientMessage(const int clientSocket);
-	void ExecuteCommandByProtocol(const int clientSocket, const char* buffer);
+	void executeCommandByProtocol(const int clientSocket, const char* buffer);
 	bool isInvalidPassword(const char* password) const;
 
 };

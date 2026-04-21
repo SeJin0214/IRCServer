@@ -46,7 +46,7 @@ sudo apt install -y irssi
     - 로그인/로비/채널/서버/유저  
 - [DETAIL_3_PROTOCOL_AND_COMMAND](docs/DETAIL_3_PROTOCOL_AND_COMMAND.md)  
     - 커맨드 공통 인터페이스(CommonCommand) + 확장 클래스로 각 명령 모듈화   
-    - 명령어 기능 구현: PASS, NICK, USER, PART, QUIK (본인 구현)  
+    - 명령어 기능 구현: PASS, NICK, USER, PART, QUIT (본인 구현)  
     - JOIN, TOPIC, MODE, KICK, INVITE, PRIVMSG (팀원 구현)    
 - [DETAIL_4_BOT](docs/DETAIL_4_BOT.md)  
     - 봇 구현(채팅방에서 유저의 ! 명령어에 따라 행동)

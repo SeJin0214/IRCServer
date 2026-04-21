@@ -3,7 +3,7 @@
 ## 환경  
 
 운영체제 : Ubuntu  
-언어 : C++ 98 (요구사항)  
+언어 : C++ 
 빌드 : GNU Make (요구사항)  
 코딩 표준 : [POCU C++](https://docs.popekim.com/ko/coding-standards/pocu-cpp)  
 협업 : Git, [Notion](https://www.notion.so/irc-1b50d57d3189805a9b1cea776d5c964d), Slack  
